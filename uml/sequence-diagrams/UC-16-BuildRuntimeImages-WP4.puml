@@ -1,0 +1,41 @@
+@startuml
+
+title Build Runtime Images(WP4)
+
+'Define user actors
+participant "IaC Blueprint\nbuilder" as SBBC
+participant "Runtime Image\nBuilder " as SRIBC
+participant "Concrete Image\nBuilder " as SCIBC
+database "Image Registry " as SIIR
+
+
+SBBC->SRIBC: BuildImages(TargetArchitecture, ArtefactList)
+note over SBBC, SRIBC: this sequence gets a call from the IaC Builder component in WP4
+
+activate SRIBC
+
+SRIBC->SCIBC: CreateConcreteImageBuilder(TargetArchitecture)
+activate SCIBC
+
+loop ArtefactDefinition in ArtefactList
+    SRIBC->SRIBC: GetModelReference(ArtefactDefinition)
+    SRIBC->SRIBC: GetNodeReference(ArtefactDefinition)
+    SRIBC->SCIBC: ConfigureBuildArtefactImage(ArtefactDefinition)
+    SCIBC->SCIBC: PreinstallMonitoring(BuildInfo)
+    SCIBC->SCIBC: BuildArtefactImage(BuildInfo)
+    SCIBC-->SRIBC: ArtefactImage(BuildInfo)
+    'Save the resulting IaC and recipes together with build time information (errors, warnings, information, improvement suggestions - all addressing the abstract model)
+    SRIBC->SIIR: SaveArtefactImage(ArtefactImage, ModelRef, NodeRef, BuildInfo)
+    note over SCIBC, SIIR: Image is registered and retrievable\n through labels written on save\n(eg. ModelRef, NodeRef, version, etc.)
+
+    SRIBC->SRIBC: AddBuildInfoToList(BuildInfo)
+end
+
+deactivate SCIBC
+
+'Return the reference to compile/build time information (errors, warnings, information, improvement suggestions - all addressing the abstract model)
+SRIBC-->SBBC: BuildImagesInfoList(humanReadableForm)
+deactivate SRIBC
+
+
+@enduml

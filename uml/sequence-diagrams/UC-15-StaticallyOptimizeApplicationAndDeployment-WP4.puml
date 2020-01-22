@@ -1,0 +1,38 @@
+@startuml
+
+title Application Optimiser (WP4)
+participant "Application Optimiser" as soda
+participant "Execution Platform" as res
+database "IaC Model repository" as model
+participant "Runtime Image Builder" as image
+activate soda
+soda->model: get optimisation recipe (ti,Oi,ITi) - task (ti),target (ITi),Optimisation (Oi)
+model-->soda: return optimisation recipe list (ti,Oi,ITi)
+soda->soda: Get all application task (ti)
+loop Application tasks
+    soda->model: Get task(ti) dependencies
+    model-->soda: Send task dependencies and related metadata
+    soda->model: Get artifacts for task(ti)
+    model-->soda: Send all artifacts for task(ti)
+    soda->soda: Validate artifacts
+    alt Missing artifacts
+       soda -> soda: Disable all task(ti) optimisations
+    end
+    soda->res: extract artifacts to resource
+    soda->res: Build artifacts
+    res->res: Build application task
+    res-->soda: Sucecssful build
+    loop Infra target ITi
+        loop Optimisation recipes for selected target ITi
+            soda->model: Add runtime library or setting changes to deployment
+            soda->model: Add job script changes for optimisations
+            soda->res: Apply all optimisations in Optimisation recipe
+            res->res: Build application task and validate
+            res-->soda: Succesfull build of executable or container
+            soda->image: Update deployment with optimised execeutable or container
+        end
+    end
+end
+soda->model: Send Optimisation report
+deactivate soda
+@enduml

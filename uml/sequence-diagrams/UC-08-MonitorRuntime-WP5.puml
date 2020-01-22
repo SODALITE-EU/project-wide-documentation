@@ -1,0 +1,53 @@
+@startuml
+
+title Monitor Runtime (WP5)
+
+actor "Application\nOps Expert" as ops
+participant "SOLIDATE IDE" as ide
+participant “Deployment Refactorer” as dr
+participant  "Monitoring" as monitoring
+participant "Software Components" as software
+participant "Hardware Components" as hardware
+
+activate monitoring
+activate ide
+loop physical and virtual components
+  monitoring->software: collect statistics
+  software->hardware: probe hardware
+  software->monitoring: provide statistics
+end
+monitoring->dr: provide statistics
+
+loop
+  ide->monitoring: report standard statistics
+  monitoring->ide: aggregated standard statistics
+  loop physical and virtual components
+    monitoring->software: collect statistics
+    software->hardware: probe hardware
+    software->monitoring: provide statistics
+  end
+  monitoring->dr: provide statistics
+end
+
+ops->ide: start to collect special statistics
+ide->monitoring: start to collect special statistics
+monitoring->software: start to collect special statistics
+monitoring->ide: Acknowledge
+  loop physical and virtual components
+    monitoring->software: collect special statistics
+    software->hardware: probe hardware
+    software->monitoring: provide special statistics
+  end
+monitoring->dr: provide statistics
+ide->monitoring: report special statistics
+monitoring->ide: aggregated / filtered special statistics
+ide->ops: aggregated / filtered special statistics
+ops->ide: stop collection of special statistics
+ide->monitoring: stop collection of special statistics
+monitoring->software: stop collection of special statistics
+monitoring->ide: Acknowledge
+ide->ops: Acknowledge
+deactivate ide
+deactivate monitoring
+
+@enduml

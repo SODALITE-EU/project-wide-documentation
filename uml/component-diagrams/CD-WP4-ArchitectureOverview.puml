@@ -1,0 +1,75 @@
+@startuml
+
+title WP4 - Infrastructure As Code Layer Architecture Overview
+
+'reference to WP3
+interface "SemanticReasonerAPI" <<REST>> as repoEndpoint
+
+component "SODALITE IDE" as cSIDE
+
+package "Deployment\nPreparation" as pDP {
+    component [Abstract Model\nParser] as cAbstractModelParser
+    component [IaC Blueprint\nbuilder] as cIaCBlueprintBuilder
+    interface "Deployment\nPreparationAPI" <<REST>> as iBluePrintGeneratorAPI
+}
+
+package "Image Builder" {
+    component [Runtime Image\nBuilder] as cRuntimeImageBuilder
+    component [Concrete Image\nBuilder] as cConcreteImageBuilder
+    interface "Runtime\nImageAPI" <<REST>> as iRuntimeImageBuilder
+    cRuntimeImageBuilder - iRuntimeImageBuilder
+    cRuntimeImageBuilder .u.> cConcreteImageBuilder: use
+    database "Image\nregistry" as dIR
+    interface "Image data\naccess" as iIRDataAccess
+
+}
+
+package "IaC Verification" as pIV {
+    component [IaC Verifier] as cIaCVerifier
+    interface "IaCVerificationAPI" <<REST>> as iIaCVerifier
+    cIaCVerifier -l- iIaCVerifier
+    component [Verification\nModel Builder] as cVerificationModelBuilder
+    component [Topology\nVerifier] as cTopologyVerifier
+    component [Provisioning\nWorkflow Verifier] as cProvisioningWorkflowVerifier
+}
+
+package "Defect Prediction and Correction" as pDPC {
+    component [Bug Predictor\nand Fixer ] as cBugPredictorAndFixer
+    interface "DefectPrediction\nCorrectionAPI" <<REST>> as iBugPredictorAndFixer
+    cBugPredictorAndFixer -l- iBugPredictorAndFixer
+    component [Predictive\nModel Builder] as cPredictiveModelBuilder
+    component [IaC Quality\nAssessor] as cIaCQualityAssessor
+}
+
+package "Performance\nOptimisation" as packagePO {
+    component "Application\nOptimiser" as cApplicationOptimiser
+    interface "Application\nOptimiserAPI" <<REST>> as iApplicationOptimiser
+    cApplicationOptimiser -u- iApplicationOptimiser
+}
+
+cAbstractModelParser -d- iBluePrintGeneratorAPI
+cIaCBlueprintBuilder -u- iBluePrintGeneratorAPI
+
+
+cAbstractModelParser .r.> repoEndpoint: use
+cSIDE ..> iBluePrintGeneratorAPI: use
+cSIDE ..> iIaCVerifier: use
+cSIDE ..> iBugPredictorAndFixer: use
+
+cIaCBlueprintBuilder ..> iApplicationOptimiser: use
+
+dIR - iIRDataAccess
+cRuntimeImageBuilder ..> iIRDataAccess: use
+cIaCBlueprintBuilder ..> iRuntimeImageBuilder: use
+
+cIaCVerifier ..> cVerificationModelBuilder:use
+cIaCVerifier ..> cTopologyVerifier:use
+cIaCVerifier ..> cProvisioningWorkflowVerifier:use
+
+cBugPredictorAndFixer ..> cIaCQualityAssessor:use
+cBugPredictorAndFixer ..> cPredictiveModelBuilder:use
+cPredictiveModelBuilder ..> repoEndpoint:use
+cVerificationModelBuilder ..> repoEndpoint:use
+cApplicationOptimiser .r.> repoEndpoint:use
+
+@enduml

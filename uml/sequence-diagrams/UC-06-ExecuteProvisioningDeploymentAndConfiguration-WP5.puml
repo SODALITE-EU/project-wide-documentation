@@ -1,0 +1,82 @@
+@startuml
+
+title Execute Provisioning, Deployment and Configuration (WP5)
+
+actor "Application\nOps Expert" as ops
+participant "SOLIDATE\nIDE" as ide
+participant "Deployment\nPreparation" as dprep
+participant "Image Registry" as imagereg
+'box "Runtime Layer"
+participant  Orchestrator as orch
+participant "Execution Platform\nManager" as res
+participant "VM" as VM
+'participant "Pod" as pod
+participant "Monitoring" as mon
+'end box
+
+
+ops->ide: deploy
+activate ide
+ide->orch: deploy(modelId)
+activate orch
+orch->dprep: getTosca(modelId)
+dprep-->orch: tosca
+orch->orch: deploy(tosca)
+
+loop execution platforms
+  activate res
+  alt OpenStack
+    orch->res: provision(resources type)
+    res-->orch: set of VMs
+    orch->VM: install(LRE)
+  'else HPC/GPU
+  '  orch->res: ?
+  'else Kubernetes
+  '  orch->res: create K8S project
+  '  res-->orch: created
+  end
+  deactivate res
+  orch->dprep: getArtifactImageList(modelId)
+  dprep-->orch: [ imageId ]
+  loop components per E.P.
+    orch->imagereg: getImage(imageId)
+    imagereg-->orch: artifact
+    ' install artefact
+    alt E.P. is OpenStack
+      orch->VM: deploy(artifact)
+      orch->VM: configure(component, values)
+    else E.P. is Kubernetes
+      orch->res: submit(deployment)
+
+      activate res
+        'res->pod: provision(pods)
+        'res->pod: deploy(artefact)
+        'res->pod: configure(component, values)
+        'pod-->res: status=ACTIVE
+        note right
+          kubernetes automates:
+          - provision of pods
+          - artifact deployment
+          - configuration of components
+        end note
+        res-->orch: deployment created
+
+      deactivate res
+
+    else E.P. is HPC/GPU cluster
+      orch->res: copy artifact to home
+      orch->res: copy job script to home
+    end
+    opt
+      orch->mon: configure monitoring
+    end
+  end
+end
+deactivate orch
+
+orch-->ide: deployed
+deactivate ide
+
+ide-->ops: deployed
+
+@enduml

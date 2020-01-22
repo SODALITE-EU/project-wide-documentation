@@ -1,0 +1,75 @@
+@startuml
+
+title Map Resources and Optimisations (WP3)
+
+actor "Resource Expert" as re
+participant "SODALITE IDE" as ide
+participant "Semantic Reasoner" as reasoner
+participant "Semantic Knowledge Base\n(ontology in GraphDB)" as ontology
+participant "Execution Platform" as res
+database "IaC Model repository" as iac
+
+re->ide: Initiate the IDE
+activate ide
+ide->reasoner: Retrieve known resource types, etc. (API call)
+activate reasoner
+reasoner->ontology: Request resources (SPARQL)
+activate ontology
+ontology->reasoner: Return resources (JSON)
+deactivate ontology
+reasoner->ide: Return known resource types, etc. (JSON)
+deactivate reasoner
+ide->re: Initialization completed - Present design options
+
+loop Design time
+    re->ide: Define a pattern selecting known resource\n types, relationships, etc.
+    ide->reasoner: Request validation (API call)
+    activate reasoner
+    reasoner->ontology: Query for known inconsistencies (SPARQL)
+    activate ontology
+    ontology-->reasoner: Return results (JSON)
+    deactivate ontology
+    reasoner-->ide: Return detected inconsistencies (JSON)
+    deactivate reasoner
+    ide-->re: Present validation results
+
+    opt Optimisations
+        re->ide: Select optimization approach from UI menu
+        ide->iac: Get task(ti) information + artifacts
+        iac-->ide: Send task metadata and dependencies
+        ide->ide: Filter optimisations(Oi) based on application task(ti)
+        ide->res: Get available targets(ITi)
+        res-->ide: Send all available targets(ITi)
+        ide->ide: Filter optimisations(Oi) based on available targets(ITi)
+        ide-->re: Enable filtered optimisations(Oi)
+        re->ide: select Optimisation(Oi) for task(ti) (ti,Oi)
+        ide --> re:  Enable Optimisation settings  (ti,Oi)
+        re  -> ide: Enter Optimisation settings (ti,Oi)
+        ide -> ide: Validate Optimisation (ti,Oi,ITi)
+        ide -> iac: Add to optimisation recipe (ti,Oi,ITi)
+        ide --> re:  Send Optimisation Report
+    end
+
+    opt Mapping of target resources
+        re->ide: Ask to map target resources to abstract pattern
+        ide->reasoner: Request known target resources (API call)
+        activate reasoner
+        reasoner->ontology: Query compatible target resources (SPARQL)
+        activate ontology
+        ontology-->reasoner: Return results (JSON)
+        deactivate ontology
+        reasoner-->ide: Return target resources (JSON)
+        deactivate reasoner
+        ide-->re: Present compatible target resources
+        re->ide: Map target resources to new pattern
+        re->ide: Assign performance metrics
+    end
+end
+
+re->ide: Submit new resource pattern,\n optimization parameters,\n target resources and\n performance metrics
+ide->reasoner: Request to store new pattern (API call)
+activate reasoner
+reasoner->ontology: Store new pattern (SPARQL)
+deactivate reasoner
+
+@enduml

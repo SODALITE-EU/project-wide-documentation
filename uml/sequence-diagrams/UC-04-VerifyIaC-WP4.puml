@@ -1,0 +1,54 @@
+@startuml
+
+title Verify IaC (WP4)
+
+actor "Application Ops Expert" as ops
+participant "SODALITE\nIDE" as sic
+participant "IaC Verifier" as soda
+participant "Verification Model Builder" as vmb
+participant "Topology Verifier" as tv
+participant "Provisioning Workflow Verifier" as pwv
+participant "Semantic Knowledge Base" as kb
+
+ops->sic: verify (IaC, Correctness Criteria)
+activate sic
+sic->soda: verify (IaC, Correctness Criteria)
+activate soda
+soda -> vmb: build Verification Models (IaC)
+activate vmb
+vmb -> kb: retrieve Verification Knowledge
+activate kb
+kb --> vmb: verification knowledge
+deactivate kb
+alt Parse and Model Building Errors
+    vmb --> soda: Parse and Model Building Errors
+    soda --> sic: Parse and Model Building Errors
+    sic --> ops: Parse and Model Building Errors
+else  Parse and Model Building Success
+    vmb --> soda: Verification Models
+    deactivate vmb
+    soda -> tv: Verify Topology (model, criteria)
+    activate tv
+    tv --> soda: Verification Results
+    deactivate tv
+    alt Invalid Topology
+        soda --> sic: Topology Verification Errors
+        sic --> ops: Topology Verification Errors
+    else Valid Topology
+        soda -> pwv: Verify Provisioning Workflow (model, criteria)
+        activate pwv
+        pwv --> soda: Verification Results
+        deactivate pwv
+        alt Invalid Provisioning Workflow
+            soda --> sic: Provisioning Workflow Verification Errors
+            sic --> ops: Provisioning Workflow Verification Errors
+        else  Valid Provisioning Workflow
+            soda --> sic: Verification Summary for Provisioning Workflow and Topology
+            sic --> ops: Verification Summary for Provisioning Workflow and Topology
+        end
+    end
+end
+
+deactivate soda
+deactivate sic
+@enduml

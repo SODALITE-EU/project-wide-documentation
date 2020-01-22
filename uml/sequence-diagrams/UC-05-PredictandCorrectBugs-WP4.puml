@@ -1,0 +1,76 @@
+@startuml
+
+title Predict and Correct Bugs (WP4)
+actor "Application Ops Expert" as ops
+participant "SODALITE IDE" as sic
+participant "Bug Predictor and Fixer" as bp
+participant "Semantic Knowledge Base" as skb
+participant "Predictive Model Builder" as pmb
+participant "IaC Quality Assessor" as iqa
+
+== Anti Patterns and Smells Based Bug Prediction ==
+
+ops-> sic: Predict Bugs (abstract IaC models)
+activate sic
+sic-> bp: Predict Bugs (abstract IaC models)
+activate bp
+bp -> pmb: Build Ontological Predictive Models
+activate pmb
+pmb -> skb: Retrieve Bug Prediction Knowledge
+activate skb
+skb --> pmb: Bug Prediction Knowledge
+deactivate skb
+alt Model Building Errors
+    pmb --> bp: Model Building Errors
+    bp --> sic: Model Building Errors
+    sic --> ops: Model Building Errors
+else Model Building Success
+    pmb --> bp: Ontological Predictive Models
+    deactivate pmb
+    bp -> bp: Predict Bugs In Topology
+    bp -> bp: Predict Bugs In Provisioning Workflow
+    bp -> sic: Bugs (with confidence levels)
+    sic -> ops: Bugs
+    loop Bugs
+       ops -> sic: Find Fixes (bug)
+       sic -> bp:  Find Fixes (bug)
+       bp-> skb: Retrieve Bug Correction Knowledge
+       skb -> bp: Bug Correction Knowledge
+       bp -> sic: Fixes  (with ratings)
+       ops -> sic: Fixes (with ratings)
+       ops -> ops: Select the Best Fix
+       ops -> sic: Fix Bug (bug, fix)
+       sic -> bp : Apply Fix (bug, fix)
+       bp -> bp :  Apply Fix via Model Transformation
+       bp --> sic: Corrected IaC
+       sic --> ops: Corrected IaC
+    end
+end
+deactivate bp
+deactivate sic
+
+== Metrics based Bug Proneness Prediction ==
+
+ops -> bp: build Bug Proneness Prediction Model (IaC dataset, IaC metrics)
+activate bp
+bp -> pmb: train Model (IaC dataset, IaC metrics)
+activate pmb
+pmb --> bp: bug proneness prediction model
+deactivate pmb
+bp --> ops: bug proneness prediction model
+deactivate bp
+ops -> sic: predict Bug Proneness (IaC models)
+activate sic
+sic -> bp: predict Bug Proneness (IaC models)
+activate bp
+bp --> iqa: calculate IaC Metrics (IaC models)
+activate iqa
+iqa --> bp: Iac metrics
+deactivate iqa
+bp -> bp : predict Bug Proneness index (Iac metrics)
+bp --> sic: bug proneness index
+deactivate bp
+sic --> ops: bug proneness index
+deactivate sic
+
+@enduml

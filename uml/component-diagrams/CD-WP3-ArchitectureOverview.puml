@@ -1,0 +1,50 @@
+@startuml
+
+title WP3 - Modeling Layer Architecture Overview
+
+interface "DeploymentPreparationAPI" as deploymentPreparationAPI
+interface "DefectPredictionCorrectionAPI" as correctionAPI
+interface "MonitoringAPI" as monitoringAPI
+interface "IaCVerificationAPI" as iacverificationAPI
+interface "OrchestratorAPI" as orchestratorAPI
+
+package "SODALITE IDE" as IDE {
+    component [DSL Editor] as ideDSLeditor
+    component [GUI] as ideGUI
+}
+
+package "Semantic Reasoner" as res {
+    interface "SemanticReasonerAPI" as resAPI
+    component [Semantic Population Engine] as resPopulationEngine
+    component [Semantic Reasoning Engine] as resReasoningEngine
+}
+
+package "Semantic Knowledge Base" as repo {
+    database "RDF Triplestore\n(GraphDB)" as triplestore {
+        interface "SPARQL Endpoint" as repoEndpoint
+        component [Domain Ontologies] as repoOntologies
+    }
+}
+
+note left of repoOntologies
+   __**Semantic Modelling & Abstraction**__
+   Application Ontology
+   Infrastructure Ontology
+   Performance Optimization Ontology
+   Deployment & Lifecycle Ontology
+end note
+
+resAPI -down- resPopulationEngine
+resAPI -up- resReasoningEngine
+ideDSLeditor .left.> resAPI: use
+ideDSLeditor <-down-> ideGUI
+repoOntologies -up- repoEndpoint
+resPopulationEngine .left.> repoEndpoint: use
+resReasoningEngine .left.> repoEndpoint: use
+ideGUI ..> deploymentPreparationAPI : use
+ideGUI ..> correctionAPI : use
+ideGUI ..> monitoringAPI : use
+ideGUI ..> iacverificationAPI : use
+ideGUI ..> orchestratorAPI : use
+
+@enduml

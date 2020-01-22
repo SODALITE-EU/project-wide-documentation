@@ -1,0 +1,31 @@
+@startuml
+
+title Define IaC Bugs Taxonomy (WP4)
+actor "Quality Expert" as ops
+participant "SODALITE IDE" as sic
+participant "Semantic Knowledge Base" as skb
+
+activate ops
+ops->ops: Identify the Key Concepts of Defects and Resolutions in IaC
+ops->ops: Builds a Taxonomy of Defects and Resolutions
+ops->sic: Builds the Bug and Resolution Ontology from the Taxonomy
+sic --> ops:
+ops-> sic: Align the Bug and Resolution Ontology with the other SODALITE Ontologies
+sic --> ops:
+
+ops->sic: Define (Ontological Reasoning) Rules to Detect Bugs
+sic --> ops:
+ops->sic: Define (Ontological Reasoning) Rules to Recommend Corrections to Bugs
+sic --> ops:
+ops->sic: Deploy the Ontology and Rules
+sic-> skb: Deploy the Ontology and Rules
+alt Deployment  Errors
+    skb --> sic: Deployment  Errors
+    sic --> ops: Deployment  Errors
+else Deployment Success
+skb --> sic: Deployment Confirmation
+sic --> ops: Deployment Confirmation
+end
+deactivate sic
+deactivate ops
+@enduml

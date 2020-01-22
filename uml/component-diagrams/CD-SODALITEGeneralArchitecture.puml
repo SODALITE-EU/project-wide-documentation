@@ -1,0 +1,47 @@
+@startuml
+
+title SODALITE General Architecture
+
+interface "Deployment\nPreparationAPI" as dep
+interface "DefectPrediction\nCorrectionAPI" as defect
+interface "IaCVerifactionAPI" as verif
+interface "ImageRegistryAPI" as imagereg
+interface "MonitoringAPI" as mon
+interface "OrchestratorAPI" as orch
+
+[SODALITE Modeling Layer] as WP3
+interface "Semantic\nReasonerAPI" as sem
+WP3 -l- sem
+
+[SODALITE Infrastructure as Code Layer] as WP4
+WP4 -d- dep
+WP4 -u- defect
+WP4 -u- verif
+WP4 -- imagereg
+
+[SODALITE Runtime Layer] as WP5
+WP5 -u- mon
+WP5 -u- orch
+
+cloud {
+    node OpenStack
+    node Kubernetes as K8S
+    node Torque
+}
+
+WP3 ..> dep : use
+WP3 ..> defect : use
+WP3 ..> verif : use
+WP3 ..> mon : use
+WP3 ..> orch : use
+
+WP4 ..> sem : use
+
+WP5 ..> OpenStack : use
+WP5 ..> K8S : use
+WP5 ..> Torque : use
+WP5 ..> dep : use
+WP5 .l.> sem : use
+WP5 ..> imagereg: use
+
+@enduml

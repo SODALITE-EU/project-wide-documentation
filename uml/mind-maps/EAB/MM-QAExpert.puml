@@ -1,0 +1,30 @@
+@startmindmap QAExpertUCs
+
+<style>
+mindmapDiagram {
+  node {
+    Padding 15
+    Margin 15
+    BackGroundColor LightBlue
+  }
+  rootNode {
+    Padding 15
+	Margin 15
+    BackGroundColor AliceBlue
+	FontSize 12
+  }
+  leafNode {
+    Padding 10
+    BackGroundColor LightBlue
+    FontColor Black
+    FontSize 11
+  }
+}
+</style>
+
+* <b>QualityAssurance</b>\n<b>Expert</b>
+** UC11 Define IaC Bugs Taxonomy
+** UC14 Estimate Quality Characteristics\nOf Applications And Workload
+
+
+@endmindmap

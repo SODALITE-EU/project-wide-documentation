@@ -1,0 +1,53 @@
+@startuml
+
+title Execute Partial Redeployment (WP5)
+
+actor "Application\nOps Expert" as ops
+participant  "SODALITE IDE" as ide
+participant  "Deployment Preparation" as dp
+participant  Orchestrator as orch
+participant "Execution Platform" as res
+
+ops->ide: executeRedeployment
+ide->dp: executeRedeployment \n(refactoring options)
+dp->orch: redeploy(tosca)
+
+activate orch
+orch->orch: deriveDifferences \n(current, updated)
+loop execution platforms
+  loop components per E.P.
+    alt E.P. is cloud
+      orch->res: redeploy(artefact, actions)
+      activate res
+      note right
+        possible actions:
+        - scale in/out/up/down
+        - migration to another E.P.
+        - deploy new components
+        - remove current components
+      end note
+      orch<--res: completed
+      deactivate res
+
+    else E.P. is HPC/GPU cluster
+      orch->res: redeploy(artefact, actions)
+      activate res
+      note right
+        possible actions:
+        - migration to another E.P.
+        - deploy new components
+        - remove current components
+      end note
+      orch<--res: completed
+      deactivate res
+    end
+  end
+end
+
+dp<--orch: completed
+deactivate orch
+
+ide<--dp: completed
+ops<--ide: redeployed
+
+@enduml

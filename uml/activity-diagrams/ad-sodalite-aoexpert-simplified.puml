@@ -1,0 +1,30 @@
+@startuml
+
+skinparam activity {
+  StartColor DarkRed
+  BarColor SaddleBrown 
+  EndColor DarkGreen
+  BackgroundColor LightBlue
+  BorderColor Black
+  FontName Arial
+}
+
+Title Simplified SODALITE \nActivity Diagram for AppOps Expert\n
+start
+repeat 
+  repeat
+    :Define Abstract Deployment Model;
+    :Analyze Performance;
+  repeat while (improve model?)
+
+  :Select and Map to resources;
+  if (optimize application?) then (yes)
+    :Optimize Application components;
+  endif
+
+  :Build Images;
+  :Generate IaC/Playbooks;
+
+repeat while (improve model?)
+stop
+@enduml

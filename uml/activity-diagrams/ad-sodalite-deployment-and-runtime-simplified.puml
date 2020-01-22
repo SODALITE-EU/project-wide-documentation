@@ -1,0 +1,31 @@
+@startuml
+
+skinparam activity {
+  StartColor DarkRed
+  BarColor SaddleBrown 
+  EndColor DarkGreen
+  BackgroundColor LightBlue
+  BorderColor Black
+  FontName Arial
+}
+
+Title Simplified SODALITE\nDeployment and Runtime\n
+
+start
+:Build Runtime images;
+
+:Deploy IaC/Playbooks;
+
+:Start application;
+
+repeat
+  :Monitor Application/Infrastructure;
+  if(need to reconfigure?) then (yes)
+    :Reconfigure;
+  endif
+repeat while (need to redesign?) is (no)
+->yes;
+:Go back to design;
+stop
+@enduml
+

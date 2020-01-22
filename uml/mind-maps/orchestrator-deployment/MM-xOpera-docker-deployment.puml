@@ -1,0 +1,36 @@
+@startmindmap xOperaRESTDeployment
+title xOpera REST API and Docker Image Registry deployment
+<style>
+mindmapDiagram {
+  node {
+    Padding 15
+    Margin 15
+    BackGroundColor LightBlue
+    FontSize 11
+  }
+  rootNode {
+    Padding 15
+	Margin 15
+    BackGroundColor AliceBlue
+	FontSize 14
+  }
+  leafNode {
+    Padding 10
+    BackGroundColor LightBlue
+    FontColor Black
+    FontSize 11
+  }
+}
+</style>
+
+* <b> OpenStack </b>
+** VM1\n(CentOS 7)
+*** Docker Host
+**** Docker Registry
+** VM2\n(CentOS 7)
+*** Docker Host
+**** xOpera + REST API\n(Alpine 3.10)
+** VM3\n(CentOS 7)
+*** Docker Host
+**** PostgresDB\n(Debian 9)
+@endmindmap

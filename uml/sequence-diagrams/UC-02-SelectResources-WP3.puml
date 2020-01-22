@@ -1,0 +1,70 @@
+@startuml
+
+title Select Resources (WP3)
+
+actor "Application\nOps Expert" as ops
+participant "SODALITE IDE" as editor
+participant "Semantic Reasoner" as reasoner
+participant "Semantic Knowledge Base\n(ontology in GraphDB)" as ontology
+
+ops->editor: Submit application deployment model
+
+loop Mapping to target resources
+    activate editor
+    editor->reasoner: Request compatible target resources (API call)
+    activate reasoner
+    reasoner->ontology: Query compatible target resources (SPARQL)
+    activate ontology
+    ontology-->reasoner: Return results (JSON)
+    deactivate ontology
+    reasoner-->editor: Return target resources (JSON)
+    deactivate reasoner
+    editor-->ops: Present compatible target resources
+
+    opt Filters
+        ops->editor: Apply filters (cost, performance,\nscalability, locality, etc)
+        editor-->ops: Present suggested resources\nbased on filters
+    end
+
+    ops->editor: Request suggestions
+    editor->reasoner: Request suggestions (API call)
+    activate reasoner
+    reasoner->ontology: Query for known patterns (SPARQL)
+    activate ontology
+    ontology-->reasoner: Return patterns (JSON)
+    deactivate ontology
+    reasoner->editor: Return suggestions based on patterns (JSON)
+    deactivate reasoner
+
+    editor->ops: Present recommendations
+    ops->editor: Select and apply recommendations
+
+    alt Recommendation rejection
+        ops->editor: Reject presented recommendations
+    end
+
+    ops->editor: Select target resources and\n map them to the application\n deployment model
+    editor->reasoner: Request validation
+    activate reasoner
+    reasoner->ontology: Query for inconsistencies between\nselected target resources (SPARQL)
+    activate ontology
+    ontology-->reasoner: Return inconsistencies, if any (JSON)
+    deactivate ontology
+    reasoner-->editor: Return validation results (JSON)
+    deactivate reasoner
+    editor->ops: Present validation results
+
+    alt Validation failed
+        editor-->ops: Present errors
+        ops->editor: Correct errors
+    end
+end
+
+ops->editor: Submit application deployment model\n with mapped target resources
+    editor->reasoner: Store submitted model (API call)
+    activate reasoner
+    reasoner->ontology: Store submitted model (SPARQL)
+    deactivate reasoner
+
+    deactivate editor
+@enduml

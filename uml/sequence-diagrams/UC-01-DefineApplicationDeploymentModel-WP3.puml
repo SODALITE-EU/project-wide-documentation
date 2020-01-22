@@ -1,0 +1,91 @@
+@startuml
+
+title Define Application Deployment Model (WP3)
+
+actor "Application\nOps Expert" as ops
+participant "SODALITE IDE" as editor
+participant "Semantic Reasoner" as reasoner
+participant "Semantic Knowledge Base\n(ontology in GraphDB)" as ontology
+
+ops->editor: Initiate the IDE
+activate editor
+editor->reasoner: Retrieve known resource types, etc. (API call)
+activate reasoner
+reasoner->ontology: Request resources (SPARQL)
+activate ontology
+ontology->reasoner: Return resources (JSON)
+deactivate ontology
+reasoner->editor: Return known resource types, etc. (JSON)
+deactivate reasoner
+editor->ops: Initialization completed - Present design options
+
+loop Design time
+
+    loop DSL input
+        ops->editor: Design application topology (components/services)
+        ops->editor: Describe application constraints
+        ops->editor: Design inter-component boundaries
+        ops->editor: Express optimization requirements/constraints
+
+        editor -> editor: Validate syntax, integrity, etc.
+
+        alt Invalid DSL input
+            editor-->ops: Present errors
+            ops->editor: Refactor DSL to correct errors
+        end
+    end
+
+    loop Qualitative validation
+
+        ops->editor: Submit design
+        editor->reasoner: Request qualitative validation (API call)
+
+        activate reasoner
+        reasoner->ontology: Query (SPARQL) for \nknown inconsistencies\n(incompatibilities, anti-patterns, etc.)
+        activate ontology
+        ontology-->reasoner: Query results (JSON)
+        deactivate ontology
+
+        alt Invalid topology
+            reasoner-->editor: Return design inconsistencies (JSON)
+            deactivate reasoner
+            editor-->ops: Present inconsistencies
+            ops->editor: Submit correct design
+        end
+
+        opt Recommendations
+            ops->editor: Request recommendations
+            editor->reasoner: Request recommendation generation (API call)
+            activate reasoner
+            reasoner->ontology: Query (SPARQL) for \nknown patterns, requirements, etc
+            activate ontology
+            ontology-->reasoner: Query results (JSON)
+            deactivate ontology
+
+            alt No recommendations found
+                reasoner-->editor: Return empty results
+                editor-->ops: Inform on lack of recommendations
+            end
+
+            reasoner-->editor: Return recommendations with confidence scores (JSON)
+            deactivate reasoner
+
+            editor-->ops: Present recommendations
+            ops->editor: Select and apply recommendation
+
+            alt Recommendation rejection
+                ops->editor: Reject presented recommendations
+            end
+        end
+    end
+
+end
+
+ops->editor: Submit final model
+
+editor-->ops: Present target resources to be \ncorresponded to the model (case UC2 starts)
+
+deactivate editor
+
+
+@enduml

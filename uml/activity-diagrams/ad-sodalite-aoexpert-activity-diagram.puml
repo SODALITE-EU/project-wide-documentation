@@ -1,0 +1,145 @@
+@startuml
+Title SODALITE activity diagram\nfor AppOps Expert
+start
+
+'WP3 deployment modelling
+:Define application goals\nand parameters;
+note left
+User sets values for properties/attributes 
+or specifies requirements as they are 
+required by the types that nodes in the
+AADM conform to.
+
+**UC1: Define Application**
+**Deployment Model (WP3)**
+end note
+
+repeat
+
+fork
+
+:Select an AADM\npattern stored in KB;
+fork again
+:Design AADM from\nscratch using DSL;
+end fork 
+note left
+The user starts designing
+AADM using TOSCA Tier II
+Application patterns
+through IDE  
+
+**UC1: Define Application**
+**Deployment Model (WP3)**
+end note
+
+repeat
+
+:Model validation;
+note left
+AADM is validated by KB Reasoner. 
+Issues are presented to the user with
+markers showing affected AADM entities. 
+
+**UC1: Define Application**
+**Deployment Model (WP3)**
+end note
+
+:Performance analisys;
+note left
+AADM is analyzed for performance
+Suggestions are presented to 
+the user with markers showing 
+affected AADM entities.
+
+**UC1: Define Application**
+**Deployment Model (WP3)**
+end note
+
+:Select and Map to resources;
+note left
+User browses and selects resources 
+when required within the AADM 
+instances (nodes, etc). 
+Candidate resources are 
+retrieved from the KB. 
+
+**UC2: Select Resources (WP3)**
+end note
+:Save model (AADM);
+
+note left
+Complete mappable AADM -
+abstract model
+**UC2: Select Resources (WP3)**
+====
+//InstanceID//
+//VersionID//
+//UserID//
+//TimeStamp//
+end note
+
+
+rectangle "WP4 IaCManagement" #LightGreen{
+:Optimize Application components;
+note left
+**UC15: Statically Optimize**
+Application and Deployment
+end note
+
+:Build Runtime images;
+note left
+**UC16: Build Runtime images**
+end note
+
+:Generate IaC/Playbooks;
+note left
+**UC3: Generate IaC Code**
+end note
+
+:Validate IaC/Playbooks;
+note left
+**UC4: Verify IaC**
+end note
+
+:Save valid IaC (versioning);
+note left
+**UC3: Generate IaC Code**
+end note
+}
+
+rectangle "WP5 Deployment" #DarkSalmon{
+:Deploy IaC/Playbooks;
+note left
+**UC6: Execute Provisioning,**
+**Deployment and Configuration**
+end note
+
+:Start application;
+note left
+**UC7: Start Application**
+end note
+
+:Monitor Application/Infrastructure;
+note left
+**UC8: Monitor Runtime**
+end note
+
+
+if (application stoped?) then (Yes)
+  stop
+endif
+}
+
+:Build refactoring options (ML);
+note left
+Refactor model?
+**UC9: Identify Refactoring**
+**Options**
+end note
+
+
+repeat while (refactoring - substitution without changing the model?) 
+repeat while (refactoring - new deployment option found?) 
+stop
+
+@enduml

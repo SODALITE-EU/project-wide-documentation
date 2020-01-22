@@ -1,0 +1,96 @@
+@startuml
+
+title Identify Refactoring Options (WP5)
+
+actor "Application Ops\nExpert" as ops
+participant “Monitoring\nAgent” as ma
+participant “Deployment\nRefactorer” as dr
+participant “Refactoring\nOption Discoverer” as rof
+participant “Node Manager” as nm
+participant “Deployment\nPreparation” as orch
+participant "Semantic\nReasoner" as reasoner
+
+== Initial Deployment ==
+
+ops -> dr: init (application topology,\n application goals,\n refactoring options)
+activate dr
+dr -> rof: init (application topology,\n application goals,\n refactoring options)
+activate rof
+rof --> dr
+deactivate rof
+dr -> dr: calculate Node Goals (application goals)
+dr -> nm: init (node goals)
+activate nm
+nm --> dr
+deactivate nm
+deactivate dr
+
+== Refactoring Deployment Model ==
+ma-> dr: send metrics
+activate dr
+dr -> dr : check Application Goal Violations
+alt App Goals Violated
+dr -> dr: find a New Deployment Model
+   alt A Deployment Model Cannot be Found
+       dr -> ops: send Alert
+   else
+       'dr-> dr: generate Adaptation Plan (\ncurrent model, new model)
+       dr -> orch: adapt Deployment Model (model)
+       activate orch
+       'orch->orch: enact Adaptation Plan
+       orch --> dr
+       deactivate orch
+       dr -> dr: recalculate Node Goals (application goals)
+       dr -> nm: update Node Goals (new node goals)
+       activate nm
+       nm --> dr
+       deactivate nm
+       deactivate dr
+   end
+end
+
+== Node Resource Management ==
+
+ma-> nm: send metrics
+activate nm
+nm -> nm : Check Node Goal Violations
+alt Node Goals Violated
+nm -> nm: find a New Node Resource Allocation
+   alt  A New Node Resource Allocation Cannot be Found
+       nm -> dr: trigger Deployment Model Refactoring
+       activate dr
+       dr --> nm:
+       deactivate dr
+   else
+       nm -> nm: Enact the Node Resource Allocation
+   end
+end
+deactivate nm
+
+== Update Deployment Model Refactoring Options ==
+
+dr -> rof: search Refactoring Options (patterns,\n anti-patterns)
+activate dr
+activate rof
+rof -> reasoner: search Resources
+activate reasoner
+reasoner --> rof: resources
+deactivate reasoner
+rof --> dr:  refactoring options
+deactivate rof
+dr -> dr: update Refactoring Option Model (refactoring options)
+deactivate dr
+
+== Update Refactoring Option Selection Model ==
+ma-> dr: send metrics
+activate dr
+dr -> dr: update Refactoring Option Selection Model
+
+deactivate dr
+
+== Update Node Resource Allocation Model ==
+ma-> nm: send metrics
+activate nm
+nm -> nm: update Node Resource Allocation Model
+deactivate nm
+@enduml

@@ -1,10 +1,13 @@
 # UML diagrams
 
-SODALITE UML diagrams reflect the models identified 
+SODALITE UML diagrams reflect the concepts and models identified during the requirement analisys phase of the SODALITE project.
+
+NOTE: SODALITE adopts UML as a modeling language for defining the architecture of the SODALITE framework in terms of UML use cases, component diagrams and sequence diagrams. However, the UML notation adopted is not always fully compatible with the [UML standard](https://www.uml.org/). This is due to the fact that the tool we have adopted, [PlantUML](http://plantuml.com/), does not support some features of the standard. The most significant difference is the absence in the tool of the dock icon representing the concept of required interface.
+We have replaced this concept with a simple usage relationship.
 
 ## UML tools
 
-SODALITE UML diagrams are created using the [PlantUML](http://plantuml.com/) tool and can be viewed/edited using these tools:
+SODALITE UML diagrams are created using the  tool and can be viewed/edited using these tools:
 
 *   Online tool: [https://www.planttext.com](https://www.planttext.com/) (copy/paste UML code) 
 *   Offline tool: [http://plantuml.com/download](http://plantuml.com/download) (copy/paste UML code)

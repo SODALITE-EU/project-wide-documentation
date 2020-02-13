@@ -1,0 +1,62 @@
+@startuml
+title Generate IaC (WP4)
+
+'Define user actors
+actor "Application Ops Expert"  as AppOpsExp
+participant "SODALITE\nIDE" as IDE
+participant "IaC Blueprint\nBuilder" as BB
+participant "Semantic Reasoner\nAPI" as SR
+participant "Runtime Image\nBuilder " as IB
+participant "xOpera\nREST API" as Orc
+
+'model definition in IDE - get tier1 out of scope here
+AppOpsExp->IDE: Define model
+activate IDE
+AppOpsExp->IDE: Define inputs
+
+AppOpsExp->IDE: Save model
+IDE->SR: Save model
+SR->IDE: Model saved
+AppOpsExp->IDE: Build IaC
+IDE->SR: GetAADM(model)
+SR->IDE: AADM JSON
+
+AppOpsExp->IDE: Build IaC
+IDE->BB: BuildIaC(AADM JSON)
+note right
+Call iac-blueprint-builder
+REST API POST parse(JSON)
+end note
+activate BB
+
+BB->BB: BuildIaC(AADM JSON) TOSCA/Ansible
+
+BB->Orc: RegisterBlueprint(JSON)
+activate Orc
+note right
+Call xOpera POST manage(JSON)
+as result of blueprint2json
+end note
+Orc->BB: blueprint_token
+BB->IDE: blueprint_token
+deactivate BB
+deactivate Orc
+
+AppOpsExp->IDE: Deploy model
+
+IDE->Orc: Deploy(blueprint_token, inputs)
+activate Orc
+note right
+Call xOpera 
+POST deploy
+(blueprint_token, inputs_file)
+end note
+Orc->IDE: session_token
+loop
+    IDE->Orc: info/status(session_token)
+    IDE->AppOpsExp: status (JSON)
+end
+deactivate Orc
+
+
+@enduml

@@ -29,6 +29,7 @@ mindmapDiagram {
 ** UC4 Verify IaC
 ** UC5 Predict And\nCorrect Bugs
 ** UC6 Execute Provisioning,\nDeployment And\nConfiguration
+** UC16 Build Runtime\nImages
 left side
 ** UC7 Start Application
 ** UC8 Monitor Runtime

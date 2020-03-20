@@ -33,8 +33,13 @@ mindmapDiagram {
 left side
 ** UC7 Start Application
 ** UC8 Monitor Runtime
-** UC9 Identify\nRefactoring Options
+** UC9 Identify\nRefactoring Options 
 ** UC10 Execute Partial\nRedeployment
+<style>
+  node {
+	BackGroundColor LightGrey
+  }
+</style>
 ** UC12 Map Resources\nAnd Optimisations
 ** UC15 Statically Optimize\nApplication\nAnd Deployment
 

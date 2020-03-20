@@ -23,8 +23,13 @@ mindmapDiagram {
 </style>
 
 * <b>QualityAssurance</b>\n<b>Expert</b>
-** UC11 Define IaC Bugs Taxonomy
-** UC14 Estimate Quality Characteristics\nOf Applications And Workload
+** UC11 Define IaC Bugs\nTaxonomy
+<style>
+  node {
+	BackGroundColor LightGrey
+  }
+</style>
+** UC14 Estimate Quality\nCharacteristics\nOf Applications And\nWorkload
 
 
 @endmindmap

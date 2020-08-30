@@ -18,7 +18,7 @@
 
 <img src="images/D2-4-Guidelines-for-Contributors-to-the-SODALITE-Framework0.png" alt="SODALITE"
 	title="SODALITE" width="400"  />	
-
+ 
 
 
 **Acknowledgement**

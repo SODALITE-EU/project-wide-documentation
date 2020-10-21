@@ -16,36 +16,36 @@ activate dev
 activate jenkins
 
 human -> dev: Commit
-dev -> jenkins: Run Unit tests
+dev -> jenkins: Run unit tests
 dev <- jenkins: OK
 
 ' human -> dev: Commit #2
-' dev --> jenkins: Run Unit tests
+' dev --> jenkins: Run unit tests
 ' dev <-- jenkins: fail
 ' ...
 ' human -> dev: Commit #n
-' dev -> jenkins: Run Unit tests
+' dev -> jenkins: Run unit tests
 ' dev <- jenkins: OK
 
 
-dev -> pr: submit Pull Request
+dev -> pr: Submit pull request
 deactivate dev
 activate pr
 
 
-pr -> jenkins: Run Unit tests
+pr -> jenkins: Run unit tests
 pr <- jenkins: OK
-pr -> master: Merge PR
+pr -> master: Merge pull request
 deactivate pr
 activate master
 
-master -> jenkins: Run Unit tests
+master -> jenkins: Run unit tests
 master <- jenkins: OK
 
 group Staging
 master -> jenkins: New commit
 ' deactivate master
-jenkins -> jenkins: Run Unit tests
+jenkins -> jenkins: Run unit tests
 
 
 jenkins -> jenkins: Build images
@@ -57,20 +57,20 @@ end
 group Production
 activate master
 
-note over master: Release:\nv0.2.9\n(production)
+note over master: Release:\n0.2.9\n(production)
 
 
 master -> jenkins: New tag available
 deactivate master
 
-human --> jenkins: Build tag v0.2.9
-jenkins -> jenkins: Run Unit tests
+human --> jenkins: Build tag 0.2.9
+jenkins -> jenkins: Run unit tests
 jenkins -> jenkins: Build images
 jenkins -> private_registry: Push images
 activate dockerhub
 jenkins -> dockerhub: Push images
 activate testbed
-jenkins -> testbed: Deploy component
+jenkins -> testbed: Deploy app
 end
 
 

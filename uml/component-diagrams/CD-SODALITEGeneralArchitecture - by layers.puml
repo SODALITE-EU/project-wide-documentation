@@ -28,6 +28,8 @@ cloud {
     node OpenStack
     node Kubernetes as K8S
     node Torque
+    node AWS
+    node OpenFaaS
 }
 
 WP3 ..> dep : use
@@ -41,6 +43,8 @@ WP4 ..> sem : use
 WP5 ..> OpenStack : use
 WP5 ..> K8S : use
 WP5 ..> Torque : use
+WP5 ..> AWS : use
+WP5 ..> OpenFaaS : use
 WP5 ..> dep : use
 WP5 .l.> sem : use
 WP5 ..> imagereg: use

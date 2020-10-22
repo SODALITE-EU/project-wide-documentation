@@ -1,0 +1,106 @@
+@startuml
+
+title Platform Discovery Plugin (WP4)\n Resource Expert
+
+actor "Resource Expert" as re
+participant "SODALITE IDE" as editor
+participant "Semantic Reasoner" as reasoner
+participant "Semantic Knowledge Base\n(ontology in GraphDB)" as ontology
+participant "Secrets\nVault" as secretstore
+participant "IAM" as IAM
+participant "Platform Discovery\nService" as PDS
+participant "Infrastructure\nresource" as resource
+
+re->editor: Enter username/password 
+
+activate editor
+editor->IAM:  send username/password
+activate IAM
+IAM-->editor: Return JWT access token
+deactivate IAM
+
+editor->reasoner:  select Application Deployment Project Domain (ADPD) defined
+activate reasoner
+reasoner->IAM: Check JWT access token
+activate IAM
+IAM-->reasoner: valid access token
+deactivate IAM
+
+reasoner->ontology: Query compatible ADPD data (SPARQL)
+activate ontology
+ontology-->reasoner: Return results ADPD (JSON)
+deactivate ontology
+reasoner-->editor: Return ADPD (JSON)
+deactivate reasoner
+editor-->re: Present ADPD data
+re->editor: Enter/Select Application Deployment Project Domain 
+
+loop Select platform (Openstack, HPC, Edge) 
+    re->editor: Enter platform acceess details\n (secrets, IPs, keys etc) in JSON key-value format
+    editor->editor: Enter platform acceess details\n (secrets, IPs, keys etc) in JSON key-value format
+    'Save the data to secret store as a set of key-value entries (on a uniquiely defined namespace project/platform)
+    re->editor: Save Platform Discovery Access Definition (PDAD)
+    editor->secretstore: Save PDAD key-values + JWT token (API call)
+    activate secretstore
+    secretstore->IAM: check JWT access token 
+    activate IAM
+    IAM-->secretstore: valid access token
+    deactivate IAM
+    secretstore->secretstore: check JWT write prinvilege to project domain
+    secretstore-->editor: Return saving response (JSON)
+    deactivate secretstore
+    editor->re: Present PDAD save result\nwith PATH (Vault) (to retrieve saved data) \nfrom Secret Store
+
+    re->editor: Start discovery process triggers per platform\n(manually, time scheduled, by web hook token)
+    
+    editor->PDS: Get initial Resource Model for the selected platform using (PATH,JWT)
+    activate PDS
+    PDS->secretstore: Read PDAD key-values + JWT token (API call)
+    activate secretstore
+    secretstore->IAM: check JWT access token 
+    activate IAM
+    IAM-->secretstore: valid access token
+    deactivate IAM
+    secretstore->secretstore: check JWT read prinvilege to project domain
+    secretstore-->PDS: Return Secrets (JSON)
+    deactivate secretstore
+
+    PDS->resource: Get description\nof the infrastructure\n(using secrets for access)
+    activate resource
+    resource-->PDS: Description of the\ninfrastructure (JSON)
+    deactivate resource
+
+    PDS->PDS: Generate a TOSCA model\n from JSON
+    PDS->PDS: Generate TTL model\nfor Knowledge Base
+    
+    PDS->reasoner: Save Resource Model for the selected (project domain, TTL)
+
+    activate reasoner
+    reasoner->IAM: Check JWT access token
+    activate IAM
+    IAM-->reasoner: valid access token
+    deactivate IAM
+    reasoner->ontology: Save Resource mpodel (SPARQL)
+    activate ontology
+    ontology-->reasoner: Return save results Resource model ID (JSON)
+    deactivate ontology
+    reasoner-->PDS: Resource model ID for the saved resource
+    deactivate reasoner
+
+    PDS-->editor: Resource model ID 
+    deactivate PDS
+
+    editor->reasoner: Get Resource model (Resource model ID)
+    activate reasoner
+
+    reasoner->ontology: Get Resource model (SPARQL)
+    activate ontology
+    ontology-->reasoner: Return Resource model (TTL)
+    deactivate ontology
+
+    reasoner-->editor: Resource model from (TTL)
+    deactivate reasoner
+    deactivate PDS
+
+end
+@enduml

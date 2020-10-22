@@ -1,0 +1,119 @@
+@startuml
+
+title Authorization example
+
+actor "Application\nOps Expert" as ops
+participant "SODALITE IDE" as editor
+participant "IAM Token Endpoint" as keya
+participant "Semantic Reasoner" as reasoner
+participant "IaC Blueprint Builder" as builder
+participant "xOpera REST API" as xopera
+participant "Secrets Vault" as vault
+participant "IAM Introspection Endpoint" as keyt
+
+ops->editor: Login
+activate editor
+editor->editor: Show Login window
+editor->keya: Login request
+activate keya
+keya-->editor: Access Token = AT
+deactivate keya
+editor->editor: Save AT
+
+ops->editor: Deploy AADM
+editor->reasoner: Save AADM (AADM + Artifacts + AT)
+activate reasoner
+reasoner->keyt: Validate Token (AT)
+activate keyt
+keyt-->reasoner: Token Valid
+deactivate keyt
+reasoner->vault: Save Artifacts (Artifacts + AT)
+activate vault
+vault->keyt: Validate Token (AT)
+activate keyt
+keyt-->vault: Token Valid
+deactivate keyt
+vault->vault: Save Artifacts
+vault-->reasoner: Saved Artifacts Metadata
+deactivate vault
+reasoner-> reasoner: Save AADM
+reasoner-->editor: Saved AADM ID
+deactivate reasoner
+
+
+editor->reasoner: Get AADM JSON (ID + AT)
+activate reasoner
+reasoner->keyt: Validate Token (AT)
+activate keyt
+keyt-->reasoner: Token Valid
+deactivate keyt
+reasoner-->editor: AADM (JSON)
+deactivate reasoner
+
+
+
+editor->builder: Create blueprint (JSON + AT)
+activate builder
+builder->vault: Get Artifacts (AT)
+activate vault
+vault->keyt: Validate Token (AT)
+activate keyt
+keyt-->vault: Token Valid
+deactivate keyt
+vault-->builder: Artifacts
+deactivate vault
+builder->builder: Create CSAR
+builder->xopera: Create blueprint (CSAR + AT)
+activate xopera
+xopera->keyt: Validate Token (AT)
+activate keyt
+keyt-->xopera: Token Valid
+deactivate keyt
+xopera->vault: Get GIT token (AT)
+activate vault
+vault->keyt: Validate Token (AT)
+activate keyt
+keyt-->vault: Token Valid
+deactivate keyt
+vault-->xopera: Return GIT token
+deactivate vault
+
+xopera->xopera: Save blueprint
+xopera->builder: Blueprint created (ID)
+deactivate xopera
+builder-->editor: Blueprint created (ID)
+deactivate builder
+
+
+editor->xopera: Deploy blueprint (ID + inputs + AT)
+activate xopera
+xopera->keyt: Validate Token (AT)
+activate keyt
+keyt-->xopera: Token Valid
+deactivate keyt
+xopera->vault: Get required secrets (AT)
+activate vault
+vault->keyt: Validate Token (AT)
+activate keyt
+keyt-->vault: Token Valid
+deactivate keyt
+vault-->xopera: Return secrets: keys, passwords...
+deactivate vault
+xopera-->editor: Deployment started (Session ID)
+xopera->xopera: Deploy using artifacts
+loop Update deployment status
+    editor->xopera: Request status (Session ID + AT)
+    xopera->keyt: Validate Token (AT)
+    activate keyt
+    keyt-->xopera: Token Valid
+    deactivate keyt
+    xopera-->editor: Deployment status
+end        
+xopera->xopera: Delete artifacts
+editor-->ops: Deployment complete
+deactivate xopera
+deactivate editor
+
+
+
+@enduml

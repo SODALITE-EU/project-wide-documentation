@@ -1,16 +1,22 @@
 @startuml
 
-title Build Runtime Images(WP4)
+title Build Runtime Images (WP4)
 
 'Define user actors
-participant "IaC Blueprint\nbuilder" as SBBC
+actor "Application\nOps Expert" as ops
+participant "SODALITE IDE" as editor
+participant "Semantic Reasoner" as reasoner
 participant "Runtime Image\nBuilder " as SRIBC
 participant "Concrete Image\nBuilder " as SCIBC
 database "Image Registry " as SIIR
 
+ops->editor: provide image-builder build JSON definition \n (source, build-context, access tokens)
+editor->editor: extract target images references
+editor->reasoner: store the target images references
 
-SBBC->SRIBC: BuildImages(TargetArchitecture, ArtefactList)
-note over SBBC, SRIBC: this sequence gets a call from the IaC Builder component in WP4
+editor->SRIBC: BuildImages(json)
+
+note over editor, SRIBC: this is activated when the user triggers the build of images in the IDE
 
 activate SRIBC
 
@@ -34,8 +40,8 @@ end
 deactivate SCIBC
 
 'Return the reference to compile/build time information (errors, warnings, information, improvement suggestions - all addressing the abstract model)
-SRIBC-->SBBC: BuildImagesInfoList(humanReadableForm)
-deactivate SRIBC
+SRIBC-->editor: BuildImagesInfoList(humanReadableForm)
+editor-->ops: BuildImagesInfoList(humanReadableForm)deactivate SRIBC
 
 
 @enduml

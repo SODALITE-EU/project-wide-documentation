@@ -6,6 +6,7 @@ actor "Application\nOps Expert" as ops
 participant "SODALITE IDE" as editor
 participant "Semantic Reasoner" as reasoner
 participant "Semantic Knowledge Base\n(ontology in GraphDB)" as ontology
+participant "Optimizer\nMODAK" as SPOC
 
 ops->editor: Submit application deployment model
 
@@ -60,11 +61,26 @@ loop Mapping to target resources
     end
 end
 
-ops->editor: Submit application deployment model\n with mapped target resources
-    editor->reasoner: Store submitted model (API call)
-    activate reasoner
-    reasoner->ontology: Store submitted model (SPARQL)
-    deactivate reasoner
+opt "Static optimization"
+    ops->editor: Optimize model execution\non selected resources
+    loop Node in NodeList
+        editor->editor: GetNodeFromList(NodeList)
+        opt Node requires optimization
+            editor->SPOC: StartOptimization(Node.optimizationInfo)
+            activate SPOC
+            SPOC-->editor: ExecutionContainer, ExecutionScript
+            deactivate SPOC
+            editor->editor: UpdateNodeWithOptimizationOutcome(Node, ExecutionContainer, ExecutionScript)
+        end
+    end
+    editor-->ops: present statically optimized\n application deployment model
+end
 
-    deactivate editor
+ops->editor: Submit application deployment model\n with mapped target resources
+editor->reasoner: Store submitted model (API call)
+activate reasoner
+reasoner->ontology: Store submitted model (SPARQL)
+deactivate reasoner
+
+deactivate editor
 @enduml

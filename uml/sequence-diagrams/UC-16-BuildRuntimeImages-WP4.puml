@@ -11,9 +11,7 @@ participant "Concrete Image\nBuilder " as SCIBC
 database "Image Registry " as SIIR
 
 ops->editor: provide image-builder build JSON definition \n (source, build-context, access tokens)
-editor->editor: extract target images references
-editor->reasoner: store the target images references
-
+activate editor
 editor->SRIBC: BuildImages(json)
 
 note over editor, SRIBC: this is activated when the user triggers the build of images in the IDE
@@ -32,7 +30,10 @@ loop ArtefactDefinition in ArtefactList
     SCIBC-->SRIBC: ArtefactImage(BuildInfo)
     'Save the resulting IaC and recipes together with build time information (errors, warnings, information, improvement suggestions - all addressing the abstract model)
     SRIBC->SIIR: SaveArtefactImage(ArtefactImage, ModelRef, NodeRef, BuildInfo)
+    activate SIIR
     note over SCIBC, SIIR: Image is registered and retrievable\n through labels written on save\n(eg. ModelRef, NodeRef, version, etc.)
+    SIIR-->SRIBC: Image saved
+    deactivate SIIR
 
     SRIBC->SRIBC: AddBuildInfoToList(BuildInfo)
 end
@@ -41,7 +42,13 @@ deactivate SCIBC
 
 'Return the reference to compile/build time information (errors, warnings, information, improvement suggestions - all addressing the abstract model)
 SRIBC-->editor: BuildImagesInfoList(humanReadableForm)
+deactivate SRIBC
+opt
+    editor->editor: extract target images references
+    editor->reasoner: store the target images references (project/image-name)
+end
 editor-->ops: BuildImagesInfoList(humanReadableForm)deactivate SRIBC
+deactivate editor
 
 
 @enduml

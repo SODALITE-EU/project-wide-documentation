@@ -6,39 +6,35 @@ actor "Application\nOps Expert" as ops
 participant "SODALITE\nIDE" as ide
 participant  Orchestrator as orch
 participant "Execution Platform \n (EP)" as res
-participant "VM" as VM
 participant "Component" as lre
 participant "Monitoring Platform" as mon
 
-ops->ide: Start application (application)
-
-ide->orch: Start application (application)
+ops->ide: Deploy
 activate ide
-
+ide->orch: Deploy
 activate orch
+
 par Startable components
   alt EP is IaaS Clouds (OpenStack, AWS)
-    orch->VM: Start (component)
-    VM->>lre: Start
+    lre->lre: Component started
   else EP is Kubernetes
-    orch->res: Start (component)
-    res->>lre: Start
-  else  EP is Resource management system (PBS, Slurm)
-    orch->res: Submit Job (component)
-    res->>lre: Start
+    lre->lre: Component started
+  else  EP is Resource management system (PBS Toque, Slurm)
+    orch->res: Submit job (component)
+    res->res: Enqueue job
+    res->res: Dequeue job 
+    res->lre: Run job
+    lre->lre: Component started
   end
-
-  ...Component starts...
   lre->mon: Subscribe
 end
 
-orch-->ide: Started
-deactivate orch
-
-ide-->ops: Started
-deactivate ide
-
 ...Monitoring started...
 orch->mon: Query
+
+orch-->ide: Deployment complete
+deactivate orch
+ide-->ops: Deployment complete
+deactivate ide
 
 @enduml

@@ -17,7 +17,7 @@ activate ide
 ide->builder: Save AADM (AADM JSON)
 activate builder
 builder->builder: Create CSAR
-builder->orch: Create blueprint (CSAR + inputs)
+builder->orch: Create blueprint (CSAR)
 activate orch
 orch->orch: Save blueprint
 orch-->builder: Blueprint created (Blueprint ID)
@@ -46,8 +46,8 @@ loop Execution Platform (EP) in Execution Platforms
     imagereg-->orch: Container image
 
     alt EP is IaaS Clouds (OpenStack, AWS)
-      orch->VM: Deploy (container image)
       orch->VM: Configure (application component + values)
+      orch->VM: Deploy (container image)
     else EP is Kubernetes
       orch->res: Submit(deployment)
       activate res
@@ -60,9 +60,9 @@ loop Execution Platform (EP) in Execution Platforms
         res-->orch: deployment created
       deactivate res
 
-    else EP is Resource management system (PBS, Slurm)
-      orch->res: Copy artifacts to user workspace
-      orch->res: Copy job script to user workspace
+    else EP is Resource management system (PBS Toque, Slurm)
+      orch->res: Copy artifacts and job script to user workspace
+      orch->res: Submit job script
     end
 
     opt
@@ -71,11 +71,11 @@ loop Execution Platform (EP) in Execution Platforms
 
   end
 end
-deactivate orch
 
 orch-->ide: Deployment complete
+deactivate orch
+ide-->ops: Deployment complete
 deactivate ide
 
-ide-->ops: Deployment complete
 
 @enduml

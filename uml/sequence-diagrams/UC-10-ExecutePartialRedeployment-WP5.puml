@@ -9,25 +9,25 @@ participant "Refactorer" as refactorer
 participant Orchestrator as orch
 participant "Execution Platform" as res
 
-alt AADM updated by AOE 
+alt AOE manually updates AADM or Refactoring Options were confirmed (UC9) 
   ops->ide: Execute Redeployment
   activate ide
   ide->builder: Save Updated AADM (Blueprint ID + AADM JSON)
   activate builder
   builder->builder: Create CSAR
-  builder->orch: Update blueprint (Blueprint ID + CSAR, inputs)
+  builder->orch: Update blueprint (Blueprint ID + CSAR)
   activate orch
   orch->orch: Update blueprint
   orch-->builder: Blueprint updated (Blueprint ID)
   deactivate orch
   builder-->ide: Blueprint updated (Blueprint ID)
   deactivate builder
-  ide->orch: Deploy updated blueprint (Blueprint ID + inputs)
+  ide->orch: Update blueprint (Blueprint ID + inputs)
   activate orch
   orch-->ide: Deployment updates started (Session ID)
   deactivate orch
   deactivate ide
-else Deployment updated by Refactorer 
+else Deployment updated automatically by Refactorer 
   activate refactorer
   refactorer->refactorer: Create CSAR
   refactorer->orch: Update blueprint (Blueprint ID + CSAR, inputs)
@@ -35,7 +35,7 @@ else Deployment updated by Refactorer
   orch->orch: Update blueprint
   orch-->refactorer: Blueprint updated (Blueprint ID)
   deactivate orch
-  refactorer->orch: Deploy updated blueprint (Blueprint ID + inputs)
+  refactorer->orch: Update blueprint (Blueprint ID + inputs)
   activate orch
   orch-->refactorer: Deployment updates started (Session ID)
   deactivate orch
@@ -70,7 +70,7 @@ loop Execution Platform (EP) in Execution Platforms
       orch<--res: completed
       deactivate res
 
-    else EP is Resource management system (PBS, Slurm)
+    else EP is Resource management system (PBS Toque, Slurm)
       orch->res: Redeploy (artifacts, actions)
       activate res
       note right

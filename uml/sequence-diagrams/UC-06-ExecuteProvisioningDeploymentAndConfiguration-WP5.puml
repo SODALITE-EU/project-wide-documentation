@@ -65,8 +65,13 @@ loop Execution Platform (EP) in Execution Platforms
       orch->res: Submit job script
     end
 
-    opt
-      orch->mon: Configure monitoring
+    opt Monitoring enabled
+      loop EP in Execution Platforms
+      orch->mon: Configure monitoring (EP platform)
+      end
+      loop Application component per EP
+      orch->mon: Configure monitoring (Application component)
+      end
     end
 
   end

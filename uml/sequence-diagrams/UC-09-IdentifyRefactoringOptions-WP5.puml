@@ -3,7 +3,7 @@
 title Identify Refactoring Options (WP5)
 
 actor "Application Ops\nExpert" as ops
-participant “Monitoring\nAgent” as ma
+participant “Monitoring\nAlert Manager” as ma
 participant “Deployment\nRefactorer” as dr
 participant “Refactoring\nOption Discoverer” as rof
 participant “Node Manager” as nm
@@ -26,7 +26,7 @@ deactivate nm
 deactivate dr
 
 == Refactoring Deployment Model ==
-ma-> dr: send metrics
+ma-> dr: triggers monitoring alert
 activate dr
 dr -> dr : check Application Goal Violations
 alt App Goals Violated
@@ -51,7 +51,7 @@ end
 
 == Node Resource Management ==
 
-ma-> nm: send metrics
+ma-> nm: triggers monitoring alert
 activate nm
 nm -> nm : Check Node Goal Violations
 alt Node Goals Violated
@@ -82,14 +82,14 @@ dr -> dr: update Refactoring Option Model (refactoring options)
 deactivate dr
 
 == Update Refactoring Option Selection Model ==
-ma-> dr: send metrics
+ma-> dr: triggers monitoring alert
 activate dr
 dr -> dr: update Refactoring Option Selection Model
 
 deactivate dr
 
 == Update Node Resource Allocation Model ==
-ma-> nm: send metrics
+ma-> nm: triggers monitoring alert
 activate nm
 nm -> nm: update Node Resource Allocation Model
 deactivate nm

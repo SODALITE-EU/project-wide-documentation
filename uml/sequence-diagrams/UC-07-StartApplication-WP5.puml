@@ -22,15 +22,22 @@ par Startable components
   else  EP is Resource management system (PBS Toque, Slurm)
     orch->res: Submit job (component)
     res->res: Enqueue job
-    res->res: Dequeue job 
+    orch<--res: job id
+    activate mon
+    orch->mon: subscribe in HPC monitoring probe (job id)
+    ...Monitoring started...
+    orch->mon: Query
+    ... Eventually in future time ...
+    res->res: Dequeue job
     res->lre: Run job
     lre->lre: Component started
+    lre->lre: Component ended
+    deactivate mon
   end
-  lre->mon: Subscribe
+
 end
 
-...Monitoring started...
-orch->mon: Query
+
 
 orch-->ide: Deployment complete
 deactivate orch

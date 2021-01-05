@@ -4,50 +4,46 @@ title Monitor Runtime (WP5)
 
 actor "Application\nOps Expert" as ops
 participant "SOLIDATE IDE" as ide
+participant "Monitoring Dashboard" as dash
 participant “Deployment Refactorer” as dr
+participant “Monitoring Alert Manager” as alert_mngr
 participant  "Monitoring" as monitoring
-participant "Software Components" as software
-participant "Hardware Components" as hardware
+participant "Exporter" as software
+participant "Target Components" as hardware
 
 activate monitoring
-activate ide
+
 loop physical and virtual components
   monitoring->software: collect statistics
-  software->hardware: probe hardware
+  activate software
+  software->hardware: probe target
   software->monitoring: provide statistics
-end
-monitoring->dr: provide statistics
-
-loop
-  ide->monitoring: report standard statistics
-  monitoring->ide: aggregated standard statistics
-  loop physical and virtual components
-    monitoring->software: collect statistics
-    software->hardware: probe hardware
-    software->monitoring: provide statistics
-  end
-  monitoring->dr: provide statistics
+  deactivate software
+  activate alert_mngr
+  monitoring<-alert_mngr: check alert rules
+  alert_mngr->dr: trigger monitoring alert
+  deactivate alert_mngr
 end
 
-ops->ide: start to collect special statistics
-ide->monitoring: start to collect special statistics
-monitoring->software: start to collect special statistics
-monitoring->ide: Acknowledge
-  loop physical and virtual components
-    monitoring->software: collect special statistics
-    software->hardware: probe hardware
-    software->monitoring: provide special statistics
-  end
-monitoring->dr: provide statistics
-ide->monitoring: report special statistics
-monitoring->ide: aggregated / filtered special statistics
+alt Standard Stats
+  ops->ide: consult standard statistics
+  activate ide
+  ide->dash: report standard statistics
+  activate dash
+  dash->monitoring: query standard statistics
+  monitoring-->dash: aggregated standard statistics
+  deactivate dash
+  ide->ops: aggregated standard statistics
+else Special Stats
+  ops->ide: consult special statistics
+  ide->dash: report special statistics
+  activate dash
+  dash->monitoring: query special statistics
+  monitoring-->dash: aggregated / filtered special statistics
+  deactivate dash
 ide->ops: aggregated / filtered special statistics
-ops->ide: stop collection of special statistics
-ide->monitoring: stop collection of special statistics
-monitoring->software: stop collection of special statistics
-monitoring->ide: Acknowledge
-ide->ops: Acknowledge
+
 deactivate ide
 deactivate monitoring
-
+end
 @enduml

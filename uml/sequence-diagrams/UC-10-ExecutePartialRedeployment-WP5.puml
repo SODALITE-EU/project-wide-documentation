@@ -12,7 +12,7 @@ participant "Execution Platform" as res
 alt AOE manually updates AADM or Refactoring Options were confirmed (UC9) 
   ops->ide: Execute Redeployment
   activate ide
-  ide->builder: Save Updated AADM (Blueprint ID + AADM JSON)
+  ide->builder: Register updated AADM (Blueprint ID + AADM JSON)
   activate builder
   builder->builder: Create CSAR
   builder->orch: Update blueprint (Blueprint ID + CSAR)
@@ -22,7 +22,7 @@ alt AOE manually updates AADM or Refactoring Options were confirmed (UC9)
   deactivate orch
   builder-->ide: Blueprint updated (Blueprint ID)
   deactivate builder
-  ide->orch: Update blueprint (Blueprint ID + inputs)
+  ide->orch: Deploy updated AADM (Blueprint ID + inputs)
   activate orch
   orch-->ide: Deployment updates started (Session ID)
   deactivate orch

@@ -15,12 +15,15 @@ package "Orchestrator" as orch {
 package "Monitoring" as mon {
     [Monitoring] as mon_impl
     () "MonitoringAPI" <<REST>> as mon_if
+    [Dashboard] as dash
     [Exporter] as exp
     () "ExporterAPI" <<REST>> as exp_if
 }
 
 package "Refactoring" as refactor {
     interface "RefactoringAPI" <<REST>> as ref_if
+    interface "DiscoveringAPI" <<REST>> as dis_if
+    interface "ManagementAPI" <<REST>> as mng_if
     component [Deployment Refactorer] as ref_depl
     component [Refactoring Option Discoverer] as ref_opt
     component [Node Manager] as ref_node
@@ -39,18 +42,21 @@ cloud {
 
 orch_impl - orch_if
 
-mon_impl - mon_if
-exp - exp_if
+mon_impl -l- mon_if
+exp -l- exp_if
 mon_impl ..> exp_if : use
+dash ..> mon_if
 
 ref_if -u- ref_depl
-ref_if -d- ref_opt
-ref_if -- ref_node
+ref_if <.. ref_opt : use
+ref_if <.. ref_node : use
+dis_if -d- ref_opt
+mng_if -d- ref_node
 
 ref_opt ..> sem : use
 
-ref_depl ..> ref_node : use
-ref_depl ..> ref_opt : use
+ref_depl ..> mng_if : use
+ref_depl ..> dis_if : use
 ref_depl ..> depl_prep : use
 
 ref_node ..> mon_if : use
@@ -73,5 +79,5 @@ exp ...> K8S : use
 exp ...> Torque : use
 
 ide ..> orch_if : use
-ide ..> mon_if : use
+ide ..> dash : use
 @enduml

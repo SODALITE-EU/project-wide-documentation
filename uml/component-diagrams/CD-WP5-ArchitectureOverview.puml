@@ -18,6 +18,8 @@ package "Monitoring" as mon {
     [Dashboard] as dash
     [Exporter] as exp
     () "ExporterAPI" <<REST>> as exp_if
+    [Alert Manager] as alert_mngr
+    () "AlertingAPI" <<REST>> as alert_if
 }
 
 package "Refactoring" as refactor {
@@ -33,6 +35,8 @@ cloud {
     node OpenStack
     node Kubernetes as K8S
     node Torque
+    node OpenFaaS
+    node AWS
 }
 
 () "DeploymentPreparationAPI" as depl_prep
@@ -46,6 +50,8 @@ mon_impl -l- mon_if
 exp -l- exp_if
 mon_impl ..> exp_if : use
 dash ..> mon_if
+alert_mngr -d- alert_if
+alert_mngr ..> mon_if
 
 ref_if -u- ref_depl
 ref_if <.. ref_opt : use
@@ -59,9 +65,9 @@ ref_depl ..> mng_if : use
 ref_depl ..> dis_if : use
 ref_depl ..> depl_prep : use
 
-ref_node ..> mon_if : use
-ref_depl ..> mon_if : use
-orch_impl ..> mon_if : use
+ref_node ..> alert_if : use
+ref_depl ..> alert_if : use
+orch_impl ..> alert_if : use
 
 torque_driver ..> Torque : use
 
@@ -77,6 +83,8 @@ k8s_driver ..> K8S : use
 exp ...> OpenStack : use
 exp ...> K8S : use
 exp ...> Torque : use
+exp ...> OpenFaaS : use
+exp ...> AWS : use
 
 ide ..> orch_if : use
 ide ..> dash : use

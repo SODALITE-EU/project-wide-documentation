@@ -50,8 +50,6 @@ First, for each allocated Execution Platform (EP), one or more different Monitor
 are registered and configured within monitoring agent. 
 Then, a similar exporter registration and configuration process is conducted for each application component that requires a specialized exporter.
 
-#### TODO: AAI
-
 ### UC7: Start application
 
 UC7 is accompanying UC6 by describing in details the start of batch applications, i.e. applications that take an input, process it and give the results, unlike the services (e.g. web servers, REST APIs), which start right after deployment and run continuously. 
@@ -68,8 +66,6 @@ The deployment terminates when the execution is failed, otherwise the deployment
 In this case of HPC scheduling, the precise start time for job execution (after being dequeued) is unpredictable, as it depends on the eventual availability of the requested resources. 
 Therefore, job monitoring must start at queue time, as it is requested by the orchestrator to the Monitoring System, which, at this point, starts collecting statistics describing the application job status. 
 From then on, the Orchestrator can initiate the collection of metrics for its purposes (e.g., to check application job health).
-
-#### TODO: AAI
 
 ### UC8: Monitor runtime
 
@@ -132,8 +128,6 @@ If the selected platform is IaaS Cloud or Kubernetes, the actions that might be 
 
 It should be notes that Kubernetes, being itself an orchestration platform, is enforcing partial redeployment. 
 For what concerns resource management systems (common in HPC), these Execution Platforms lack flexibility in scaling at runtime, hence the scaling actions are not present as possible adaptation actions; however, all the other actions can be executed as well (migration, deployment and removal of components).
-
-#### TODO: AAI
 
 #### TODO: Sync with deployment updates from xopera
 

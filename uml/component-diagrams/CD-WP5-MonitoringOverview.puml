@@ -61,7 +61,7 @@ sky_exp ...> OpenStack : scrape
 
 ide ..> dash : link
 ide ..> rule_if : use
-orch ..> alert_if : suscribe
-refac ..> alert_if : suscribe
+orch ..> alert_if : subscribe
+refac ..> alert_if : subscribe
 
 @enduml

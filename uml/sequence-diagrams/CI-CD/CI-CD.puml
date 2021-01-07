@@ -1,0 +1,128 @@
+@startuml
+
+title SODALITE CI/CD pipeline
+
+actor "developer\nauthor" as human
+actor "developer\nreviewer" as human2
+
+participant "Development branch" as dev
+participant "Pull Request" as pr
+participant "Master branch" as master
+participant "SonarCloud" as sonar
+participant "Codacy" as codacy
+participant "PR Labeler" as pr_labeler
+participant "Release Drafter" as release_drafter
+participant "Jenkins test server" as jenkins
+participant "SODALITE\nprivate registry" as private_registry
+participant "sodaliteh2020\non Dockerhub" as dockerhub
+participant "SODALITE Testbed" as testbed
+
+
+human -> dev: Commit
+activate dev
+dev -> jenkins: Run unit tests
+activate jenkins
+dev <- jenkins: OK
+
+dev -> pr: Submit pull request
+deactivate dev
+activate pr
+
+
+pr -> jenkins: Run unit tests
+pr <- jenkins: OK
+
+pr -> sonar: Code Analysis
+activate sonar
+pr <- sonar: passed
+deactivate sonar
+
+pr -> codacy: Request PR Quality Review
+activate codacy
+pr <- codacy: OK
+deactivate codacy
+
+pr -> pr_labeler: Label PR
+activate pr_labeler
+pr_labeler -> pr: Add label "feature"
+deactivate pr_labeler
+
+human -> pr: Add label "major"
+
+pr -> human2: Request Review
+activate human2
+pr <- human2: Code looks good
+deactivate human2
+
+pr -> master: Merge pull request
+deactivate pr
+activate master
+
+master -> jenkins: Run unit tests
+master <- jenkins: OK
+
+master -> sonar: Code Analysis
+activate sonar
+master <- sonar: Quality Gate passed
+deactivate sonar
+
+master -> release_drafter: New PR Merged
+activate release_drafter
+release_drafter -> master: New Release Draft
+deactivate release_drafter
+
+group Staging
+note over master: Release:\n0.2.9-beta\n(staging)
+
+master -> jenkins: New tag available
+' deactivate master
+
+human --> jenkins: Build tag 0.2.9-beta
+jenkins -> jenkins: Run unit tests
+
+
+jenkins -> jenkins: Build images
+activate private_registry
+jenkins -> private_registry: Push images
+
+activate testbed
+deactivate private_registry
+jenkins -> testbed: Deploy app to staging VM
+
+jenkins --> human: success
+deactivate testbed
+end
+
+
+
+group Production
+
+activate master
+
+note over master: Release:\n0.2.9\n(production)
+
+
+master -> jenkins: New tag available
+' deactivate master
+
+human --> jenkins: Build tag 0.2.9
+jenkins -> jenkins: Run unit tests
+jenkins -> jenkins: Build images
+activate private_registry
+jenkins -> private_registry: Push images
+activate dockerhub
+deactivate private_registry
+jenkins -> dockerhub: Push images
+activate testbed
+deactivate dockerhub
+
+jenkins -> testbed: Deploy app to production VM
+
+jenkins --> human: success
+deactivate testbed
+end
+
+
+
+
+@enduml

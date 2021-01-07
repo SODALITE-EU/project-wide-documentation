@@ -1,0 +1,78 @@
+@startuml
+
+title SODALITE CI/CD pipeline:\nContinuous Integration
+
+actor "developer\nauthor" as human
+actor "developer\nreviewer" as human2
+
+participant "Development branch" as dev
+participant "Pull Request" as pr
+participant "Master branch" as master
+participant "SonarCloud" as sonar
+participant "Codacy" as codacy
+participant "PR Labeler" as pr_labeler
+participant "Release Drafter" as release_drafter
+participant "Jenkins\nautomation server" as jenkins
+
+
+human -> dev: Commit
+activate dev
+dev -> jenkins: Run unit tests
+activate jenkins
+dev <- jenkins: OK
+
+dev -> pr: Submit pull request
+deactivate dev
+activate pr
+
+
+pr -> jenkins: Run unit tests
+pr <- jenkins: OK
+
+pr -> sonar: Code Analysis
+activate sonar
+pr <- sonar: passed
+deactivate sonar
+
+pr -> codacy: Request PR Quality Review
+activate codacy
+pr <- codacy: OK
+deactivate codacy
+
+pr -> pr_labeler: Label PR
+activate pr_labeler
+pr_labeler -> pr: Add label "feature"
+deactivate pr_labeler
+
+human -> pr: Add label "major"
+
+pr -> human2: Request Review
+activate human2
+pr <- human2: Code looks good
+deactivate human2
+
+pr -> master: Merge pull request
+deactivate pr
+activate master
+
+master -> jenkins: Run unit tests
+master <- jenkins: OK
+deactivate jenkins
+
+master -> sonar: Code Analysis
+activate sonar
+master <- sonar: Quality Gate passed
+deactivate sonar
+
+master -> release_drafter: New PR Merged
+activate release_drafter
+release_drafter -> master: New Release Draft
+deactivate release_drafter
+deactivate master
+
+
+
+
+
+
+@enduml

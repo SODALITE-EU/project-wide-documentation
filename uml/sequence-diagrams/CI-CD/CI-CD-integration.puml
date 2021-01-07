@@ -21,15 +21,6 @@ dev -> jenkins: Run unit tests
 activate jenkins
 dev <- jenkins: OK
 
-' human -> dev: Commit #2
-' dev --> jenkins: Run unit tests
-' dev <-- jenkins: fail
-' ...
-' human -> dev: Commit #n
-' dev -> jenkins: Run unit tests
-' dev <- jenkins: OK
-
-
 dev -> pr: Submit pull request
 deactivate dev
 activate pr

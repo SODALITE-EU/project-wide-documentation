@@ -1,6 +1,6 @@
 @startuml
 
-title SODALITE CI/CD pipeline:\nContinuous Deployment
+title SODALITE CI/CD pipeline:\nContinuous Delivery
 
 actor "developer" as human
 

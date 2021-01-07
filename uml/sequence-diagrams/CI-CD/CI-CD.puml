@@ -1,6 +1,6 @@
 @startuml
 
-title SODALITE CI/CD pipeline\nStaging on non-production tag
+title SODALITE CI/CD pipeline
 
 actor "developer\nauthor" as human
 actor "developer\nreviewer" as human2
@@ -23,15 +23,6 @@ activate dev
 dev -> jenkins: Run unit tests
 activate jenkins
 dev <- jenkins: OK
-
-' human -> dev: Commit #2
-' dev --> jenkins: Run unit tests
-' dev <-- jenkins: fail
-' ...
-' human -> dev: Commit #n
-' dev -> jenkins: Run unit tests
-' dev <- jenkins: OK
-
 
 dev -> pr: Submit pull request
 deactivate dev

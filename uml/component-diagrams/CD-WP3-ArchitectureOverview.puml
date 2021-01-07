@@ -39,10 +39,12 @@ note left of repoOntologies
    Deployment & Lifecycle Ontology
 end note
 
+ideGUI .up.> PDSAPI : use
+PDS .down.> resAPI : use
 resAPI -down- resPopulationEngine
 resAPI -up- resReasoningEngine
 ideDSLeditor .left.> resAPI: use
-ideDSLeditor <-down--> ideGUI
+ideDSLeditor <-down-> ideGUI
 repoOntologies -up- repoEndpoint
 resPopulationEngine .left.> repoEndpoint: use
 resReasoningEngine .left.> repoEndpoint: use
@@ -52,7 +54,6 @@ ideGUI ..> monitoringAPI : use
 ideGUI ..> monitoringRuleAPI : use
 ideGUI ..> iacverificationAPI : use
 ideGUI ..> orchestratorAPI : use
-ideGUI ..> PDSAPI : use
-PDS .up.> resAPI:use
+
 
 @enduml

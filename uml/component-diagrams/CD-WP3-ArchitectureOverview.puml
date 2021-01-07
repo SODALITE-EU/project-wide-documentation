@@ -1,12 +1,17 @@
 @startuml
 
-title WP3 - Modeling Layer Architecture Overview
+title WP3 Architecture Overview
 
 interface "DeploymentPreparationAPI" as deploymentPreparationAPI
 interface "DefectPredictionCorrectionAPI" as correctionAPI
 interface "MonitoringAPI" as monitoringAPI
+interface "MonitoringRuleAPI" as monitoringRuleAPI
 interface "IaCVerificationAPI" as iacverificationAPI
 interface "OrchestratorAPI" as orchestratorAPI
+
+package "Platform Discovery Service" as PDS {
+    interface "PlatformDiscoveryAPI" as PDSAPI
+}
 
 package "SODALITE IDE" as IDE {
     component [DSL Editor] as ideDSLeditor
@@ -27,7 +32,7 @@ package "Semantic Knowledge Base" as repo {
 }
 
 note left of repoOntologies
-   __**Semantic Modelling & Abstraction**__
+   __**Semantic Modelling & Abstraction**__ 
    Application Ontology
    Infrastructure Ontology
    Performance Optimization Ontology
@@ -37,14 +42,17 @@ end note
 resAPI -down- resPopulationEngine
 resAPI -up- resReasoningEngine
 ideDSLeditor .left.> resAPI: use
-ideDSLeditor <-down-> ideGUI
+ideDSLeditor <-down--> ideGUI
 repoOntologies -up- repoEndpoint
 resPopulationEngine .left.> repoEndpoint: use
 resReasoningEngine .left.> repoEndpoint: use
+resPopulationEngine ..> correctionAPI: use
 ideGUI ..> deploymentPreparationAPI : use
-ideGUI ..> correctionAPI : use
 ideGUI ..> monitoringAPI : use
+ideGUI ..> monitoringRuleAPI : use
 ideGUI ..> iacverificationAPI : use
 ideGUI ..> orchestratorAPI : use
+ideGUI ..> PDSAPI : use
+PDS .up.> resAPI:use
 
 @enduml

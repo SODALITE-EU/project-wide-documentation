@@ -1,6 +1,6 @@
 @startuml
 
-title WP3 Architecture Overview
+title WP3 Modeling Layer Architecture Overview
 
 interface "DeploymentPreparationAPI" as deploymentPreparationAPI
 interface "DefectPredictionCorrectionAPI" as correctionAPI

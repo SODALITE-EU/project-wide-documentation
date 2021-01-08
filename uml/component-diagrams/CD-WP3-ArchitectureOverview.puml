@@ -9,6 +9,7 @@ interface "MonitoringRuleAPI" as monitoringRuleAPI
 interface "IaCVerificationAPI" as iacverificationAPI
 interface "OrchestratorAPI" as orchestratorAPI
 
+component "Refactoring Option Discoverer" as ROD 
 component "Platform Discovery" as PDS 
 package "SODALITE IDE" as IDE {
     component [DSL Editor] as ideDSLeditor
@@ -38,6 +39,7 @@ end note
 
 ideGUI ..> PDS : use
 PDS ..> resAPI : use
+ROD ..> resAPI : use
 resAPI -down- resPopulationEngine
 resAPI -up- resReasoningEngine
 ideDSLeditor .left.> resAPI: use

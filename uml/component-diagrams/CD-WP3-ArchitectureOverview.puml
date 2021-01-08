@@ -9,10 +9,7 @@ interface "MonitoringRuleAPI" as monitoringRuleAPI
 interface "IaCVerificationAPI" as iacverificationAPI
 interface "OrchestratorAPI" as orchestratorAPI
 
-package "Platform Discovery Service" as PDS {
-    interface "PlatformDiscoveryAPI" as PDSAPI
-}
-
+component "Platform Discovery" as PDS 
 package "SODALITE IDE" as IDE {
     component [DSL Editor] as ideDSLeditor
     component [GUI] as ideGUI
@@ -39,8 +36,8 @@ note left of repoOntologies
    Deployment & Lifecycle Ontology
 end note
 
-ideGUI .up.> PDSAPI : use
-PDS .down.> resAPI : use
+ideGUI ..> PDS : use
+PDS ..> resAPI : use
 resAPI -down- resPopulationEngine
 resAPI -up- resReasoningEngine
 ideDSLeditor .left.> resAPI: use

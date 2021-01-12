@@ -10,6 +10,8 @@ package "Orchestrator" as orch {
     component [OS driver] as os_driver
     component [K8S driver] as k8s_driver
     component [Torque driver] as torque_driver
+    component [OpenFaaS driver] as faas_driver
+    orch_impl - orch_if
 }
 
 package "Monitoring" as mon {
@@ -20,6 +22,9 @@ package "Monitoring" as mon {
     () "ExporterAPI" <<REST>> as exp_if
     [Alert Manager] as alert_mngr
     () "AlertingAPI" <<REST>> as alert_if
+    mon_impl -l- mon_if
+    exp -l- exp_if
+    alert_mngr -d- alert_if
 }
 
 package "Refactoring" as refactor {
@@ -29,6 +34,8 @@ package "Refactoring" as refactor {
     component [Deployment Refactorer] as ref_depl
     component [Refactoring Option Discoverer] as ref_opt
     component [Node Manager] as ref_node
+    dis_if -d- ref_opt
+    mng_if -d- ref_node
 }
 
 cloud {
@@ -39,25 +46,27 @@ cloud {
     node AWS
 }
 
-() "DeploymentPreparationAPI" as depl_prep
-() "ImageRegistryAPI" as image_reg
+'WP4 APIs
+interface "Deployment\nPreparationAPI" as depl_prep #LightSalmon
+interface "Image\nRegistryAPI" as image_reg #LightSalmon
+
+'Security APIs
+interface "IAM\nIntrospectionAPI" as IAMApi #LightSlateGrey
+interface "SecretVaultAPI" as VaultAPI #LightSlateGrey
+
 
 [SODALITE\nIDE] as ide
 
-orch_impl - orch_if
-
-mon_impl -l- mon_if
-exp -l- exp_if
+'Monitoring
 mon_impl ..> exp_if : use
 dash ..> mon_if
-alert_mngr -d- alert_if
 alert_mngr ..> mon_if
 
+
+'Refactoring
 ref_if -u- ref_depl
 ref_if <.. ref_opt : use
 ref_if <.. ref_node : use
-dis_if -d- ref_opt
-mng_if -d- ref_node
 
 ref_opt ..> sem : use
 
@@ -74,11 +83,17 @@ torque_driver ..> Torque : use
 orch_impl ..> os_driver : use
 orch_impl ..> k8s_driver : use
 orch_impl ..> torque_driver : use
-orch_impl ..> depl_prep: use
-orch_impl ..> image_reg: use
+orch_impl ..> AWS : use
+orch_impl ..> faas_driver : use
+
+orch_impl .u.> depl_prep: use
+orch_impl .u.> image_reg: use
+orch_impl .u.> IAMApi: use
+orch_impl .u.> VaultAPI: use
 
 os_driver ..> OpenStack : use
 k8s_driver ..> K8S : use
+faas_driver ..> OpenFaaS : use
 
 exp ...> OpenStack : use
 exp ...> K8S : use

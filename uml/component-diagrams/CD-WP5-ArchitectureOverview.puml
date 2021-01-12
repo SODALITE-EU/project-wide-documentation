@@ -11,6 +11,7 @@ package "Orchestrator" as orch {
     component [K8S driver] as k8s_driver
     component [Torque driver] as torque_driver
     component [OpenFaaS driver] as faas_driver
+    component [AWS driver] as aws_driver
     orch_impl - orch_if
 }
 
@@ -83,7 +84,7 @@ torque_driver ..> Torque : use
 orch_impl ..> os_driver : use
 orch_impl ..> k8s_driver : use
 orch_impl ..> torque_driver : use
-orch_impl ..> AWS : use
+orch_impl ..> aws_driver : use
 orch_impl ..> faas_driver : use
 
 orch_impl .u.> depl_prep: use
@@ -94,6 +95,7 @@ orch_impl .u.> VaultAPI: use
 os_driver ..> OpenStack : use
 k8s_driver ..> K8S : use
 faas_driver ..> OpenFaaS : use
+aws_driver ..> AWS : use
 
 exp ...> OpenStack : use
 exp ...> K8S : use

@@ -1,6 +1,8 @@
-    @startuml
+@startuml
 
 title SODALITE General Architecture
+
+skinparam fixCircleLabelOverlapping true 
 
 'WP3 modelling layer
 [SODALITE\nModeling Layer] as WP3 #PaleGreen

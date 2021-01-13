@@ -2,6 +2,7 @@
 
 title WP3 Modeling Layer Architecture Overview
 
+interface "AuthN/AuthZ API" as AAUAPI
 interface "DeploymentPreparationAPI" as deploymentPreparationAPI
 interface "DefectPredictionCorrectionAPI" as correctionAPI
 interface "MonitoringAPI" as monitoringAPI
@@ -45,12 +46,15 @@ ideDSLeditor <-down-> ideGUI
 repoOntologies -up- repoEndpoint
 resPopulationEngine .left.> repoEndpoint: use
 resReasoningEngine .left.> repoEndpoint: use
+resReasoningEngine ..> AAUAPI: use
 resPopulationEngine ..> correctionAPI: use
+resPopulationEngine ..> AAUAPI: use
 ideGUI ..> deploymentPreparationAPI : use
 ideGUI ..> monitoringAPI : use
 ideGUI ..> monitoringRuleAPI : use
 ideGUI ..> iacverificationAPI : use
 ideGUI ..> orchestratorAPI : use
+ideGUI ..> AAUAPI: use
 
 
 @enduml

@@ -55,7 +55,7 @@ ma-> nm: send metrics
 activate nm
 nm -> nm: Compute New Node Resource Allocation
    nm -> nm: Enact Computed Node Resource Allocation
-   alt  System is overprovisioned/underprovined
+   alt  System is over/underprovisioned
        nm -> dr: trigger Deployment Model Refactoring
        activate dr
        dr --> nm:

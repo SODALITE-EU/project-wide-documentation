@@ -1,5 +1,4 @@
 @startuml
-
 title Identify Refactoring Options (WP5)
 
 actor "Application Ops\nExpert" as ops
@@ -51,18 +50,16 @@ end
 
 == Node Resource Management ==
 
+loop Control loop
 ma-> nm: send metrics
 activate nm
-nm -> nm : Check Node Goal Violations
-alt Node Goals Violated
-nm -> nm: find a New Node Resource Allocation
-   alt  A New Node Resource Allocation Cannot be Found
+nm -> nm: Compute New Node Resource Allocation
+   nm -> nm: Enact Computed Node Resource Allocation
+   alt  System is overprovisioned/underprovined
        nm -> dr: trigger Deployment Model Refactoring
        activate dr
        dr --> nm:
        deactivate dr
-   else
-       nm -> nm: Enact the Node Resource Allocation
    end
 end
 deactivate nm

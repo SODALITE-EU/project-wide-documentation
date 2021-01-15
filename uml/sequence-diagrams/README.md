@@ -8,17 +8,17 @@ This map contains UML sequence diagrams describing various UML use cases identif
 
 Currently, the support for the following execution platforms is provided:
 
-  - OpenStack: as a provisioner of IaaS virtual resources in private clouds;
-  - AWS EC2: as a provisioner of IaaS virtual resources in public clouds;
-  - Kubernetes: as an environment and orchestration for containerized application;
-  - PBS Torque and Slurm: as a batch and resource management systems common in HPC.
+-   OpenStack: as a provisioner of IaaS virtual resources in private clouds;
+-   AWS EC2: as a provisioner of IaaS virtual resources in public clouds;
+-   Kubernetes: as an environment and orchestration for containerized application;
+-   PBS Torque and Slurm: as a batch and resource management systems common in HPC.
 
 Each execution platform has its own way to connect to it (e.g. in clouds and Kubernetes, REST APIs are common; for HPC, connections are through ssh), and the orchestrator must use the right "API" depending on the selected platform. Furthermore, a certain type of resources can be requested depending on their availability at the resource providers sites. For example, consider a request for a GPU:
 
-  - In OpenStack, it can be achieved by specifying an availability zone that contains GPU resources or by selecting a certain flavour that encodes the selection of GPU resources. It all depends on the configuration of the infrastructure provider.
-  - In AWS, the GPU instances of certain flavours (e.g. P3 and P4 instances) can be selected.
-  - In Kubernetes, the GPU resources can be scheduled by specifying the resource limits or by using special node labels and node selectors to schedule pods to appropriate GPU-labelled nodes.
-  - In batch systems, the GPU request is specified in one of the job options or by selecting a certain queue.
+-   In OpenStack, it can be achieved by specifying an availability zone that contains GPU resources or by selecting a certain flavour that encodes the selection of GPU resources. It all depends on the configuration of the infrastructure provider.
+-   In AWS, the GPU instances of certain flavours (e.g. P3 and P4 instances) can be selected.
+-   In Kubernetes, the GPU resources can be scheduled by specifying the resource limits or by using special node labels and node selectors to schedule pods to appropriate GPU-labelled nodes.
+-   In batch systems, the GPU request is specified in one of the job options or by selecting a certain queue.
 
 The considered execution platforms shall provide a Lightweight Runtime Environment (LRE) to deploy and execute application container images and artifacts. In IaaS clouds (OpenStack, AWS) and Kubernetes, Docker runtime is considered. In HPC, Singularity runtime is considered due to performance and security limitations of Docker. The application components are assumed to be containerised, i.e. execution logic and dependencies are encapsulated within a container image, or assumed to use a container runtime, i.e. use only the encapsulated dependencies. 
 
@@ -34,9 +34,9 @@ Optionally, a set of inputs can be passed along the request to parameterise the 
 Then, the Orchestrator starts the deployment by executing the deployment workflow specified in the blueprint. 
 For each execution platform specified in the blueprint, its resources are instantiated, and the application components are deployed on top of them. As such:
 
-  - In IaaS clouds, before the deployment of the application components, the virtual resources must be firstly provisioned. For that, the Orchestrator requests to the IaaS resource manager (e.g. OpenStack, AWS EC2) to provision a set of virtual machines (VMs) and other resources that the application demands, e.g. security group, network and storage. The LRE is then installed on VMs as a runtime for the execution of the application components. Upon the installation, the Orchestrator configures and deploys application components, pulling them from specified image registries.
-  - Kubernetes automates the resource provisioning and the application deployment by exposing an endpoint, through which the deployment and configuration descriptions are passed. Hence, the Orchestrator submits these descriptions to Kubernetes, which configures and deploys the application components, pulled from specified image registries.
-  - When resource management systems are selected (e.g. Torque or Slurm), the Orchestrator pre-uploads the artifacts (e.g. pulling required container images) and the job description script to the user workspace (e.g. home directory of the user) on login (front-end) nodes and then submits the job to the batch system. UC7 describes the start of applications, deployed using one of the resource management systems.
+-   In IaaS clouds, before the deployment of the application components, the virtual resources must be firstly provisioned. For that, the Orchestrator requests to the IaaS resource manager (e.g. OpenStack, AWS EC2) to provision a set of virtual machines (VMs) and other resources that the application demands, e.g. security group, network and storage. The LRE is then installed on VMs as a runtime for the execution of the application components. Upon the installation, the Orchestrator configures and deploys application components, pulling them from specified image registries.
+-   Kubernetes automates the resource provisioning and the application deployment by exposing an endpoint, through which the deployment and configuration descriptions are passed. Hence, the Orchestrator submits these descriptions to Kubernetes, which configures and deploys the application components, pulled from specified image registries.
+-   When resource management systems are selected (e.g. Torque or Slurm), the Orchestrator pre-uploads the artifacts (e.g. pulling required container images) and the job description script to the user workspace (e.g. home directory of the user) on login (front-end) nodes and then submits the job to the batch system. UC7 describes the start of applications, deployed using one of the resource management systems.
 
 At this point, the deployment of the heterogeneous application components is performed on different resources, and the application is started. 
 Optionally, the configuration of a monitoring platform can be additionally performed if such mechanism is requested to the Orchestrator. 
@@ -116,9 +116,9 @@ The Orchestrator derives the difference between current and updated deployments 
 Such adaptation actions are performed on the Execution Platforms used for the redeployment. 
 If the selected platform is IaaS Cloud or Kubernetes, the actions that might be performed are the following:
 
-  - any form of scaling (in/out/up/down),
-  - migration to another Execution Platform,
-  - deployment of the new application components introduced by the Application Ops Expert and removal of current components.
+-   any form of scaling (in/out/up/down),
+-   migration to another Execution Platform,
+-   deployment of the new application components introduced by the Application Ops Expert and removal of current components.
 
 It should be notes that Kubernetes, being itself an orchestration platform, is enforcing partial redeployment. 
 For what concerns resource management systems (common in HPC), these Execution Platforms lack flexibility in scaling at runtime, hence the scaling actions are not present as possible adaptation actions; however, all the other actions can be executed as well (migration, deployment and removal of components).

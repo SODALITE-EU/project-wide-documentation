@@ -61,21 +61,6 @@ loop Mapping to target resources
     end
 end
 
-opt "Static optimization"
-    ops->editor: Optimize model execution\non selected resources
-    loop Node in NodeList
-        editor->editor: GetNodeFromList(NodeList)
-        opt Node requires optimization
-            editor->SPOC: StartOptimization(Node.optimizationInfo)
-            activate SPOC
-            SPOC-->editor: ExecutionContainer, ExecutionScript
-            deactivate SPOC
-            editor->editor: UpdateNodeWithOptimizationOutcome(Node, ExecutionContainer, ExecutionScript)
-        end
-    end
-    editor-->ops: present statically optimized\n application deployment model
-end
-
 ops->editor: Submit application deployment model\n with mapped target resources
 editor->reasoner: Store submitted model (API call)
 activate reasoner

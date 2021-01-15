@@ -3,105 +3,50 @@ title Generate IaC (WP4)
 
 'Define user actors
 actor "Application Ops Expert"  as AppOpsExp
-participant "SODALITE\nIDE" as SIC
+participant "SODALITE\nIDE" as IDE
 participant "AbstractModel\nParser" as SAPC
 participant "IaC Blueprint\nbuilder" as SBBC
-participant "IaC Resources\nModel" as SRMC
-participant "Application\nOptimiser " as SPOC
-participant "Runtime Image\nBuilder " as SRIBC
-database "Iac\nRepository " as SIR
+participant "Application\nOptimiser\nMODAK" as SPOC
+participant "Orchestrator\nxOpera" as orch
 
-AppOpsExp->SIC: BuildIaCRequest(model)
+AppOpsExp->IDE: BuildIaCRequest(model)
 
-activate SIC
+activate IDE
 
-SIC->SAPC: BuildIaCRequest(model)
+IDE->SAPC: BuildIaCRequest(model)
 
 activate SAPC
 'prepare a workable node list of the model  - flatten the relationship three
 SAPC->SAPC: GetNodeList(Model)
 
-SAPC->SBBC: CreateBuilder(ModelReference)
-activate SBBC
-
 'Main loop - go through the abstract nodes list
 loop Node in NodeList
 
-    'find the best IaC node definition match for the abstract node
-    SAPC->SRMC: FindBestMatchingNode(AbstractNode)
-    activate SRMC
-        SRMC-->SAPC: IaCNodeDefinition
-    deactivate SRMC
 
-    'Build IaC node based on best mathing IaC node definition, additionally configuring possible relations (connection definitions) to other nodes
-    SAPC->SBBC: BuildIaC(IaCNodeDefinition, Relations)
-
-    'IaC node built, BuildInfo returned
-    SBBC-->SAPC: BuildInfo(HumanReadableForm)
-
-    'prepare a workable artefact list of the model  - flatten the relationship three
-    SAPC->SAPC: GetArtefactList(Node)
-
-    'loop through abstract artefact definitions to be deployed on that node
-    loop Artefacts in ArtefactList
-        'evaluate the possibility of artefact performance optimisation
-        opt Source for artefact exists
-            SAPC->SAPC: GetArtefactSourceDefinition(ArtefactSourceModel)
-            note right
-            Gets Source location, Architecture definition,
-            Optimisation params, etc.
-            end note
-
-            SAPC->SBBC: ConfigureAndCompile(ArtefactSourceDefinition)
-            SBBC->SPOC: ConfigureAndCompile(ArtefactSourceDefinition)
-            activate SPOC
-            ref over SPOC: Here we call\nApplication Optimiser (WP4)
-            SPOC-->SBBC: ArtefactRuntimeDefinition()
-            deactivate SPOC
-        end
-
-
-
+    opt "Static optimization" Node requires optimization
+        SAPC->SPOC: StartOptimization(Node.optimizationInfo)
+        activate SPOC
+        SPOC-->SAPC: ExecutionContainer, ExecutionScript
+        deactivate SPOC
+        SAPC->SAPC: UpdateNodeWithOptimizationOutcome(Node, ExecutionContainer, ExecutionScript)
     end
-
-    'at this point an ArtefactRuntime is in place meaning that there an executable binary with referenced libraries and configuration is in place
-    == Build Runtime Images ==
-    'These steps define the tools and building recipes for building and packaging the container image
-    SAPC->SBBC: BuildImages(TargetArchitecture, ArtefactList)
-    note right
-    ArtefactRuntimeDefinition,
-    ArtefactConfiguration
-    end note
-
-
-    SBBC->SRIBC: BuildImages(TargetArchitecture, ArtefactList)
-    ref over SRIBC: Here we call\nBuild Runtime Images(WP4)
-    activate SRIBC
-    SBBC<--SRIBC: BuildImagesInfoList(humanReadableForm)
-    deactivate SRIBC
-
-
-    SBBC->SBBC: AddImageToList()
 
 end
 
-
-'Save the resulting IaC and recipes together with build time information (errors, warnings, information, improvement suggestions - all adressing the abstract model)
-SBBC->SIR: SaveIaC(ModelReference, IaCBlueprint, ArtefactImageList, BuildInfo)
-
-'Return the reference to compile/build time information (errors, warnings, information, improvement suggestions - all adressing the abstract model)
-SBBC-->SAPC: BuildInfo(HumanReadableForm)
+SAPC->SBBC: GenerateIaCCode(NodeList)
+activate SBBC
+SBBC->SBBC: CreateIaCCode()
+SBBC->orch: RegisterIaC(IaCCode)
+orch-->SBBC: IaCCodeReference
+SBBC-->SAPC: IaCCodeReference
 deactivate SBBC
 
 'Return the reference to compile time information - (eg errors, warnings, information, improvement suggestions - all adressing the abstract model
-SAPC-->SIC: BuildIaCResponse(BuildInfo)
-note right
-Human readable form
-end note
+SAPC-->IDE: IaCCodeReference
 
 deactivate SAPC
 
-SIC-->AppOpsExp: BuildIaCResponse(BuildInfo)
-deactivate SIC
+IDE-->AppOpsExp: IaCBuilderResponse(IaCCodeReference)
+deactivate IDE
 
 @enduml

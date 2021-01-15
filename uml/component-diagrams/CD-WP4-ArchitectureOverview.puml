@@ -1,16 +1,22 @@
 @startuml
 
-title WP4 - Infrastructure As Code Layer Architecture Overview
+title WP4 - Infrastructure As Code Layer \n Architecture Overview
 
 'reference to WP3
-interface "SemanticReasonerAPI" <<REST>> as repoEndpoint
+interface "SecretVaultAPI" as VaultAPI #LightSlateGrey
+component "SODALITE IDE" as cSIDE #PaleGreen
 
-component "SODALITE IDE" as cSIDE
+'security APIs
+interface "SemanticReasonerAPI" <<REST>> as repoEndpoint #PaleGreen
+interface "IAMIntrospectionAPI" as IAMApi #LightSlateGrey
 
+'WP4 components and packages
 package "Deployment\nPreparation" as pDP {
     component [Abstract Model\nParser] as cAbstractModelParser
     component [IaC Blueprint\nbuilder] as cIaCBlueprintBuilder
     interface "Deployment\nPreparationAPI" <<REST>> as iBluePrintGeneratorAPI
+    cAbstractModelParser -l- iBluePrintGeneratorAPI
+    cIaCBlueprintBuilder -r- iBluePrintGeneratorAPI    
 }
 
 package "Image Builder" {
@@ -20,23 +26,25 @@ package "Image Builder" {
     cRuntimeImageBuilder - iRuntimeImageBuilder
     cRuntimeImageBuilder .u.> cConcreteImageBuilder: use
     database "Image\nregistry" as dIR
-    interface "Image data\naccess" as iIRDataAccess
-
+    interface "   Image\ndata access" as iIRDataAccess
 }
 
 package "IaC Verification" as pIV {
     component [IaC Verifier] as cIaCVerifier
     interface "IaCVerificationAPI" <<REST>> as iIaCVerifier
-    cIaCVerifier -l- iIaCVerifier
+    cIaCVerifier -r- iIaCVerifier
     component [Verification\nModel Builder] as cVerificationModelBuilder
     component [Topology\nVerifier] as cTopologyVerifier
     component [Provisioning\nWorkflow Verifier] as cProvisioningWorkflowVerifier
+    cIaCVerifier .u.> cVerificationModelBuilder:use
+    cIaCVerifier .l.> cTopologyVerifier:use
+    cIaCVerifier .d.> cProvisioningWorkflowVerifier:use
 }
 
 package "Defect Prediction and Correction" as pDPC {
     component [Bug Predictor\nand Fixer ] as cBugPredictorAndFixer
     interface "DefectPrediction\nCorrectionAPI" <<REST>> as iBugPredictorAndFixer
-    cBugPredictorAndFixer -l- iBugPredictorAndFixer
+    cBugPredictorAndFixer -u- iBugPredictorAndFixer
     component [Predictive\nModel Builder] as cPredictiveModelBuilder
     component [IaC Quality\nAssessor] as cIaCQualityAssessor
 }
@@ -44,32 +52,40 @@ package "Defect Prediction and Correction" as pDPC {
 package "Performance\nOptimisation" as packagePO {
     component "Application\nOptimiser" as cApplicationOptimiser
     interface "Application\nOptimiserAPI" <<REST>> as iApplicationOptimiser
-    cApplicationOptimiser -u- iApplicationOptimiser
+    cApplicationOptimiser -r- iApplicationOptimiser
 }
 
-cAbstractModelParser -d- iBluePrintGeneratorAPI
-cIaCBlueprintBuilder -u- iBluePrintGeneratorAPI
 
+package "Platform\nDiscovery" as packagePD {
+    component "Platform\nDiscovery" as cPlatformDiscovery
+    interface "Platform\nDiscoveryAPI" <<REST>> as iPlatformDiscovery
+    cPlatformDiscovery -u- iPlatformDiscovery
+}
 
 cAbstractModelParser .r.> repoEndpoint: use
 cSIDE ..> iBluePrintGeneratorAPI: use
 cSIDE ..> iIaCVerifier: use
 cSIDE ..> iBugPredictorAndFixer: use
+cSIDE ..> iPlatformDiscovery: use
+cSIDE .d.> IAMApi:use
+'cSIDE ..> VaultAPI:use
 
 cIaCBlueprintBuilder ..> iApplicationOptimiser: use
+cSIDE ..> iRuntimeImageBuilder: use
 
 dIR - iIRDataAccess
 cRuntimeImageBuilder ..> iIRDataAccess: use
-cIaCBlueprintBuilder ..> iRuntimeImageBuilder: use
-
-cIaCVerifier ..> cVerificationModelBuilder:use
-cIaCVerifier ..> cTopologyVerifier:use
-cIaCVerifier ..> cProvisioningWorkflowVerifier:use
 
 cBugPredictorAndFixer ..> cIaCQualityAssessor:use
 cBugPredictorAndFixer ..> cPredictiveModelBuilder:use
 cPredictiveModelBuilder ..> repoEndpoint:use
 cVerificationModelBuilder ..> repoEndpoint:use
 cApplicationOptimiser .r.> repoEndpoint:use
+cPlatformDiscovery ..> repoEndpoint:use
+
+cPlatformDiscovery .u.> IAMApi:use
+cPlatformDiscovery .u.> VaultAPI:use
+cAbstractModelParser .u.> IAMApi:use
+cAbstractModelParser .u.> VaultAPI:use
 
 @enduml

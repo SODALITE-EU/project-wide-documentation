@@ -2,51 +2,70 @@
 
 title SODALITE General Architecture
 
+skinparam fixCircleLabelOverlapping true 
+
+'WP3 modelling layer
+[SODALITE\nModeling Layer] as WP3 #PaleGreen
+interface "Semantic\nReasonerAPI" as sem #PaleGreen
+WP3 -d- sem
+
+'WP4 infrastructure as Code layer
+[SODALITE\nInfrastructure as Code Layer] as WP4 #LightSalmon
 interface "Deployment\nPreparationAPI" as dep #LightSalmon
 interface "DefectPrediction\nCorrectionAPI" as defect #LightSalmon
 interface "IaCVerifactionAPI" as verif #LightSalmon
 interface "ImageRegistryAPI" as imagereg  #LightSalmon
-
-interface "MonitoringAPI" as mon #LightSkyBlue
-interface "OrchestratorAPI" as orch #LightSkyBlue
-
-[SODALITE Modeling Layer] as WP3 #PaleGreen
-interface "Semantic\nReasonerAPI" as sem #PaleGreen
-WP3 -l- sem
-
-[SODALITE Infrastructure as Code Layer] as WP4 #LightSalmon
-WP4 -d- dep
+interface "ImageBuilderAPI" as imagebuilder  #LightSalmon
+interface "PlatformDiscoveryAPI" as pds #LightSalmon
+WP4 -u- dep
 WP4 -u- defect
 WP4 -u- verif
-WP4 -- imagereg
+WP4 -u- pds
+WP4 -d- imagereg
+WP4 -u- imagebuilder
 
-[SODALITE Runtime Layer] as WP5 #LightSkyBlue
+'WP4 infrastructure as Code layer
+[SODALITE\nRuntime Layer] as WP5 #LightSkyBlue
+interface "MonitoringAPI" as mon #LightSkyBlue
+interface "OrchestratorAPI" as orch #LightSkyBlue
 WP5 -u- mon 
 WP5 -u- orch
 
+'security APIs
+interface "IAMIntrospectionAPI" as IAMApi #LightSlateGrey
+interface "SecretVaultAPI" as VaultAPI #LightSlateGrey
+
 cloud {
     node OpenStack
-    node Kubernetes as K8S
+    node k8s as K8S
     node Torque
     node AWS
     node OpenFaaS
 }
 
-WP3 ..> dep : use
-WP3 ..> defect : use
-WP3 ..> verif : use
-WP3 ..> mon : use
-WP3 ..> orch : use
+WP3 .d.> IAMApi : use
+WP3 .d.> VaultAPI : use
+WP3 .d.> dep : use
+WP3 .d.> defect : use
+WP3 .d.> verif : use
+WP3 .d.> mon : use
+WP3 .d.> orch : use
+WP3 .d.> imagebuilder : use
+WP3 .d.> pds : use
 
-WP4 ..> sem : use
+WP4 .u.> IAMApi : use
+WP4 .u.> VaultAPI : use
+WP4 .u.> sem : use
 
-WP5 ..> OpenStack : use
-WP5 ..> K8S : use
-WP5 ..> Torque : use
-WP5 ..> AWS : use
-WP5 ..> OpenFaaS : use
-WP5 ..> dep : use
-WP5 .l.> sem : use
+WP5 .u.> IAMApi : use
+WP5 .u.> VaultAPI : use
+WP5 .d.> OpenStack : use
+WP5 .d.> K8S : use
+WP5 .d.> Torque : use
+WP5 .d.> AWS : use
+WP5 .d.> OpenFaaS : use
+WP5 .r.> dep : use
+WP5 .r.> sem : use
 WP5 ..> imagereg: use
 
 @enduml

@@ -18,16 +18,15 @@ note over editor, SRIBC: this is activated when the user triggers the build of i
 
 activate SRIBC
 
-SRIBC->SCIBC: CreateConcreteImageBuilder(TargetArchitecture)
-activate SCIBC
 
 loop ArtefactDefinition in ArtefactList
-    SRIBC->SRIBC: GetModelReference(ArtefactDefinition)
-    SRIBC->SRIBC: GetNodeReference(ArtefactDefinition)
+    SRIBC->SCIBC: CreateConcreteImageBuilder(TargetArchitecture)
+    activate SCIBC
     SRIBC->SCIBC: ConfigureBuildArtefactImage(ArtefactDefinition)
     SCIBC->SCIBC: PreinstallMonitoring(BuildInfo)
     SCIBC->SCIBC: BuildArtefactImage(BuildInfo)
     SCIBC-->SRIBC: ArtefactImage(BuildInfo)
+    deactivate SCIBC
     'Save the resulting IaC and recipes together with build time information (errors, warnings, information, improvement suggestions - all addressing the abstract model)
     SRIBC->SIIR: SaveArtefactImage(ArtefactImage, ModelRef, NodeRef, BuildInfo)
     activate SIIR
@@ -38,7 +37,6 @@ loop ArtefactDefinition in ArtefactList
     SRIBC->SRIBC: AddBuildInfoToList(BuildInfo)
 end
 
-deactivate SCIBC
 
 'Return the reference to compile/build time information (errors, warnings, information, improvement suggestions - all addressing the abstract model)
 SRIBC-->editor: BuildImagesInfoList(humanReadableForm)
@@ -47,7 +45,8 @@ opt
     editor->editor: extract target images references
     editor->reasoner: store the target images references (project/image-name)
 end
-editor-->ops: BuildImagesInfoList(humanReadableForm)deactivate SRIBC
+editor-->ops: BuildImagesInfoList(humanReadableForm)
+deactivate SRIBC
 deactivate editor
 
 

@@ -1,6 +1,6 @@
 @startuml
 
-title Authorization example
+title IAM Authentication and Authorization example
 
 actor "Application\nOps Expert" as ops
 participant "SODALITE IDE" as editor

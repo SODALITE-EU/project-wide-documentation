@@ -6,7 +6,6 @@ actor "Application\nOps Expert" as ops
 participant "SODALITE IDE" as editor
 participant "Semantic Reasoner" as reasoner
 participant "Semantic Knowledge Base\n(ontology in GraphDB)" as ontology
-participant "Optimizer\nMODAK" as SPOC
 
 ops->editor: Submit application deployment model
 

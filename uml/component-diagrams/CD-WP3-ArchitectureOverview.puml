@@ -2,7 +2,8 @@
 
 title WP3 Modeling Layer Architecture Overview
 
-interface "IAMIntrospectionAPI" as AAUAPI #808080	
+interface "IAMIntrospectionAPI" as AAUAPI #808080
+interface "SecretVaultAPI" as SecretVaultAPI #808080
 interface "DeploymentPreparationAPI" as deploymentPreparationAPI #FF6347
 interface "DefectPredictionCorrectionAPI" as correctionAPI #4169E1
 interface "MonitoringAPI" as monitoringAPI #4169E1
@@ -13,10 +14,11 @@ interface "PlatformDiscoveryAPI" as PDS #FF6347
 
 package "SODALITE IDE" as IDE {
     component [DSL Editor] as ideDSLeditor
-    artifact AADM
-    artifact RM
-    artifact OM
-    artifact Ansible
+    component [AADM DSL] as AADM
+    component [RM DSL] as RM
+    component [OM DSL] as OM
+    component [Ansible DSL] as Ansible
+
     ideDSLeditor --* AADM
     ideDSLeditor --* RM
     ideDSLeditor --* OM
@@ -74,6 +76,7 @@ ideGUI ..> deploymentPreparationAPI : use
 ideGUI ..> monitoringAPI : use
 ideGUI ..> monitoringRuleAPI : use
 ideGUI ..> iacverificationAPI : use
+ideGUI ..> SecretVaultAPI : use
 ideGUI ..> orchestratorAPI : use
 ideGUI ..> AAUAPI: use
 

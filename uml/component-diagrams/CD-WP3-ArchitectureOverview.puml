@@ -2,7 +2,7 @@
 
 title WP3 Modeling Layer Architecture Overview
 
-interface "AuthN/AuthZ API" as AAUAPI
+interface "IAMIntrospectionAPI" as AAUAPI #808080 
 interface "DeploymentPreparationAPI" as deploymentPreparationAPI
 interface "DefectPredictionCorrectionAPI" as correctionAPI
 interface "MonitoringAPI" as monitoringAPI
@@ -15,6 +15,13 @@ package "SODALITE IDE" as IDE {
     component [DSL Editor] as ideDSLeditor
     component [GUI] as ideGUI
 }
+
+note top of [ideDSLeditor]
+ __**Three different types of editors**__
+ AADM/RM Model
+ Optimization Model
+ Ansible Abstract Playbook
+end note
 
 package "Semantic Reasoner" as res {
     interface "SemanticReasonerAPI" as resAPI

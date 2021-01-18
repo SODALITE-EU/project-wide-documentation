@@ -73,7 +73,7 @@ resReasoningEngine ..> AAUAPI: use
 resPopulationEngine ..> correctionAPI: use
 resPopulationEngine ..> AAUAPI: use
 ideGUI ..> deploymentPreparationAPI : use
-ideGUI ..> monitoringAPI : use
+ideGUI .> monitoringAPI : use
 ideGUI ..> monitoringRuleAPI : use
 ideGUI ..> iacverificationAPI : use
 ideGUI ..> SecretVaultAPI : use

@@ -18,7 +18,7 @@ package "SODALITE IDE" as IDE {
 
 note top of [ideDSLeditor]
  __**Three different types of editors**__
- AADM/RM Model
+ Abstract ADM/RM
  Optimization Model
  Ansible Abstract Playbook
 end note

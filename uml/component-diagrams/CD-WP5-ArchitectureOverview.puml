@@ -2,41 +2,45 @@
 
 title WP5 - Runtime Layer Architecture Overview
 
-interface "SemanticReasonerAPI" as sem
+skinparam fixCircleLabelOverlapping true 
+
+[SODALITE\nIDE] as ide #PaleGreen
+interface "SemanticReasonerAPI" as sem #PaleGreen
 
 package "Orchestrator" as orch {
     component [Orchestrator] as orch_impl
-    interface "OrchestratorAPI" <<REST>> as orch_if
-    component [OS driver] as os_driver
-    component [K8S driver] as k8s_driver
-    component [Torque driver] as torque_driver
-    component [OpenFaaS driver] as faas_driver
-    component [AWS driver] as aws_driver
+    interface "OrchestratorAPI" as orch_if
+    component [Openstack\nDriver] as os_driver
+    component [K8S\nDriver] as k8s_driver
+    component [Torque\nDriver] as torque_driver
+    component [OpenFaaS\nDriver] as faas_driver
+    component [AWS\nDriver] as aws_driver
     orch_impl - orch_if
 }
 
 package "Monitoring" as mon {
     [Monitoring] as mon_impl
-    () "MonitoringAPI" <<REST>> as mon_if
+    () "MonitoringAPI" as mon_if
     [Dashboard] as dash
     [Exporter] as exp
-    () "ExporterAPI" <<REST>> as exp_if
+    () "ExporterAPI" as exp_if
     [Alert Manager] as alert_mngr
-    () "AlertingAPI" <<REST>> as alert_if
-    mon_impl -l- mon_if
-    exp -l- exp_if
+    () "AlertingAPI"  as alert_if
+    mon_impl -u- mon_if
+    exp -u- exp_if
     alert_mngr -d- alert_if
 }
 
 package "Refactoring" as refactor {
-    interface "RefactoringAPI" <<REST>> as ref_if
-    interface "DiscoveringAPI" <<REST>> as dis_if
-    interface "ManagementAPI" <<REST>> as mng_if
+    interface "RefactoringAPI" as ref_if
+    interface "DiscoveringAPI" as dis_if
+    interface "ManagementAPI" as mng_if
     component [Deployment Refactorer] as ref_depl
-    component [Refactoring Option Discoverer] as ref_opt
+    component [Refactoring\nOption\nDiscoverer] as ref_opt
     component [Node Manager] as ref_node
     dis_if -d- ref_opt
     mng_if -d- ref_node
+    ref_if - ref_depl
 }
 
 cloud {
@@ -56,53 +60,50 @@ interface "IAM\nIntrospectionAPI" as IAMApi #LightSlateGrey
 interface "SecretVaultAPI" as VaultAPI #LightSlateGrey
 
 
-[SODALITE\nIDE] as ide
 
 'Monitoring
-mon_impl ..> exp_if : use
-dash ..> mon_if
-alert_mngr ..> mon_if
+mon_impl -u-( exp_if
+dash --( mon_if
+alert_mngr --( mon_if
 
 
 'Refactoring
-ref_if -u- ref_depl
-ref_if <.. ref_opt : use
-ref_if <.. ref_node : use
+ref_opt --( ref_if
+ref_node --( ref_if
+ref_opt --( sem
 
-ref_opt ..> sem : use
+ref_depl --( mng_if
+ref_depl --( dis_if
+ref_depl --( depl_prep
 
-ref_depl ..> mng_if : use
-ref_depl ..> dis_if : use
-ref_depl ..> depl_prep : use
+ref_node --( alert_if
+ref_depl --( alert_if
+orch_impl --( alert_if
 
-ref_node ..> alert_if : use
-ref_depl ..> alert_if : use
-orch_impl ..> alert_if : use
 
-torque_driver ..> Torque : use
+orch_impl --> os_driver : use
+orch_impl --> k8s_driver : use
+orch_impl --> torque_driver : use
+orch_impl --> aws_driver : use
+orch_impl --> faas_driver : use
 
-orch_impl ..> os_driver : use
-orch_impl ..> k8s_driver : use
-orch_impl ..> torque_driver : use
-orch_impl ..> aws_driver : use
-orch_impl ..> faas_driver : use
-
-orch_impl .u.> depl_prep: use
-orch_impl .u.> image_reg: use
-orch_impl .u.> IAMApi: use
-orch_impl .u.> VaultAPI: use
+orch_impl -u-( depl_prep
+orch_impl -u-( image_reg
+orch_impl -u-( IAMApi
+orch_impl -u-( VaultAPI
 
 os_driver ..> OpenStack : use
 k8s_driver ..> K8S : use
 faas_driver ..> OpenFaaS : use
 aws_driver ..> AWS : use
+torque_driver ..> Torque : use
 
-exp ...> OpenStack : use
-exp ...> K8S : use
-exp ...> Torque : use
-exp ...> OpenFaaS : use
-exp ...> AWS : use
+exp .d.> OpenStack : use
+exp .d.> K8S : use
+exp .d.> Torque : use
+exp .d.> OpenFaaS : use
+exp .d.> AWS : use
 
-ide ..> orch_if : use
+ide --( orch_if : use
 ide ..> dash : use
 @enduml

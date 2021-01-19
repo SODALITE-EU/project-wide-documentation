@@ -43,29 +43,30 @@ cloud {
     node OpenFaaS
 }
 
-WP3 .d.> IAMApi : use
-WP3 .d.> VaultAPI : use
-WP3 .d.> dep : use
-WP3 .d.> defect : use
-WP3 .d.> verif : use
-WP3 .d.> mon : use
-WP3 .d.> orch : use
-WP3 .d.> imagebuilder : use
-WP3 .d.> pds : use
+WP3 -d-( IAMApi
+WP3 -d-( VaultAPI
+WP3 -d-( dep
+WP3 -d-( defect
+WP3 -d-( verif
+WP3 -d-( mon
+WP3 -d-( orch
+WP3 -d-( imagebuilder
+WP3 -d-( pds
 
-WP4 .u.> IAMApi : use
-WP4 .u.> VaultAPI : use
-WP4 .u.> sem : use
+WP4 -u-( IAMApi
+WP4 -u-( VaultAPI
+WP4 -u-( sem
 
-WP5 .u.> IAMApi : use
-WP5 .u.> VaultAPI : use
-WP5 .d.> OpenStack : use
-WP5 .d.> K8S : use
-WP5 .d.> Torque : use
-WP5 .d.> AWS : use
-WP5 .d.> OpenFaaS : use
-WP5 .r.> dep : use
-WP5 .r.> sem : use
-WP5 ..> imagereg: use
+WP5 -u-( IAMApi
+WP5 -u-( VaultAPI
+WP5 -u-( imagereg
+WP5 -r-( dep
+WP5 -r-( sem
+
+WP5 .d.> OpenStack
+WP5 .d.> K8S
+WP5 .d.> Torque
+WP5 .d.> AWS
+WP5 .d.> OpenFaaS
 
 @enduml

@@ -1,0 +1,67 @@
+@startuml
+
+title WP5 - Monitoring Layer Architecture Overview
+
+
+package "Monitoring" as mon {
+    [<<Monitoring>> Prometheus] as mon_impl
+    () "MonitoringAPI" <<REST>> as mon_if
+    [Consul] as con_impl
+    () "ConsulAPI" <<REST>> as con_if
+    [Rule File Server] as rule_impl
+    () "RuleAPI" <<REST>> as rule_if
+    [<<Dashboard>> Grafana] as dash
+    [IPMI Exporter] as ipmi_exp
+    [HPC Exporter] as hpc_exp
+    [Node Exporter] as node_exp
+    [Skydive Exporter] as sky_exp
+    () "ExporterAPI" <<REST>> as exp_if
+    [Alert Manager] as alert_mngr
+    () "AlertingAPI" <<REST>> as alert_if
+}
+
+cloud {
+    node "Cloud(OpenStack)" as OpenStack
+    node "HPC(Torque)" as Torque
+}
+
+
+[SODALITE\nIDE] as ide
+
+[Orchestrator] as orch
+[Orchestrator] as orch
+[Refactoring] as refac
+
+
+mon_impl -u- mon_if
+con_impl -u- con_if
+rule_impl -r- rule_if
+ipmi_exp -u- exp_if
+hpc_exp -u- exp_if
+sky_exp -u- exp_if
+node_exp -u- exp_if
+mon_impl ..> exp_if : use
+dash ..> mon_if: Use
+alert_mngr -r- alert_if
+mon_impl ..> con_if: use
+rule_impl ..> mon_if: use
+mon_impl ..> alert_if : use
+
+
+node_exp ..> con_if : register
+ipmi_exp ..> con_if : register
+hpc_exp ..> con_if : register
+sky_exp ..> con_if : register
+
+
+ipmi_exp ...> OpenStack : scrape
+node_exp ...> OpenStack : scrape
+hpc_exp ...> Torque : scrape
+sky_exp ...> OpenStack : scrape
+
+ide ..> dash : link
+ide ..> rule_if : use
+orch ..> alert_if : subscribe
+refac ..> alert_if : subscribe
+
+@enduml

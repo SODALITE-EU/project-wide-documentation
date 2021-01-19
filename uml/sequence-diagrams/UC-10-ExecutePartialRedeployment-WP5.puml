@@ -3,38 +3,79 @@
 title Execute Partial Redeployment (WP5)
 
 actor "Application\nOps Expert" as ops
-participant  "SODALITE IDE" as ide
-participant  "Deployment Preparation" as dp
-participant  Orchestrator as orch
+participant "SODALITE IDE" as ide
+participant "IaC Blueprint Builder" as builder
+participant "Refactorer" as refactorer
+participant Orchestrator as orch
 participant "Execution Platform" as res
 
-ops->ide: executeRedeployment
-ide->dp: executeRedeployment \n(refactoring options)
-dp->orch: redeploy(tosca)
+alt AOE manually updates AADM or Refactoring Options were confirmed (UC9) 
+  ops->ide: Execute Redeployment
+  activate ide
+  ide->builder: Register updated AADM (Blueprint ID + AADM JSON)
+  activate builder
+  builder->builder: Create CSAR
+  builder->orch: Update blueprint (Blueprint ID + CSAR)
+  activate orch
+  orch->orch: Update blueprint
+  orch-->builder: Blueprint updated (Blueprint ID)
+  deactivate orch
+  builder-->ide: Blueprint updated (Blueprint ID)
+  deactivate builder
+  ide->orch: Deploy updated AADM (Blueprint ID + inputs)
+  activate orch
+  orch-->ide: Deployment updates started (Session ID)
+  deactivate orch
+  deactivate ide
+else Deployment updated automatically by Refactorer 
+  activate refactorer
+  refactorer->refactorer: Create CSAR
+  refactorer->orch: Update blueprint (Blueprint ID + CSAR, inputs)
+  activate orch
+  orch->orch: Update blueprint
+  orch-->refactorer: Blueprint updated (Blueprint ID)
+  deactivate orch
+  refactorer->orch: Update blueprint (Blueprint ID + inputs)
+  activate orch
+  orch-->refactorer: Deployment updates started (Session ID)
+  deactivate orch
+  deactivate refactorer
+end
 
 activate orch
-orch->orch: deriveDifferences \n(current, updated)
-loop execution platforms
-  loop components per E.P.
-    alt E.P. is cloud
-      orch->res: redeploy(artefact, actions)
+orch->orch: Update deployment
+orch->orch: Calculate Deltas \n(current, updated)
+loop Execution Platform (EP) in Execution Platforms
+  loop Application components per EP
+    alt EP is IaaS Clouds (OpenStack, AWS)
+      orch->res: Redeploy (artifacts, actions)
       activate res
       note right
         possible actions:
         - scale in/out/up/down
-        - migration to another E.P.
+        - migration to another EP
         - deploy new components
         - remove current components
       end note
       orch<--res: completed
       deactivate res
 
-    else E.P. is HPC/GPU cluster
-      orch->res: redeploy(artefact, actions)
+    else EP is Kubernetes
+      orch->res: Redeploy (artifacts, actions)
+      activate res
+      note right
+        Kubernetes itself performs
+        partial redeployment
+      end note
+      orch<--res: completed
+      deactivate res
+
+    else EP is Resource management system (PBS Toque, Slurm)
+      orch->res: Redeploy (artifacts, actions)
       activate res
       note right
         possible actions:
-        - migration to another E.P.
+        - migration to another EP
         - deploy new components
         - remove current components
       end note
@@ -44,10 +85,13 @@ loop execution platforms
   end
 end
 
-dp<--orch: completed
-deactivate orch
-
-ide<--dp: completed
-ops<--ide: redeployed
+alt AADM updated by AOE 
+  orch-->ide: Redeployment complete
+  deactivate ide
+  ide-->ops: Redeployment complete
+else Deployment updated by Refactorer 
+  orch-->refactorer: Redeployment complete
+  deactivate refactorer
+end
 
 @enduml

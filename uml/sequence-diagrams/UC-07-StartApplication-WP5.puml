@@ -5,40 +5,43 @@ title Start application (WP5)
 actor "Application\nOps Expert" as ops
 participant "SODALITE\nIDE" as ide
 participant  Orchestrator as orch
-participant "Execution Platform" as res
-participant "VM" as VM
+participant "Execution Platform \n (EP)" as res
 participant "Component" as lre
 participant "Monitoring Platform" as mon
 
-ops->ide: start application(application)
-
-ide->orch: start application(application)
+ops->ide: Deploy
 activate ide
-
+ide->orch: Deploy
 activate orch
-par startable components
-  alt E.P. is OpenStack
-    orch->VM: start(component)
-    VM->>lre: start
-  else E.P. is Kubernetes
-    orch->res: start(component)
-    res->>lre: start
-  else  E.P. is HPC/GPU cluster
-    orch->res: submitJob(component)
-    res->>lre: start
+
+par Startable components
+  alt EP is IaaS Clouds (OpenStack, AWS)
+    lre->lre: Component started
+  else EP is Kubernetes
+    lre->lre: Component started
+  else  EP is Resource management system (PBS Toque, Slurm)
+    orch->res: Submit job (component)
+    res->res: Enqueue job
+    orch<--res: job id
+    activate mon
+    orch->mon: subscribe in HPC monitoring probe (job id)
+    ...Monitoring started...
+    orch->mon: Query
+    ... Eventually in future time ...
+    res->res: Dequeue job
+    res->lre: Run job
+    lre->lre: Component started
+    lre->lre: Component ended
+    deactivate mon
   end
 
-  ...component starts...
-  lre->mon: subscribe
 end
 
-orch-->ide: started
+
+
+orch-->ide: Deployment complete
 deactivate orch
-
-ide-->ops: started
+ide-->ops: Deployment complete
 deactivate ide
-
-...monitoring started...
-orch->mon: query
 
 @enduml

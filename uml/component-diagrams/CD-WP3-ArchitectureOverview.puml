@@ -19,10 +19,10 @@ package "SODALITE IDE" as IDE {
     component [OM DSL] as OM
     component [Ansible DSL] as Ansible
 
-    ideDSLeditor --* AADM
-    ideDSLeditor --* RM
-    ideDSLeditor --* OM
-    ideDSLeditor --* Ansible
+    ideDSLeditor *-- AADM
+    ideDSLeditor *-- RM
+    ideDSLeditor *-- OM
+    ideDSLeditor *-- Ansible
     AADM ..> Ansible: use
     AADM ..> RM: use
     AADM ..> OM: use

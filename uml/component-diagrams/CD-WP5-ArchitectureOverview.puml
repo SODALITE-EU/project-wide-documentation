@@ -10,68 +10,99 @@ package "Orchestrator" as orch {
     component [OS driver] as os_driver
     component [K8S driver] as k8s_driver
     component [Torque driver] as torque_driver
+    component [OpenFaaS driver] as faas_driver
+    component [AWS driver] as aws_driver
+    orch_impl - orch_if
 }
 
 package "Monitoring" as mon {
     [Monitoring] as mon_impl
     () "MonitoringAPI" <<REST>> as mon_if
+    [Dashboard] as dash
     [Exporter] as exp
     () "ExporterAPI" <<REST>> as exp_if
+    [Alert Manager] as alert_mngr
+    () "AlertingAPI" <<REST>> as alert_if
+    mon_impl -l- mon_if
+    exp -l- exp_if
+    alert_mngr -d- alert_if
 }
 
 package "Refactoring" as refactor {
     interface "RefactoringAPI" <<REST>> as ref_if
+    interface "DiscoveringAPI" <<REST>> as dis_if
+    interface "ManagementAPI" <<REST>> as mng_if
     component [Deployment Refactorer] as ref_depl
     component [Refactoring Option Discoverer] as ref_opt
     component [Node Manager] as ref_node
+    dis_if -d- ref_opt
+    mng_if -d- ref_node
 }
 
 cloud {
     node OpenStack
     node Kubernetes as K8S
     node Torque
+    node OpenFaaS
+    node AWS
 }
 
-() "DeploymentPreparationAPI" as depl_prep
-() "ImageRegistryAPI" as image_reg
+'WP4 APIs
+interface "Deployment\nPreparationAPI" as depl_prep #LightSalmon
+interface "Image\nRegistryAPI" as image_reg #LightSalmon
+
+'Security APIs
+interface "IAM\nIntrospectionAPI" as IAMApi #LightSlateGrey
+interface "SecretVaultAPI" as VaultAPI #LightSlateGrey
+
 
 [SODALITE\nIDE] as ide
 
-orch_impl - orch_if
-
-mon_impl - mon_if
-exp - exp_if
+'Monitoring
 mon_impl ..> exp_if : use
+dash ..> mon_if
+alert_mngr ..> mon_if
 
+
+'Refactoring
 ref_if -u- ref_depl
-ref_if -d- ref_opt
-ref_if -- ref_node
+ref_if <.. ref_opt : use
+ref_if <.. ref_node : use
 
 ref_opt ..> sem : use
 
-ref_depl ..> ref_node : use
-ref_depl ..> ref_opt : use
+ref_depl ..> mng_if : use
+ref_depl ..> dis_if : use
 ref_depl ..> depl_prep : use
 
-ref_node ..> mon_if : use
-ref_depl ..> mon_if : use
-orch_impl ..> mon_if : use
+ref_node ..> alert_if : use
+ref_depl ..> alert_if : use
+orch_impl ..> alert_if : use
 
 torque_driver ..> Torque : use
 
 orch_impl ..> os_driver : use
 orch_impl ..> k8s_driver : use
 orch_impl ..> torque_driver : use
-orch_impl ..> depl_prep: use
-orch_impl ..> image_reg: use
+orch_impl ..> aws_driver : use
+orch_impl ..> faas_driver : use
+
+orch_impl .u.> depl_prep: use
+orch_impl .u.> image_reg: use
+orch_impl .u.> IAMApi: use
+orch_impl .u.> VaultAPI: use
 
 os_driver ..> OpenStack : use
 k8s_driver ..> K8S : use
+faas_driver ..> OpenFaaS : use
+aws_driver ..> AWS : use
 
 exp ...> OpenStack : use
 exp ...> K8S : use
 exp ...> Torque : use
+exp ...> OpenFaaS : use
+exp ...> AWS : use
 
 ide ..> orch_if : use
-ide ..> mon_if : use
+ide ..> dash : use
 @enduml

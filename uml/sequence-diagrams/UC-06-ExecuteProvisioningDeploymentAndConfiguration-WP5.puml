@@ -4,79 +4,83 @@ title Execute Provisioning, Deployment and Configuration (WP5)
 
 actor "Application\nOps Expert" as ops
 participant "SOLIDATE\nIDE" as ide
-participant "Deployment\nPreparation" as dprep
+participant "IaC Blueprint Builder" as builder
 participant "Image Registry" as imagereg
-'box "Runtime Layer"
 participant  Orchestrator as orch
 participant "Execution Platform\nManager" as res
 participant "VM" as VM
-'participant "Pod" as pod
 participant "Monitoring" as mon
-'end box
 
 
-ops->ide: deploy
+ops->ide: Deploy
 activate ide
-ide->orch: deploy(modelId)
+ide->builder: Save AADM (AADM JSON)
+activate builder
+builder->builder: Create CSAR
+builder->orch: Create blueprint (CSAR)
 activate orch
-orch->dprep: getTosca(modelId)
-dprep-->orch: tosca
-orch->orch: deploy(tosca)
+orch->orch: Save blueprint
+orch-->builder: Blueprint created (Blueprint ID)
+deactivate orch
+builder-->ide: Blueprint created (Blueprint ID)
+deactivate builder
 
-loop execution platforms
+ide->orch: Deploy blueprint (Blueprint ID + inputs)
+activate orch
+orch-->ide: Deployment started (Session ID)
+orch->orch: Deploy
+
+loop Execution Platform (EP) in Execution Platforms
+
   activate res
-  alt OpenStack
-    orch->res: provision(resources type)
-    res-->orch: set of VMs
-    orch->VM: install(LRE)
-  'else HPC/GPU
-  '  orch->res: ?
-  'else Kubernetes
-  '  orch->res: create K8S project
-  '  res-->orch: created
+  alt EP is IaaS Clouds (OpenStack, AWS)
+    orch->res: Provision (IaaS resources)
+    res-->orch: Set of VMs
+    orch->VM: Install Lightweight Runtime Environment (LRE)
   end
   deactivate res
-  orch->dprep: getArtifactImageList(modelId)
-  dprep-->orch: [ imageId ]
-  loop components per E.P.
-    orch->imagereg: getImage(imageId)
-    imagereg-->orch: artifact
-    ' install artefact
-    alt E.P. is OpenStack
-      orch->VM: deploy(artifact)
-      orch->VM: configure(component, values)
-    else E.P. is Kubernetes
-      orch->res: submit(deployment)
 
+  loop Application components per EP
+
+    orch->imagereg: Pull container image (image name)
+    imagereg-->orch: Container image
+
+    alt EP is IaaS Clouds (OpenStack, AWS)
+      orch->VM: Configure (application component + values)
+      orch->VM: Deploy (container image)
+    else EP is Kubernetes
+      orch->res: Submit(deployment)
       activate res
-        'res->pod: provision(pods)
-        'res->pod: deploy(artefact)
-        'res->pod: configure(component, values)
-        'pod-->res: status=ACTIVE
         note right
-          kubernetes automates:
+          Kubernetes automates:
           - provision of pods
           - artifact deployment
           - configuration of components
         end note
         res-->orch: deployment created
-
       deactivate res
 
-    else E.P. is HPC/GPU cluster
-      orch->res: copy artifact to home
-      orch->res: copy job script to home
+    else EP is Resource management system (PBS Toque, Slurm)
+      orch->res: Copy artifacts and job script to user workspace
+      orch->res: Submit job script
     end
-    opt
-      orch->mon: configure monitoring
+
+    opt Monitoring enabled
+      loop EP in Execution Platforms
+      orch->mon: Configure monitoring (EP platform)
+      end
+      loop Application component per EP
+      orch->mon: Configure monitoring (Application component)
+      end
     end
+
   end
 end
-deactivate orch
 
-orch-->ide: deployed
+orch-->ide: Deployment complete
+deactivate orch
+ide-->ops: Deployment complete
 deactivate ide
 
-ide-->ops: deployed
 
 @enduml

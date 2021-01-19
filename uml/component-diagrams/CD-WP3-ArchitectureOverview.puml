@@ -30,7 +30,7 @@ package "SODALITE IDE" as IDE {
     component [GUI] as ideGUI
 }
 
-note right of ideDSLeditor
+note top of ideDSLeditor
    __**DSL Editor consists of four editors**__ 
    AADM: Abstract Application Deployment Model
    RM: Resource Model
@@ -65,19 +65,19 @@ PDS ..> resAPI : use
 resAPI -down- resPopulationEngine
 resAPI -up- resReasoningEngine
 ideDSLeditor .left..> resAPI: use
-ideDSLeditor <-down---> ideGUI 
+ideDSLeditor <-down----> ideGUI 
 repoOntologies -up- repoEndpoint
 resPopulationEngine .right.> repoEndpoint: use
 resReasoningEngine .left.> repoEndpoint: use
 resReasoningEngine ..> AAUAPI: use
 resPopulationEngine ..> correctionAPI: use
 resPopulationEngine ..> AAUAPI: use
-ideGUI ..> deploymentPreparationAPI : use
-ideGUI .> monitoringAPI : use
+ideGUI .up.> deploymentPreparationAPI : use
+ideGUI ..> monitoringAPI : use
 ideGUI ..> monitoringRuleAPI : use
-ideGUI ..> iacverificationAPI : use
+ideGUI .up.> iacverificationAPI : use
 ideGUI ..> SecretVaultAPI : use
-ideGUI ..> orchestratorAPI : use
+ideGUI .up.> orchestratorAPI : use
 ideGUI ..> AAUAPI: use
 
 

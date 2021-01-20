@@ -3,6 +3,7 @@
 title WP4 - Infrastructure As Code Layer \n Architecture Overview
 
 skinparam fixCircleLabelOverlapping true 
+skinparam defaultFontSize 20
 
 'reference to WP3
 component "SODALITE IDE" as cSIDE #PaleGreen
@@ -18,8 +19,8 @@ interface "IAMIntrospectionAPI" as iIAM #LightSlateGrey
 
 'WP4 components and packages
 package "Deployment\nPreparation" as pDP {
-    component [Abstract Model\nParser] as cAbstractModelParser
-    component [IaC Blueprint\nbuilder] as cIaCBlueprintBuilder
+    component [Abstract\nModel\nParser] as cAbstractModelParser
+    component [IaC\nBlueprint\nbuilder] as cIaCBlueprintBuilder
     interface "Deployment\nPreparationAPI"  as iBluePrintGeneratorAPI
     cAbstractModelParser -u- iBluePrintGeneratorAPI
     cIaCBlueprintBuilder -u- iBluePrintGeneratorAPI    
@@ -29,31 +30,31 @@ package "Image Builder" {
     component [Runtime\nImage\nBuilder] as cRuntimeImageBuilder
     component [Concrete\nImage\nBuilder] as cConcreteImageBuilder
     interface "Runtime\nImageAPI"  as iRuntimeImageBuilder
-    cRuntimeImageBuilder -l- iRuntimeImageBuilder
-    cRuntimeImageBuilder -u-> cConcreteImageBuilder:use
     database "Image\nregistry" as dIR
     interface "   Image\ndata access" as iIRDataAccess
-    dIR -r- iIRDataAccess
-    cRuntimeImageBuilder -d-( iIRDataAccess
+    cRuntimeImageBuilder -l- iRuntimeImageBuilder
+    cRuntimeImageBuilder -u-> cConcreteImageBuilder:use
+    dIR -- iIRDataAccess
+    cRuntimeImageBuilder -r-( iIRDataAccess
 }
 
 package "IaC Verification" as pIV {
     component [IaC Verifier] as cIaCVerifier
     interface "IaCVerificationAPI"  as iIaCVerifier
     cIaCVerifier -r- iIaCVerifier
-    component [Verification\nModel Builder] as cVerificationModelBuilder
+    component [Verification\nModel\nBuilder] as cVerificationModelBuilder
     component [Topology\nVerifier] as cTopologyVerifier
-    component [Provisioning\nWorkflow Verifier] as cProvisioningWorkflowVerifier
-    cIaCVerifier -u-> cVerificationModelBuilder:use
-    cIaCVerifier -u-> cTopologyVerifier:use
-    cIaCVerifier -d-> cProvisioningWorkflowVerifier:use
+    component [Provisioning\nWorkflow\nVerifier] as cProvisioningWorkflowVerifier
+    cIaCVerifier -d-> cVerificationModelBuilder:use
+    cIaCVerifier -d-> cTopologyVerifier:use
+    cIaCVerifier -u-> cProvisioningWorkflowVerifier:use
 }
 
-package "Defect Prediction and Correction" as pDPC {
+package "Defect Prediction\nand Correction" as pDPC {
     component [Bug Predictor\nand Fixer ] as cBugPredictorAndFixer
     interface "DefectPrediction\nCorrectionAPI"  as iBugPredictorAndFixer
     cBugPredictorAndFixer -u- iBugPredictorAndFixer
-    component [Predictive\nModel Builder] as cPredictiveModelBuilder
+    component [Predictive\nModel\nBuilder] as cPredictiveModelBuilder
     component [IaC Quality\nAssessor] as cIaCQualityAssessor
     cBugPredictorAndFixer --> cIaCQualityAssessor:use
     cBugPredictorAndFixer --> cPredictiveModelBuilder:use
@@ -62,7 +63,7 @@ package "Defect Prediction and Correction" as pDPC {
 package "Performance\nOptimisation" as packagePO {
     component "Application\nOptimiser" as cApplicationOptimiser
     interface "Application\nOptimiserAPI"  as iApplicationOptimiser
-    cApplicationOptimiser -r- iApplicationOptimiser
+    cApplicationOptimiser -l- iApplicationOptimiser
 }
 
 
@@ -72,7 +73,7 @@ package "Platform\nDiscovery" as packagePD {
     cPlatformDiscovery -u- iPlatformDiscovery
 }
 
-cAbstractModelParser -r-( repoEndpoint
+cAbstractModelParser -d-( repoEndpoint
 cSIDE -d-( iBluePrintGeneratorAPI
 cSIDE -d-( iIaCVerifier
 cSIDE -d-( iBugPredictorAndFixer
@@ -84,7 +85,7 @@ cIaCBlueprintBuilder -d-( iApplicationOptimiser
 cSIDE -( iRuntimeImageBuilder
 
 cPredictiveModelBuilder -d-( repoEndpoint
-cVerificationModelBuilder -( repoEndpoint
+cVerificationModelBuilder -d-( repoEndpoint
 cApplicationOptimiser -d-( repoEndpoint
 cPlatformDiscovery -d-( repoEndpoint
 

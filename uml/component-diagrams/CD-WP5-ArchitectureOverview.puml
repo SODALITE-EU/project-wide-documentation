@@ -3,6 +3,7 @@
 title WP5 - Runtime Layer Architecture Overview
 
 skinparam fixCircleLabelOverlapping true 
+skinparam defaultFontSize 20
 
 [SODALITE\nIDE] as ide #PaleGreen
 interface "SemanticReasonerAPI" as sem #PaleGreen

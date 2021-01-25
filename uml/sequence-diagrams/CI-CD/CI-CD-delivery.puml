@@ -2,18 +2,15 @@
 
 title SODALITE CI/CD pipeline:\nContinuous Delivery
 
+'actors and participants
 actor "developer" as human
-
-
 participant "Master branch" as master
-participant "Jenkins\nautomation server" as jenkins
+participant "Jenkins\nautomation\nserver" as jenkins
 participant "SODALITE\nprivate registry" as private_registry
 participant "sodaliteh2020\non Dockerhub" as dockerhub
-participant "SODALITE Testbed" as testbed
+participant "SODALITE\nTestbed" as testbed
 
-
-
-
+'Staging 
 group Staging
 activate master
 note over master: Release:\n0.2.9-beta\n(staging)
@@ -24,51 +21,49 @@ activate jenkins
 human --> jenkins: Build tag 0.2.9-beta
 jenkins -> jenkins: Run unit tests
 
-
 jenkins -> jenkins: Build images
-activate private_registry
 jenkins -> private_registry: Push images
+activate private_registry
+jenkins <-- private_registry: success
 
-activate testbed
 deactivate private_registry
 jenkins -> testbed: Deploy app to staging VM
+activate testbed
+jenkins <-- testbed: success
+deactivate testbed
 
 jenkins --> human: success
-deactivate testbed
 deactivate jenkins
 end
 
-
-
+'Production
 group Production
 
 activate master
-
 note over master: Release:\n0.2.9\n(production)
-
 
 master -> jenkins: New tag available
 activate jenkins
-
 human --> jenkins: Build tag 0.2.9
 jenkins -> jenkins: Run unit tests
 jenkins -> jenkins: Build images
-activate private_registry
 jenkins -> private_registry: Push images
-activate dockerhub
+activate private_registry
+jenkins <-- private_registry: success
 deactivate private_registry
 jenkins -> dockerhub: Push images
-activate testbed
+activate dockerhub
+jenkins <-- dockerhub: success
 deactivate dockerhub
 
 jenkins -> testbed: Deploy app to production VM
+activate testbed
+jenkins <-- testbed: success
+deactivate testbed
 
 jenkins --> human: success
-deactivate testbed
 deactivate jenkins
 end
-
-
 
 
 @enduml

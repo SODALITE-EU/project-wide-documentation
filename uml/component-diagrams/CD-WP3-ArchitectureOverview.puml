@@ -1,12 +1,11 @@
 @startuml
 title WP3 Modeling Layer Architecture Overview
-skinparam componentFontSize 24
-skinparam componentArrowFontSize 20
-skinparam packageFontSize 22
+skinparam componentFontSize 26
+skinparam componentArrowFontSize 22
+skinparam packageFontSize 24
 skinparam interfaceFontSize 22
-skinparam titleFontSize 22
-skinparam NoteFontSize 22
-
+skinparam titleFontSize 30
+skinparam NoteFontSize 24
 
 
 interface "IAMIntrospectionAPI" as AAUAPI #808080

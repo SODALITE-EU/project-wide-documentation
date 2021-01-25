@@ -1,6 +1,13 @@
 @startuml
-
 title WP3 Modeling Layer Architecture Overview
+skinparam componentFontSize 24
+skinparam componentArrowFontSize 20
+skinparam packageFontSize 22
+skinparam interfaceFontSize 22
+skinparam titleFontSize 22
+skinparam NoteFontSize 22
+
+
 
 interface "IAMIntrospectionAPI" as AAUAPI #808080
 interface "SecretVaultAPI" as SecretVaultAPI #808080
@@ -64,7 +71,7 @@ ideGUI ..> PDS : use
 PDS ..> resAPI : use
 resAPI -down- resPopulationEngine
 resAPI -up- resReasoningEngine
-ideDSLeditor .left..> resAPI: use
+ideDSLeditor .left.> resAPI: use
 ideDSLeditor <-down----> ideGUI 
 repoOntologies -up- repoEndpoint
 resPopulationEngine .right.> repoEndpoint: use
@@ -79,6 +86,4 @@ ideGUI .up.> iacverificationAPI : use
 ideGUI ..> SecretVaultAPI : use
 ideGUI .up.> orchestratorAPI : use
 ideGUI ..> AAUAPI: use
-
-
 @enduml

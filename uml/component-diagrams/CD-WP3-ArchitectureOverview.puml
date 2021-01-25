@@ -1,12 +1,11 @@
 @startuml
 title WP3 Modeling Layer Architecture Overview
-skinparam componentFontSize 26
-skinparam componentArrowFontSize 22
-skinparam packageFontSize 24
-skinparam interfaceFontSize 22
-skinparam titleFontSize 30
-skinparam NoteFontSize 24
-
+skinparam componentFontSize 40
+skinparam componentArrowFontSize 30
+skinparam packageFontSize 34
+skinparam interfaceFontSize 36
+skinparam titleFontSize 40
+skinparam NoteFontSize 36
 
 interface "IAMIntrospectionAPI" as AAUAPI #808080
 interface "SecretVaultAPI" as SecretVaultAPI #808080

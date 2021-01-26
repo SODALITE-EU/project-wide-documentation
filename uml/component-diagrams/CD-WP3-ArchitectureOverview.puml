@@ -1,17 +1,48 @@
 @startuml
+title WP3 Modeling Layer Architecture Overview
+skinparam componentFontSize 40
+skinparam componentArrowFontSize 30
+skinparam packageFontSize 34
+skinparam interfaceFontSize 36
+skinparam titleFontSize 40
+skinparam NoteFontSize 36
 
-title WP3 - Modeling Layer Architecture Overview
-
-interface "DeploymentPreparationAPI" as deploymentPreparationAPI
-interface "DefectPredictionCorrectionAPI" as correctionAPI
-interface "MonitoringAPI" as monitoringAPI
-interface "IaCVerificationAPI" as iacverificationAPI
-interface "OrchestratorAPI" as orchestratorAPI
+interface "IAMIntrospectionAPI" as AAUAPI #808080
+interface "SecretVaultAPI" as SecretVaultAPI #808080
+interface "DeploymentPreparationAPI" as deploymentPreparationAPI #FF6347
+interface "DefectPredictionCorrectionAPI" as correctionAPI #4169E1
+interface "MonitoringAPI" as monitoringAPI #4169E1
+interface "MonitoringRuleAPI" as monitoringRuleAPI #4169E1
+interface "IaCVerificationAPI" as iacverificationAPI #FF6347
+interface "OrchestratorAPI" as orchestratorAPI #FF6347
+interface "PlatformDiscoveryAPI" as PDS #FF6347
 
 package "SODALITE IDE" as IDE {
     component [DSL Editor] as ideDSLeditor
+    component [AADM DSL] as AADM
+    component [RM DSL] as RM
+    component [OM DSL] as OM
+    component [Ansible DSL] as Ansible
+
+    ideDSLeditor *-- AADM
+    ideDSLeditor *-- RM
+    ideDSLeditor *-- OM
+    ideDSLeditor *-- Ansible
+    AADM ..> Ansible: use
+    AADM ..> RM: use
+    AADM ..> OM: use
+    Ansible ..> RM :use
     component [GUI] as ideGUI
 }
+
+note top of ideDSLeditor
+   __**DSL Editor consists of four editors**__ 
+   AADM: Abstract Application Deployment Model
+   RM: Resource Model
+   OM: Optimization Model
+   Ansible: Ansible Abstract Playbook Model
+end note
+
 
 package "Semantic Reasoner" as res {
     interface "SemanticReasonerAPI" as resAPI
@@ -26,25 +57,31 @@ package "Semantic Knowledge Base" as repo {
     }
 }
 
-note left of repoOntologies
-   __**Semantic Modelling & Abstraction**__
+note bottom of repoOntologies
+   __**Semantic Modelling & Abstraction**__ 
    Application Ontology
    Infrastructure Ontology
    Performance Optimization Ontology
    Deployment & Lifecycle Ontology
 end note
 
+ideGUI ..> PDS : use
+PDS ..> resAPI : use
 resAPI -down- resPopulationEngine
 resAPI -up- resReasoningEngine
 ideDSLeditor .left.> resAPI: use
-ideDSLeditor <-down-> ideGUI
+ideDSLeditor <-down----> ideGUI 
 repoOntologies -up- repoEndpoint
-resPopulationEngine .left.> repoEndpoint: use
+resPopulationEngine .right.> repoEndpoint: use
 resReasoningEngine .left.> repoEndpoint: use
-ideGUI ..> deploymentPreparationAPI : use
-ideGUI ..> correctionAPI : use
+resReasoningEngine ..> AAUAPI: use
+resPopulationEngine ..> correctionAPI: use
+resPopulationEngine ..> AAUAPI: use
+ideGUI .up.> deploymentPreparationAPI : use
 ideGUI ..> monitoringAPI : use
-ideGUI ..> iacverificationAPI : use
-ideGUI ..> orchestratorAPI : use
-
+ideGUI ..> monitoringRuleAPI : use
+ideGUI .up.> iacverificationAPI : use
+ideGUI ..> SecretVaultAPI : use
+ideGUI .up.> orchestratorAPI : use
+ideGUI ..> AAUAPI: use
 @enduml

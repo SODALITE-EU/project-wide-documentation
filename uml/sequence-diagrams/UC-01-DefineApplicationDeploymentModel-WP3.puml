@@ -6,6 +6,7 @@ actor "Application\nOps Expert" as ops
 participant "SODALITE IDE" as editor
 participant "Semantic Reasoner" as reasoner
 participant "Semantic Knowledge Base\n(ontology in GraphDB)" as ontology
+participant "Bug Predictor and Fixer" as BugPredictor
 
 ops->editor: Initiate the IDE
 activate editor
@@ -52,6 +53,8 @@ loop Design time
             editor-->ops: Present inconsistencies
             ops->editor: Submit correct design
         end
+        
+       
 
         opt Recommendations
             ops->editor: Request recommendations
@@ -77,8 +80,28 @@ loop Design time
                 ops->editor: Reject presented recommendations
             end
         end
+        
+         alt Bugs detection
+                reasoner->editor: Reject presented recommendations
+         end
     end
 
+  loop Bugs detection
+       alt No Bugs found
+            reasoner->BugPredictor: Detecting bugs
+            BugPredictor->reasoner: Return no bugs
+       end
+       
+       alt Bugs found
+            reasoner->BugPredictor: Detecting bugs
+            BugPredictor->reasoner: Return bugs
+            reasoner->editor: Return bugs
+            editor->ops: Present bugs
+            opt Fix bugs
+              ops->editor: fix the bugs
+            end
+       end
+   end
 end
 
 ops->editor: Submit final model

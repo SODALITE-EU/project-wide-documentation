@@ -2,13 +2,13 @@
 
 title Verify IaC (WP4)
 
-actor "Application Ops Expert" as ops
+actor "Application\nOps Expert (AOE)" as ops
 participant "SODALITE\nIDE" as sic
 participant "IaC Verifier" as soda
-participant "Verification Model Builder" as vmb
-participant "Topology Verifier" as tv
-participant "Provisioning Workflow Verifier" as pwv
-participant "Semantic Knowledge Base" as kb
+participant "Verification\nModel\nBuilder" as vmb
+participant "Topology\nVerifier" as tv
+participant "Provisioning\nWorkflow\nVerifier" as pwv
+participant "Semantic\nKnowledge Base" as kb
 
 ops->sic: verify (IaC, Correctness Criteria)
 activate sic
@@ -43,8 +43,8 @@ else  Parse and Model Building Success
             soda --> sic: Provisioning Workflow Verification Errors
             sic --> ops: Provisioning Workflow Verification Errors
         else  Valid Provisioning Workflow
-            soda --> sic: Verification Summary for Provisioning Workflow and Topology
-            sic --> ops: Verification Summary for Provisioning Workflow and Topology
+            soda --> sic: Verification Summary\nfor Provisioning Workflow and Topology
+            sic --> ops: Verification Summary\nfor Provisioning Workflow and Topology
         end
     end
 end

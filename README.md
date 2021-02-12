@@ -6,6 +6,7 @@
   - [2.1. The SODALITE Modeling Layer](#21-the-sodalite-modeling-layer)
   - [2.2. The SODALITE Infrastructure as a Code Layer](#22-the-sodalite-infrastructure-as-a-code-layer)
   - [2.3. The SODALITE Runtime Layer](#23-the-sodalite-runtime-layer)
+  - [2.4. The SODALITE Security Pillar](#24-the-sodalite-security-pillar)
 - [3. General organization of repositories](#3-general-organization-of-repositories)
 - [4. Licenses](#4-licenses)
 - [5. Roles and Responsibilities](#5-roles-and-responsibilities)
@@ -34,7 +35,7 @@ This document presents the structure of the SODALITE organization on GitHub ([ht
 
 # 2. SODALITE Architecture and the geography of the SODALITE open source repositories
 
-The SODALITE platform is roughly organized in three layers (see Figure 1): Modeling Layer, Infrastructure as Code Layer, and Runtime Layer.  Each layer is further decomposed into a number of different elements. Such decomposition has been initially defined in Deliverable D2.1 [3] and is evolving based on the current understanding gathered by all project partners.   
+The SODALITE platform is roughly organized in three layers (see Figure 1): Modeling Layer, Infrastructure as Code Layer, and Runtime Layer.  Each layer is further decomposed into a number of different elements. Such decomposition has been initially defined in Deliverable D2.1 [3] and the updated version in Deliverable D2.2 [4]. It is evolving based on the current understanding gathered by all project partners.   
 
 The SODALITE software and team is organized around these three layers and is made available to external contributors through GitHub (github.com). In particular, we have created the SODALITE-EU organization ([https://github.com/SODALITE-EU](https://github.com/SODALITE-EU)) which, at the time of writing, features three teams of committers, one for each layer of the architecture, and various repositories, one for each subcomponent or group of strictly interrelated subcomponents. The organization also maintains an additional repository which includes the overall documentation of the project. In the following subsections we provide a short overview of the various layers of the SODALITE architecture, we identify the components that are part of each layer and the corresponding repositories.  
 
@@ -44,12 +45,12 @@ The SODALITE software and team is organized around these three layers and is mad
 <img src="images/D2-4-Guidelines-for-Contributors-to-the-SODALITE-Framework1.png" alt="SODALITE high level architecture"
 	title="SODALITE high level architecture" width="800"  />	
 
-Figure 1. SODALITE high level architecture (from D2.1)
+Figure 1. SODALITE high level architecture (from D2.2)
 
 
 ## 2.1. The SODALITE Modeling Layer
 
-The Modeling Layer offers the tools to support all modeling activities by the SODALITE users. Its elements are the IDE offering smart editing features enhanced with suggestions that are generated, in a context-based fashion,  by the Semantic Reasoner. This last component is reasoning on an extensible ontology, the Semantic Knowledge Base, that includes the main concepts needed to model a deployment configuration for a complex application. The following table lists these three components together with the main technologies they are based on and the GitHub repositories that include their code.
+The Modeling Layer offers the tools to support all modeling activities by the SODALITE users. Its elements are the IDE offering smart editing features enhanced with suggestions that are generated, in a context-based fashion,  by the Semantic Reasoner. The latter component is reasoning on an extensible ontology, the Semantic Knowledge Base, that includes the main concepts needed to model a deployment configuration for a complex application. The following table lists these three components together with the main technologies they are based on and the GitHub repositories that include their code.
 
 Table 1. Components of the Modeling Layer and corresponding repositories
 
@@ -74,7 +75,7 @@ Table 1. Components of the Modeling Layer and corresponding repositories
 <p>
 <strong>Middleware: </strong>Spring IO
 <p>
-<strong>UI/UX technology: </strong>Eclipse, REST API<strong> </strong>
+<strong>UI/UX technology: </strong>Eclipse, REST API, Orchestrator, Keycloak<strong> </strong>
    </td>
    <td><a href="https://github.com/SODALITE-EU/ide">https://github.com/SODALITE-EU/ide</a>
    </td>
@@ -90,7 +91,7 @@ Table 1. Components of the Modeling Layer and corresponding repositories
 <p>
 <strong>Middleware: </strong>Apache Tomcat
 <p>
-<strong>UI/UX technology: </strong>N/A
+<strong>UI/UX technology: </strong>REST API
    </td>
    <td><a href="https://github.com/SODALITE-EU/semantic-reasoner">https://github.com/SODALITE-EU/semantic-reasoner</a>
    </td>
@@ -136,11 +137,11 @@ Table 2. Components of the Infrastructure as a Code Layer and corresponding repo
 <p>
 <strong>License</strong>: Apache2
    </td>
-   <td><strong>Programming language(s): </strong>Java, Python
+   <td><strong>Programming language(s): </strong>Python
 <p>
 <strong>DBMS technology: </strong>N/A
 <p>
-<strong>Middleware: </strong>N/A
+<strong>Middleware: </strong>Docker
 <p>
 <strong>UI/UX technology: </strong>REST API
    </td>
@@ -152,15 +153,31 @@ Table 2. Components of the Infrastructure as a Code Layer and corresponding repo
 <p>
 <strong>License</strong>: Apache2
    </td>
-   <td><strong>Programming language(s): </strong>Java, Python
+   <td><strong>Programming language(s): </strong>Python
 <p>
 <strong>DBMS technology: </strong>N/A
 <p>
-<strong>Middleware: </strong>N/A
+<strong>Middleware: </strong>Docker
 <p>
 <strong>UI/UX technology: </strong>REST API
    </td>
    <td><a href="https://github.com/SODALITE-EU/iac-blueprint-builder">https://github.com/SODALITE-EU/iac-blueprint-builder</a>
+   </td>
+  </tr>
+  <tr>
+   <td><strong>IaC Model Repository</strong>: It is a part of the Knowledge Base, that gives the performance model or optimization for a given application/node type. 
+<p>
+<strong>License</strong>: Apache2
+   </td>
+   <td><strong>Programming language(s): </strong> Python
+<p>
+<strong>DBMS technology: </strong>MySQL
+<p>
+<strong>Middleware: </strong>N/A
+<p>
+<strong>UI/UX technology: </strong>N/A
+   </td>
+   <td><a href=" https://github.com/SODALITE-EU/application-optimisation"> https://github.com/SODALITE-EU/application-optimisation.</a>
    </td>
   </tr>
   <tr>
@@ -188,19 +205,19 @@ Table 2. Components of the Infrastructure as a Code Layer and corresponding repo
 <p>
 <strong>DBMS technology: </strong>N/A
 <p>
-<strong>Middleware: </strong>xOpera,<strong> </strong>Docker, Singularity
+<strong>Middleware: </strong>xOpera,<strong> </strong>Docker, Singularity, Kompose
 <p>
-<strong>UI/UX technology: </strong>API
+<strong>UI/UX technology: </strong>REST API, HPC container
    </td>
    <td><a href="https://github.com/SODALITE-EU/image-builder">https://github.com/SODALITE-EU/image-builder</a>
    </td>
   </tr>
   <tr>
-   <td><strong>Application Optimiser</strong>: Tries to build a performance-wise improved version of an application for a given target platform based on the optimisation options selected
+   <td><strong>Application Optimiser - MODAK</strong>: Tries to build a performance-wise improved version of an application for a given target platform based on the optimisation options selected
 <p>
 <strong>License</strong>: Apache2
    </td>
-   <td><strong>Programming language(s): </strong>Python
+   <td><strong>Programming language(s): </strong>Python, Ruby, CRESTA Autotuning
 <p>
 <strong>DBMS technology: </strong>N/A
 <p>
@@ -216,7 +233,7 @@ Table 2. Components of the Infrastructure as a Code Layer and corresponding repo
 <p>
 <strong>License</strong>: Apache2
    </td>
-   <td><strong>Programming language(s): </strong>Java and Python 
+   <td><strong>Programming language(s): </strong>Java, Python 
 <p>
 <strong>DBMS technology: </strong>N/A
 <p>
@@ -323,6 +340,22 @@ Table 2. Components of the Infrastructure as a Code Layer and corresponding repo
    <td><a href="https://github.com/SODALITE-EU/iac-quality-framework">https://github.com/SODALITE-EU/iac-quality-framework</a>
    </td>
   </tr>
+   <tr>
+   <td><strong>Platform Discovery Service</strong>: It creates a TOSCA platform resource model definition based on access data and type provided by the Resource Expert.
+<p>
+<strong>License</strong>: Apache2
+   </td>
+   <td><strong>Programming language(s): </strong>Python, TOSCA, Ansible
+<p>
+<strong>DBMS technology: </strong>N/A
+<p>
+<strong>Middleware: </strong>Dockerhost engine
+<p>
+<strong>UI/UX technology: </strong>API
+   </td>
+   <td><a href="https://github.com/SODALITE-EU/platform-discovery-service">https://github.com/SODALITE-EU/platform-discovery-service</a>
+   </td>
+  </tr>
   <tr>
    <td><strong>Image Registry</strong>: It stores the images after their generation by the Runtime and Concrete Image Builder
 <p>
@@ -412,15 +445,15 @@ includes the following repository as submodule
    </td>
   </tr>
   <tr>
-   <td><strong>xOpera REST API</strong> - includes xOpera REST API interface with persistence, session management, status of deployment, history of deployment, documented with swagger
+   <td><strong>xOpera REST API</strong> - includes xOpera REST API interface with persistence, TOSCA blueprint registration session management, status and history of deployment, documented with swagger
    </td>
-   <td><strong>Programming language(s): Python</strong>
+   <td><strong>Programming language(s): </strong> Python, Ansible
 <p>
-<strong>DBMS technology: Postgres</strong>
+<strong>DBMS technology: </strong> Postgres
 <p>
-<strong>Middleware: Flask</strong>
+<strong>Middleware: </strong> Kubernetes, OpenStack, HPC
 <p>
-<strong>UI/UX technology: REST API</strong>
+<strong>UI/UX technology: </strong> REST API, AWS
    </td>
    <td><a href="https://github.com/SODALITE-EU/xopera-rest-api">https://github.com/SODALITE-EU/xopera-rest-api</a>
    </td>
@@ -553,7 +586,7 @@ includes the following repository as submodule:
 
 # 3. General organization of repositories
 
-Each repository provides the source code associated with the corresponding component, any infrastructural code and configuration files needed to compile it, deploy it, and make it work, the test suites currently available and executed on the software, known open issues and bugs, and its public APIs, as openAPI [4] specification. Thus, we envision the organization of the SODALITE repositories as follows:
+Each repository provides the source code associated with the corresponding component, any infrastructural code and configuration files needed to compile it, deploy it, and make it work, the test suites currently available and executed on the software, known open issues and bugs, and its public APIs, as openAPI [5] specification. Thus, we envision the organization of the SODALITE repositories as follows:
 
  
 
@@ -590,7 +623,7 @@ Sodalite ---project-wide documentation
 |-- uml
 
 ```
-Within this structure, we will include the open-source **LICENSE<sup> </sup>** [5] associated with each repository (at the time of writing, all components under development feature an Apache 2 license);  the **README** that represents the instruction manual that welcomes new community members to the project; this document **helps people _contribute_ to the project** and defines the **CODE_OF_CONDUCT** setting ground rules for participants’ behavior and helps facilitate a friendly environment (i.e., how to contribute). The project will also have additional documentation, such as tutorials or walkthroughs.
+Within this structure, we will include the open-source **LICENSE<sup> </sup>** [6] associated with each repository (at the time of writing, all components under development feature an Apache 2 license);  the **README** that represents the instruction manual that welcomes new community members to the project; this document **helps people _contribute_ to the project** and defines the **CODE_OF_CONDUCT** setting ground rules for participants’ behavior and helps facilitate a friendly environment (i.e., how to contribute). The project will also have additional documentation, such as tutorials or walkthroughs.
 
 
 # 4. Licenses
@@ -628,7 +661,7 @@ When the code changes are approved, the CI/CD pipeline is triggered by Jenkins, 
 
 # 7. Guidelines for external contributors
 
-The guide “How to Contribute to Open Source” [6] suggests that before doing anything, new contributors should always carry out a quick check to make sure their ideas have not been addressed already. Potential contributors must always skim through the project documentation (e.g., README files, open and closed issues). If they cannot find their ideas elsewhere, then they are ready to contribute. 
+The guide “How to Contribute to Open Source” [7] suggests that before doing anything, new contributors should always carry out a quick check to make sure their ideas have not been addressed already. Potential contributors must always skim through the project documentation (e.g., README files, open and closed issues). If they cannot find their ideas elsewhere, then they are ready to contribute. 
 
 
 There could be multiple ways of contributing to SODALITE, as summarized in Figure 3: 
@@ -680,9 +713,10 @@ This document will then serve as reference for the SODALITE communities and will
 1. Eric S. Raymond, The Cathedral & the Bazaar: Musings on Linux and Open Source by an Accidental Revolutionary, O'Reilly Media, 258 pages
 2. Stormy Peters and Nithya Ruff, Participating in open source communities ([https://todogroup.org/guides/participating/](https://todogroup.org/guides/participating/) and [https://www.linuxfoundation.org/resources/open-source-guides/participating-open-source-communities/](https://www.linuxfoundation.org/resources/open-source-guides/participating-open-source-communities/))
 3. SODALITE Consortium, Requirements, KPIs, evaluation plan and architecture - First version, Technical deliverable 2.1, 2019.
-4. Choose an open source license ([https://choosealicense.com](https://choosealicense.com))
-5. The OpenAPI Specification ([https://www.openapis.org](https://www.openapis.org))
-6. How to Contribute to Open Source ([https://opensource.guide/how-to-contribute/](https://opensource.guide/how-to-contribute/))
+4. SODALITE Consortium, Requirements, KPIs, evaluation plan and architecture - Intermediate version, Technical deliverable 2.2, 2021.
+5. Choose an open source license ([https://choosealicense.com](https://choosealicense.com))
+6. The OpenAPI Specification ([https://www.openapis.org](https://www.openapis.org))
+7. How to Contribute to Open Source ([https://opensource.guide/how-to-contribute/](https://opensource.guide/how-to-contribute/))
 
 <!-- Docs to Markdown version 1.0β19 -->
 

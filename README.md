@@ -12,8 +12,10 @@
 - [5. Roles and Responsibilities](#5-roles-and-responsibilities)
 - [6. SODALITE development flow](#6-sodalite-development-flow)
 - [7. Guidelines for external contributors](#7-guidelines-for-external-contributors)
-- [8. Conclusions](#8-conclusions)
-- [9. References](#9-references)
+- [8. Guidelines for software and release management](#8-guidelines-for-software-and-release-management)
+- [9. Code Quality of Repositories](#9-code-quality-of-repositories)
+- [10. Conclusions](#10-conclusions)
+- [11. References](#11-references)
 
 <!--![SODALITE](images/D2-4-Guidelines-for-Contributors-to-the-SODALITE-Framework0.png "SODALITE")-->
 
@@ -582,6 +584,7 @@ includes the following repository as submodule:
   </tr>
 </table>
 
+## 2.4. The SODALITE Security Pillar
 
 
 # 3. General organization of repositories
@@ -699,15 +702,62 @@ Figure 4. Pull request workflow
 
 In general, the SODALITE team would like to enter in touch informally with potential contributors as soon as possible and discuss with them any problem or new idea. To this purpose, the team will open a slack channel and will provide on GitHub instructions to join it.
 
+# 8. Guidelines for software and release management
+The project adopts the best practice guidelines to govern the management and quality of released software and versions [8, 9, 10]. These guidelines are to be followed by all SODALITE contributors, either internal to the project or external. 
 
-# 8. Conclusions
+According to what the Apache Software Foundation (ASF) says, a release in SODALITE is “anything that is published beyond the group that owns it, that is, any publication outside the development community”. In the case of SODALITE, the unit of release is the service [9], that is, a component offering a proper REST API. The only exception to this principle is the IDE that acts as the frontend client of the SODALITE platform. Each service must be documented at least through a usage example that is used as a basis for integration testing. 
+
+The development process adopted for the different artifacts is based on the following assumptions:
+
+* Each component resides in a GitHub repository;
+* Each repository must have unit tests defined;
+* Each repository has a Jenkins process defined to perform integration;
+* Anything in the master branch is always deployable. This is guaranteed by the automated processes defined by Jenkins;
+* Each newly released component must be accompanied by an example of usage defined in terms of corresponding REST calls. This facilitates integration of components. 
+
+The procedure to contribute new code to a repository works as follows:
+
+* A pull request is issued to integrate the code into the master branch. If the user performing the pull request has write access to the repository, then the request activates the Jenkins job automatically, builds the code, runs the defined unit tests otherwise it is manually evaluated by the repository owner;
+* If the unit tests fail, then the code is not integrated in the master; - For this to happen, the Jenkins status check (continuous-integration/jenkins/pr-merge) needs to be defined as a required status check; 
+* If unit tests are successful, the code is integrated into the master (this is currently manual, but can be automated by Jenkins, if desired) and a new ready to use image is created and uploaded on DockerHub.
+
+In addition, we also follow the following good practices, as suggested by GitHub flow:
+
+* New ideas and evolutions are managed through branches, and their names should be descriptive;
+* Each commit has an associated commit message, a description explaining why a particular change was made (each commit is considered a separate unit of change);
+* Pull Requests contain an explanation to inform repository owners and other partners about the changes one would like to perform;
+* Each pull request must always be associated with an issue in the management board to relate a change to an actual need;
+* Quality metrics will be periodically collected and their trends will be analyzed over time to ensure the code of each component will gradually improve its quality through the project. Based on the outcome of the first measurements, we will decide whether to add automated checks in the CI/CD pipeline associating them to some quality gates. As for the tool to be used for quality metrics collection, the consortium is evaluating different solutions that both provide sufficient guarantees and cover the polyglot context behind SODALITE. At the moment, SonarQube appears to be the most likely choice given that it supports multiple languages, offers a large degree of flexibility and it is well known by the SODALITE CI/CD master. Given the need for a dedicated VM to SonarQube scanners, the feasibility of deploying it on our testbed is under investigation. Other possible options are  CodeFactor, Codacy or Code Climate. As for the specific metrics to collect, we will keep under control at least the following ones: cyclomatic complexity; duplicated blocks, files, lines; typical code smells; vulnerabilities; coverage of tests. As mentioned above, we will make sure that at every new release of each component the metrics show an improvement compared to the previous value.
+
+A SODALITE platform release is composed of the IDE and the set of microservices made available as images on DockerHub. The deployment and execution of the whole platform is planned to be automated through TOSCA and Ansible blueprints created and maintained using the same SODALITE tools. These are available here [https://github.com/SODALITE-EU/iac-platform-stack](https://github.com/SODALITE-EU/iac-platform-stack). A user willing to deploy and execute the platform must go through the following steps:
+
+* Have the xOpera orchestrator installed either locally or on a VM in the preferred cloud provider
+* Install the IDE locally to his/her machine. The installation can either start from downloading the source code or can rely on the corresponding Docker image available on DockerHub
+* Edit the blueprints to include the specific information concerning the resources that will be used to run the platform. Specific instructions for this will be released together with the blueprints (now under development) and maintained through the development of the project.
+* Run the blueprints through xOpera.
+
+During the development of the project we plan to create SODALITE platform releases according to the following timeline:
+
+* M12: Laboratory prototype that is “up-and running”. This initial version of the SODALITE platform is released in terms of source code and demonstrators, outside the CI/CD and automated deployment pipeline we have been defining in parallel.
+* M18: First consolidated prototype, Use-Cases can all be executed on it.
+* M24: First advanced features, more integrated prototype running. Use-Cases are clearly improved. Second public release of the complete stack.
+* M30: Prototype validated by Use-Cases. Planning for the last features and their integration complete. Third public release of the complete stack.
+* M36: Evaluated and integrated prototype. Use Cases used to validate the Use-Cases. Final public release of the complete stack.
+
+All releases, except the first one, will be accompanied by the corresponding automatically generated Docker images and the TOSCA/Ansible blueprints that automate the deployment and execution of the whole infrastructure. 
+
+
+# 9. Quality metrics of Repositories
+
+
+# 10. Conclusions
 
 This document discusses the guidelines for creating open-source communities behind the different artefacts developed by SODALITE.  It also identifies rules, roles, and hints to let external people contribute to the project and help ameliorate it. 
 
 This document will then serve as reference for the SODALITE communities and will be updated properly while the project evolves, and new needs emerge.
 
 
-# 9. References
+# 11. References
 
 
 1. Eric S. Raymond, The Cathedral & the Bazaar: Musings on Linux and Open Source by an Accidental Revolutionary, O'Reilly Media, 258 pages
@@ -717,6 +767,10 @@ This document will then serve as reference for the SODALITE communities and will
 5. Choose an open source license ([https://choosealicense.com](https://choosealicense.com))
 6. The OpenAPI Specification ([https://www.openapis.org](https://www.openapis.org))
 7. How to Contribute to Open Source ([https://opensource.guide/how-to-contribute/](https://opensource.guide/how-to-contribute/))
+8. Betsy Beyer, Chris Jones, Jennifer Petoff and Niall Richard Murphy Editors, Site Reliability Engineering - how Google runs production systems, O’Really 2016.
+9. A. Fox, D. Patterson, Engineering Software as a Service, an Agile Approach Using Cloud Computing, Strawberry Canyon LLC; 2nd ed, 2013.
+10. Pablo Orviz Fernández, Mário David, Doina Cristina Duma, Elisabetta Ronchieri, Jorge Gomes, and Davide Salomoni, Software Quality Assurance in INDIGO-DataCloud Project: a Converging Evolution of Software Engineering Practices to Support European Research e-Infrastructures, Journal of Grid Computing volume 18, pages 81–98(2020).
+
 
 <!-- Docs to Markdown version 1.0β19 -->
 

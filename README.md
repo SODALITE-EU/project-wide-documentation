@@ -749,6 +749,535 @@ All releases, except the first one, will be accompanied by the corresponding aut
 
 # 9. Quality metrics of Repositories
 
+SODALITE is bound to produce mostly open source code on a publicly available version control system. The SODALITE consortium recognizes the high impact of developing excellent quality of code of its software components. For this reason the free and open online SonarCloud utility is used to assess the quality of the code. To enable developers to deliver better code, SonarCloud shows various dashboards and enables a streamlined integration with GitHub, providing the developers with a good estimate of code quality even before merging the code into the master/main branch. This feature, among many others, is extensively used in the SODALITE CI/CD pipeline, providing both the developer and the reviewer of the code with significant and important insights about the quality of developed code, as well as providing useful suggestions on how to improve the code.  
+
+All of the repositories of the SODALITE components were integrated with SonarCloud during the second year of the project. The main metrics collected concern the following aspects:
+
+* the number of bugs: bugs in SonarCloud are identified by exploiting various static analysis tools specific to the supported languages. 
+* the number of security vulnerabilities and hotspots. As highlighted in the SonarCloud manual[11], "with a Hotspot, a security-sensitive piece of code is highlighted, but the overall application security may not be impacted. It's up to the developer to review the code to determine whether or not a fix is needed to secure the code. With a vulnerability, a problem that impacts the application's security has been discovered that needs to be fixed immediately",
+* the number of code smells,
+* the code coverage defined in terms of lines of code that are exercised by automated test cases,
+* the amount of replicated code.
+
+The general goal of SODALITE with respect to these metrics is to continuously keep them under control and improve them from release to release. As for the components belonging to the IaC Management Layer, we expect the metrics to show relatively high values considering that these components are used by most of the others in the platform.
+
+In the following table, for each stable component, we provide an overview of its current status in terms of the following SonarCloud metrics:
+
+* Column LOC shows the number of lines of code of each project
+* Column QTG reports the last outcome of the analysis process (Quality Gate). OK means passed, KO failed and N/A not available
+* Column BUG details the number of code bugs detected by Sonar and the associated label (from best A to worst E)
+* Column VLN shows the number of vulnerabilities detected by Sonar and the associated label (from best A to worst E)
+* Column HSP reports the percentage of security hotspot reviewed over the total and the associated label (from best A to worst E)
+* Column CSL  details the number of code smells and the associated label (from best A to worst E)
+* Column COV shows the percentage of lines of code covered by test cases
+* Column DUP reports the percentage of duplicated lines
+
+Table 4. Code quality of SODALITE projects
+<table>
+  <tr>
+   <td><strong>Project Name</strong>
+   </td>
+   <td><strong>LOC</strong>
+   </td>
+   <td><strong>QTG</strong>
+   </td>
+   <td><strong>BUG</strong>
+   </td>
+   <td><strong>VLN</strong>
+   </td>
+   <td><strong>HSP</strong>
+   </td>
+   <td><strong>CSL</strong>
+   </td>
+   <td><strong>COV</strong>
+   </td>
+   <td><strong>DOP</strong>
+   </td>
+  </tr>
+  <tr>
+   <td><strong>ansible-defects</strong>
+   </td>
+   <td>2200
+   </td>
+   <td>OK
+   </td>
+   <td>0 (C)
+   </td>
+   <td>0 (A)
+   </td>
+   <td>100% (A)
+   </td>
+   <td>57 (A)
+   </td>
+   <td>34.9%
+   </td>
+   <td>2.9%
+   </td>
+  </tr>
+  <tr>
+   <td><strong>application-optimization</strong>
+   </td>
+   <td>4400
+   </td>
+   <td>OK
+   </td>
+   <td>0 (A)
+   </td>
+   <td>0 (A)
+   </td>
+   <td>- (A)
+   </td>
+   <td>86 (A)
+   </td>
+   <td> -
+   </td>
+   <td> 6.2%
+   </td>
+  </tr>
+  <tr>
+   <td><strong>hpc-exporter</strong>
+   </td>
+   <td>1100
+   </td>
+   <td>OK
+   </td>
+   <td>0 (A)
+   </td>
+   <td>0 (A)
+   </td>
+   <td>100% (A)
+   </td>
+   <td>27 (A)
+   </td>
+   <td> -
+   </td>
+   <td> 5.9%
+   </td>
+  </tr>
+  <tr>
+   <td><strong>edgetpu-exporter</strong>
+   </td>
+   <td>166
+   </td>
+   <td>OK
+   </td>
+   <td>0 (A)
+   </td>
+   <td>0 (A)
+   </td>
+   <td>100% (A)
+   </td>
+   <td>0 (A)
+   </td>
+   <td> -
+   </td>
+   <td>0.0%
+   </td>
+  </tr>
+   <tr>
+   <td><strong>prometheus_ncs2_exporter</strong>
+   </td>
+   <td>196
+   </td>
+   <td>OK
+   </td>
+   <td>0 (A)
+   </td>
+   <td>0 (A)
+   </td>
+   <td>100% (A)
+   </td>
+   <td>0 (A)
+   </td>
+   <td> -
+   </td>
+   <td> 0.0%
+   </td>
+  </tr>
+  <tr>
+   <td><strong>iac-blueprint-builder</strong>
+   </td>
+   <td>676
+   </td>
+   <td>OK
+   </td>
+   <td>0 (A)
+   </td>
+   <td>0 (A)
+   </td>
+   <td>50% (C)
+   </td>
+   <td>14 (A)
+   </td>
+   <td> 87.5%
+   </td>
+   <td> 0.0%
+   </td>
+  </tr>
+  <tr>
+   <td><strong>iac-management</strong>
+   </td>
+   <td>144
+   </td>
+   <td>OK
+   </td>
+   <td>0 (A)
+   </td>
+   <td>0 (A)
+   </td>
+   <td>- (A)
+   </td>
+   <td>7 (A)
+   </td>
+   <td> -
+   </td>
+   <td> 0.0%
+   </td>
+  </tr>
+  <tr>
+   <td><strong>iac-platform-stack</strong>
+   </td>
+   <td>1
+   </td>
+   <td>OK
+   </td>
+   <td>0 (A)
+   </td>
+   <td>0 (A)
+   </td>
+   <td>100% (A)
+   </td>
+   <td>0 (A)
+   </td>
+   <td> -
+   </td>
+   <td> 0.0%
+   </td>
+  </tr>
+  <tr>
+   <td><strong>iac-quality-framework</strong>
+   </td>
+   <td>843
+   </td>
+   <td>OK
+   </td>
+   <td>0 (A)
+   </td>
+   <td>0 (A)
+   </td>
+   <td>100% (A)
+   </td>
+   <td>19 (A)
+   </td>
+   <td> 51.8%
+   </td>
+   <td> 0.0%
+   </td>
+  </tr>
+  <tr>
+   <td><strong>ide</strong>
+   </td>
+   <td>6600
+   </td>
+   <td>OK
+   </td>
+   <td>0 (E)
+   </td>
+   <td>0 (A)
+   </td>
+   <td>80% (D)
+   </td>
+   <td>570 (A)
+   </td>
+   <td> -
+   </td>
+   <td> 4.7%
+   </td>
+  </tr>
+  <tr>
+   <td><strong>image-builder</strong>
+   </td>
+   <td>1800
+   </td>
+   <td>OK
+   </td>
+   <td>0 (A)
+   </td>
+   <td>0 (A)
+   </td>
+   <td>0% (E)
+   </td>
+   <td>9 (A)
+   </td>
+   <td> 73.6%
+   </td>
+   <td> 1.6%
+   </td>
+  </tr>
+  <tr>
+   <td><strong>ipmi-exporter</strong>
+   </td>
+   <td>50
+   </td>
+   <td>OK
+   </td>
+   <td>0 (A)
+   </td>
+   <td>0 (A)
+   </td>
+   <td>- (A)
+   </td>
+   <td>1 (A)
+   </td>
+   <td> -
+   </td>
+   <td> 0.0%
+   </td>
+  </tr>
+  <tr>
+   <td><strong>monitoring-system</strong>
+   </td>
+   <td>64
+   </td>
+   <td>OK
+   </td>
+   <td>0 (A)
+   </td>
+   <td>0 (A)
+   </td>
+   <td>100% (A)
+   </td>
+   <td>59 (A)
+   </td>
+   <td> 34.2%
+   </td>
+   <td> 6.1%
+   </td>
+  </tr>
+  <tr>
+   <td><strong>platform-discovery-service</strong>
+   </td>
+   <td>830
+   </td>
+   <td>OK
+   </td>
+   <td>0 (A)
+   </td>
+   <td>0 (A)
+   </td>
+   <td>0.0% (E)
+   </td>
+   <td>19 (A)
+   </td>
+   <td> 80.5%
+   </td>
+   <td> 0.0%
+   </td>
+  </tr>
+  <tr>
+   <td><strong>refactoring-ct</strong>
+   </td>
+   <td>5400
+   </td>
+   <td>OK
+   </td>
+   <td>0 (A)
+   </td>
+   <td>0 (A)
+   </td>
+   <td>100% (A)
+   </td>
+   <td>93 (A)
+   </td>
+   <td> -
+   </td>
+   <td> 41.5%
+   </td>
+  </tr>
+  <tr>
+   <td><strong>refactoring-option-discover</strong>
+   </td>
+   <td>306
+   </td>
+   <td>OK
+   </td>
+   <td>0 (A)
+   </td>
+   <td>0 (A)
+   </td>
+   <td>100% (A)
+   </td>
+   <td>20 (A)
+   </td>
+   <td> 90.2%
+   </td>
+   <td> 0.0%
+   </td>
+  </tr>
+  <tr>
+   <td><strong>rule-ml-based</strong>
+   </td>
+   <td>1700
+   </td>
+   <td>OK
+   </td>
+   <td>0 (A)
+   </td>
+   <td>0 (A)
+   </td>
+   <td>100% (A)
+   </td>
+   <td>76 (A)
+   </td>
+   <td> 98.7%
+   </td>
+   <td> 9.0%
+   </td>
+  </tr>
+  <tr>
+   <td><strong>semantic-reasoner</strong>
+   </td>
+   <td>7500
+   </td>
+   <td>OK
+   </td>
+   <td>0 (A)
+   </td>
+   <td>0 (A)
+   </td>
+   <td>100% (A)
+   </td>
+   <td>585 (A)
+   </td>
+   <td> 75.5%
+   </td>
+   <td> 2.9%
+   </td>
+  </tr>
+  <tr>
+   <td><strong>ALDE</strong>
+   </td>
+   <td>2000
+   </td>
+   <td>OK
+   </td>
+   <td>1 (B)
+   </td>
+   <td>0 (A)
+   </td>
+   <td>0.0% (E)
+   </td>
+   <td>44 (A)
+   </td>
+   <td> 87.5%
+   </td>
+   <td> 0.0%
+   </td>
+  </tr>
+  <tr>
+   <td><strong>tosca-smell</strong>
+   </td>
+   <td>971
+   </td>
+   <td>OK
+   </td>
+   <td>0 (A)
+   </td>
+   <td>0 (A)
+   </td>
+   <td>100% (A)
+   </td>
+   <td>31 (A)
+   </td>
+   <td> 52.0%
+   </td>
+   <td> 0.0%
+   </td>
+  </tr>
+  <tr>
+   <td><strong>verification-unifiedapi</strong>
+   </td>
+   <td>39
+   </td>
+   <td>OK
+   </td>
+   <td>0 (A)
+   </td>
+   <td>0 (A)
+   </td>
+   <td>100% (A)
+   </td>
+   <td>0 (A)
+   </td>
+   <td> -
+   </td>
+   <td> 0.0%
+   </td>
+  </tr>
+  <tr>
+   <td><strong>verification-syntax</strong>
+   </td>
+   <td>113
+   </td>
+   <td>OK
+   </td>
+   <td>0 (A)
+   </td>
+   <td>0 (A)
+   </td>
+   <td>100% (A)
+   </td>
+   <td>1 (A)
+   </td>
+   <td> 100%
+   </td>
+   <td> 0.0%
+   </td>
+  </tr>
+  <tr>
+   <td><strong>verification-workflow</strong>
+   </td>
+   <td>106
+   </td>
+   <td>OK
+   </td>
+   <td>0 (A)
+   </td>
+   <td>0 (A)
+   </td>
+   <td>100% (A)
+   </td>
+   <td>1 (A)
+   </td>
+   <td> 22.0%
+   </td>
+   <td> 0.0%
+   </td>
+  </tr>
+  <tr>
+   <td><strong>xopera-rest-api</strong>
+   </td>
+   <td>6600
+   </td>
+   <td>OK
+   </td>
+   <td>0 (A)
+   </td>
+   <td>0 (A)
+   </td>
+   <td>0.0% (E)
+   </td>
+   <td>52 (A)
+   </td>
+   <td> 80.6%
+   </td>
+   <td> 0.0%
+   </td>
+  </tr>
+   
+</table>
+
+
 
 # 10. Conclusions
 
@@ -770,7 +1299,7 @@ This document will then serve as reference for the SODALITE communities and will
 8. Betsy Beyer, Chris Jones, Jennifer Petoff and Niall Richard Murphy Editors, Site Reliability Engineering - how Google runs production systems, O’Really 2016.
 9. A. Fox, D. Patterson, Engineering Software as a Service, an Agile Approach Using Cloud Computing, Strawberry Canyon LLC; 2nd ed, 2013.
 10. Pablo Orviz Fernández, Mário David, Doina Cristina Duma, Elisabetta Ronchieri, Jorge Gomes, and Davide Salomoni, Software Quality Assurance in INDIGO-DataCloud Project: a Converging Evolution of Software Engineering Practices to Support European Research e-Infrastructures, Journal of Grid Computing volume 18, pages 81–98(2020).
-
+11. SonarCloud manual [https://docs.sonarqube.org/latest/user-guide/security-hotspots/](https://docs.sonarqube.org/latest/user-guide/security-hotspots/) 
 
 <!-- Docs to Markdown version 1.0β19 -->
 

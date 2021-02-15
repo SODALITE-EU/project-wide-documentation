@@ -13,7 +13,7 @@
 - [6. SODALITE development flow](#6-sodalite-development-flow)
 - [7. Guidelines for external contributors](#7-guidelines-for-external-contributors)
 - [8. Guidelines for software and release management](#8-guidelines-for-software-and-release-management)
-- [9. Code Quality of Repositories](#9-code-quality-of-repositories)
+- [9. Quality metrics of Repositories](#9-quality-metrics-of-repositories)
 - [10. Conclusions](#10-conclusions)
 - [11. References](#11-references)
 
@@ -586,12 +586,17 @@ includes the following repository as submodule:
 
 ## 2.4. The SODALITE Security Pillar
 
+SODALITE provides tools and methods to authenticate and authorize actions on API endpoints using open-source Identity management and Secure Secret handling tools. While authorization is required - a single SODALITE endpoint can manage different infrastructures belonging to different domains. Apart from proper authentication and authorization of user actions,  safe secret management across the whole deployment pipeline is also required and ensured by SODALITE. 
+As a basis for authorization the OAuth 2.0 protocol was chosen, which is the de-facto industry standard for authorization. As for IAM provider, SODALITE uses Keycloak3 - a popular and widely used open source tool which simplifies the creation of secure services with minimal coding for authentication and authorization. 
+also support such features as 2-factor authentication and seamless integration with third party identity providers like Google or GitHub. For issuing JWT (JSON Web Token) Access Token OAuth 2.0 Resource Owner Password Credentials Grant flow is used, since the whole flow is confined inside SODALITE there is no insecure exposure of credentials to the client.
+While SODALITE allows not storing any secrets at all and providing them in inputs, storing secrets in a vault allows to automate workflow and additionally ensure its safety. For that purpose Hashicorp Vault4 was chosen, which is probably the most widely used open source tool for secret management.
+Both Keycloak and Hashicorp Vault are deployed as a part of SODALITE stack. Admin credentials, roles, groups, clients, policies are created automatically, additional configuration can be done via API calls or component Web UIs.
+
 
 # 3. General organization of repositories
 
 Each repository provides the source code associated with the corresponding component, any infrastructural code and configuration files needed to compile it, deploy it, and make it work, the test suites currently available and executed on the software, known open issues and bugs, and its public APIs, as openAPI [5] specification. Thus, we envision the organization of the SODALITE repositories as follows:
 
- 
 
 ```
 |- Repository X

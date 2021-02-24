@@ -36,7 +36,7 @@ This document presents the structure of the SODALITE organization on GitHub ([ht
 
 The SODALITE platform is roughly organized in three layers (see Figure 1): Modeling Layer, Infrastructure as Code Layer, and Runtime Layer.  Each layer is further decomposed into a number of different elements. Such decomposition has been initially defined in Deliverable D2.1 [3] and is evolving based on the current understanding gathered by all project partners.   
 
-The SODALITE software and team is organized around these three layers and is made available to external contributors through GitHub (github.com). In particular, we have created the SODALITE-EU organization ([https://github.com/SODALITE-EU](https://github.com/SODALITE-EU)) which, at the time of writing, features three teams of committers, one for each layer of the architecture, and various repositories, one for each subcomponent or group of strictly interrelated subcomponents. The organization also maintains an additional repository which includes the overall documentation of the project. In the following subsections we provide a short overview of the various layers of the SODALITE architecture, we identify the components that are part of each layer and the corresponding repositories.  
+The SODALITE software and team is organized around these three layers and is made available to external contributors through GitHub (github.com). In particular, we have created the SODALITE-EU organization ([https://github.com/SODALITE-EU](https://github.com/SODALITE-EU)) which, at the time of writing, features three teams of committers, one for each layer of the architecture, and various repositories, one for each subcomponent or group of strictly interrelated subcomponents. The organization also maintains this repository as an additional repository which includes the overall documentation of the project. In the following subsections we provide a short overview of the various layers of the SODALITE architecture, we identify the components that are part of each layer and the corresponding repositories.  
 
 
 <!--![alt_text](images/D2-4-Guidelines-for-Contributors-to-the-SODALITE-Framework1.png "")-->
@@ -117,7 +117,7 @@ Table 1. Components of the Modeling Layer and corresponding repositories
 
 ## 2.2. The SODALITE Infrastructure as a Code Layer
 
-The Infrastructure as a Code Layer is in charge of transforming an Abstract Deployment Model built using the modeling layer into an executable blueprint and a set of related artifacts (configuration scripts and execution container images). It also includes tools that identify and detect anti-patterns to be avoided as well as mechanisms to optimize the deployment of an application based on its characteristics. More specifically, this layer includes the subcomponents described in the following table. 
+The Infrastructure as a Code Layer is in charge of transforming an Abstract Deployment Model built using the modeling layer into an executable blueprint and a set of related artifacts (configuration scripts and execution container images). It also includes tools that identify and detect anti-patterns to be avoided as well as mechanisms to optimize the deployment of an application based on its characteristics. Additionally it provides automated platform discovery for the creation of platform resource models thus enabling the user to easily reuse these models when modelling application deployments. More specifically, this layer includes the subcomponents described in the following table. 
 
 Table 2. Components of the Infrastructure as a Code Layer and corresponding repositories
 
@@ -348,13 +348,30 @@ Table 2. Components of the Infrastructure as a Code Layer and corresponding repo
 <p>
 <strong>DBMS technology: </strong>N/A
 <p>
-<strong>Middleware: </strong>Dockerhost engine
+<strong>Middleware: </strong>N/A
 <p>
 <strong>UI/UX technology: </strong>N/A
    </td>
-   <td><a href="https://github.com/SODALITE-EU/iac-management">https://github.com/SODALITE-EU/iac-management</a>
+   <td><a href="https://github.com/SODALITE-EU/platform-discovery-service">https://github.com/SODALITE-EU/platform-discovery-service</a>
    </td>
   </tr>
+  <tr>
+   <td><strong>Platform Discovery Service</strong> automates the creation of a TOSCA model definition for a specific platform such as HPC Torque/Slurm managed systems and cloud platforms such as Openstack and AWS,  given access data and specific namespace. When stored in the SODALITE knowledge base this definiton is used to ease the modelling of Application deployments.
+<p>
+<strong>License</strong>: Apache2
+   </td>
+   <td><strong>Programming language(s): </strong>Python, TOSCA, Ansible
+<p>
+<strong>DBMS technology: </strong>N/A
+<p>
+<strong>Middleware: </strong>N/A
+<p>
+<strong>UI/UX technology: </strong>REST API
+   </td>
+   <td><a href="https://github.com/SODALITE-EU/platform-discovery-service">https://github.com/SODALITE-EU/platform-discovery-service</a>
+   </td>
+  </tr>	
+	
 </table>
 
 
@@ -384,7 +401,7 @@ Table 3. Components of the Runtime Layer and corresponding repositories
 <p>
 <strong>DBMS technology: </strong>N/A
 <p>
-<strong>Middleware: </strong>OpenStack<strong> </strong>
+<strong>Middleware: </strong>N/A
 <p>
 <strong>UI/UX technology: </strong>REST API 
    </td>
@@ -414,13 +431,13 @@ includes the following repository as submodule
   <tr>
    <td><strong>xOpera REST API</strong> - includes xOpera REST API interface with persistence, session management, status of deployment, history of deployment, documented with swagger
    </td>
-   <td><strong>Programming language(s): Python</strong>
+   <td><strong>Programming language(s):</strong> Python
 <p>
-<strong>DBMS technology: Postgres</strong>
+<strong>DBMS technology:</strong> Postgres
 <p>
-<strong>Middleware: Flask</strong>
+<strong>Middleware:</strong> Flask
 <p>
-<strong>UI/UX technology: REST API</strong>
+<strong>UI/UX technology:</strong> REST API, swagger UI
    </td>
    <td><a href="https://github.com/SODALITE-EU/xopera-rest-api">https://github.com/SODALITE-EU/xopera-rest-api</a>
    </td>

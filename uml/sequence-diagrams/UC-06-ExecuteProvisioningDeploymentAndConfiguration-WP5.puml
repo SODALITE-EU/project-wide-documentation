@@ -6,7 +6,9 @@ actor "Application\nOps Expert" as ops
 participant "SOLIDATE\nIDE" as ide
 participant "IaC Blueprint Builder" as builder
 participant "Image Registry" as imagereg
+participant "Dashboard registry" as registry
 participant  Orchestrator as orch
+participant "Dashboard agent" as dash
 participant "Execution Platform\nManager" as res
 participant "VM" as VM
 participant "Monitoring" as mon
@@ -24,7 +26,19 @@ orch-->builder: Blueprint created (Blueprint ID)
 deactivate orch
 builder-->ide: Blueprint created (Blueprint ID)
 deactivate builder
-
+ide -> ide: Generate Monitoring ID
+ide -> registry: Create dashboards (Monitoring ID)
+activate registry
+loop Dashboard in Dashboard types
+registry -> dash: Create Dashboard
+activate dash
+dash --> registry: Dashboard URL
+registry -> dash: Set Dashboard user permissions
+deactivate dash
+registry -> registry: Store Dashboard URL
+end
+registry --> ide: Dashboards created
+deactivate registry
 ide->orch: Deploy blueprint (Blueprint ID + inputs)
 activate orch
 orch-->ide: Deployment started (Session ID)

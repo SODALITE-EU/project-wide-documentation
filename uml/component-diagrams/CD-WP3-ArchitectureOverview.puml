@@ -7,13 +7,12 @@ skinparam interfaceFontSize 36
 skinparam titleFontSize 40
 skinparam NoteFontSize 36
 
-interface "IAMIntrospectionAPI" as AAUAPI #808080
-interface "SecretVaultAPI" as SecretVaultAPI #808080
+interface "IAMAPI" as AAUAPI #808080
+interface "SecretsAPI" as SecretsAPI #808080
 interface "DeploymentPreparationAPI" as deploymentPreparationAPI #FF6347
 interface "DefectPredictionCorrectionAPI" as correctionAPI #4169E1
-interface "MonitoringAPI" as monitoringAPI #4169E1
-interface "MonitoringRuleAPI" as monitoringRuleAPI #4169E1
-interface "IaCVerificationAPI" as iacverificationAPI #FF6347
+interface "GrafanaRegistryAPI" as GrafanaRegistryAPI #4169E1
+interface "MonitoringRulesAPI" as monitoringRulesAPI #4169E1
 interface "OrchestratorAPI" as orchestratorAPI #FF6347
 interface "PlatformDiscoveryAPI" as PDS #FF6347
 
@@ -53,6 +52,7 @@ package "Semantic Reasoner" as res {
 package "Semantic Knowledge Base" as repo {
     database "RDF Triplestore\n(GraphDB)" as triplestore {
         interface "SPARQL Endpoint" as repoEndpoint
+        scale 700 height
         component [Domain Ontologies] as repoOntologies
     }
 }
@@ -66,22 +66,20 @@ note bottom of repoOntologies
 end note
 
 ideGUI ..> PDS : use
-PDS ..> resAPI : use
 resAPI -down- resPopulationEngine
 resAPI -up- resReasoningEngine
 ideDSLeditor .left.> resAPI: use
 ideDSLeditor <-down----> ideGUI 
 repoOntologies -up- repoEndpoint
 resPopulationEngine .right.> repoEndpoint: use
-resReasoningEngine .left.> repoEndpoint: use
+resReasoningEngine .right.> repoEndpoint: use
 resReasoningEngine ..> AAUAPI: use
 resPopulationEngine ..> correctionAPI: use
 resPopulationEngine ..> AAUAPI: use
 ideGUI .up.> deploymentPreparationAPI : use
-ideGUI ..> monitoringAPI : use
-ideGUI ..> monitoringRuleAPI : use
-ideGUI .up.> iacverificationAPI : use
-ideGUI ..> SecretVaultAPI : use
+ideGUI ..> GrafanaRegistryAPI : use
+ideGUI ..> monitoringRulesAPI : use
+ideGUI ..> SecretsAPI : use
 ideGUI .up.> orchestratorAPI : use
 ideGUI ..> AAUAPI: use
 @enduml

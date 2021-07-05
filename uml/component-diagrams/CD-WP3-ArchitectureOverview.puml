@@ -69,10 +69,10 @@ ideGUI ..> PDS : use
 resAPI -down- resPopulationEngine
 resAPI -up- resReasoningEngine
 ideDSLeditor .left.> resAPI: use
-ideDSLeditor <-down----> ideGUI 
+ideDSLeditor <-down---> ideGUI 
 repoOntologies -up- repoEndpoint
-resPopulationEngine .right.> repoEndpoint: use
-resReasoningEngine .right.> repoEndpoint: use
+resPopulationEngine ..right...> repoEndpoint: use
+resReasoningEngine ..right....> repoEndpoint: use
 resReasoningEngine ..> AAUAPI: use
 resPopulationEngine ..> correctionAPI: use
 resPopulationEngine ..> AAUAPI: use

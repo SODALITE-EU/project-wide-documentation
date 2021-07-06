@@ -15,7 +15,7 @@ mindmapDiagram {
   }
   leafNode {
     Padding 10
-    BackGroundColor LightBlue
+    BackGroundColor AliceBlue
     FontColor Black
     FontSize 11
   }
@@ -29,7 +29,8 @@ mindmapDiagram {
 	BackGroundColor LightGrey
   }
 </style>
-** UC14 Estimate Quality\nCharacteristics\nOf Applications And\nWorkload
+** UC14 Estimate Quality\nCharacteristics Of\nApplications And\nWorkload
+** UC12 Map Resources\nAnd Optimisations
 
 
 @endmindmap

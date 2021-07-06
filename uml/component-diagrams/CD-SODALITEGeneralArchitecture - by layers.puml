@@ -25,6 +25,7 @@ WP4 -u- pds
 WP4 -d- imagereg
 WP4 -u- imagebuilder
 
+
 'WP4 infrastructure as Code layer
 [SODALITE\nRuntime Layer] as WP5 #LightSkyBlue
 interface "MonitoringAPI" as mon #LightSkyBlue
@@ -39,7 +40,7 @@ interface "SecretVaultAPI" as VaultAPI #LightSlateGrey
 cloud {
     node OpenStack
     node k8s as K8S
-    node Torque
+    node "PBS/Slurm" as wlm
     node AWS
     node OpenFaaS
 }
@@ -57,6 +58,7 @@ WP3 -d-( pds
 WP4 -u-( IAMApi
 WP4 -u-( VaultAPI
 WP4 -u-( sem
+WP4 -u-( orch
 
 WP5 -u-( IAMApi
 WP5 -u-( VaultAPI
@@ -66,7 +68,7 @@ WP5 -r-( sem
 
 WP5 .d.> OpenStack
 WP5 .d.> K8S
-WP5 .d.> Torque
+WP5 .d.> wlm
 WP5 .d.> AWS
 WP5 .d.> OpenFaaS
 

@@ -8,34 +8,34 @@ skinparam defaultFontSize 20
 'reference to WP3
 component "SODALITE IDE" as cSIDE #PaleGreen
 component "Ansible Support" as cAnsible
-cSIDE*-l-cAnsible
+cSIDE*-r-cAnsible
 
 
 'security APIs
 interface "SemanticReasonerAPI"  as repoEndpoint #PaleGreen
 
-interface "SecretVaultAPI" as VaultAPI #LightSlateGrey
-interface "IAMIntrospectionAPI" as iIAM #LightSlateGrey
+interface "Secret\nVaultAPI" as VaultAPI #LightSlateGrey
+interface "IAM\nIntrospectionAPI" as iIAM #LightSlateGrey
 
 'WP4 components and packages
 package "Deployment\nPreparation" as pDP {
     component [Abstract\nModel\nParser] as cAbstractModelParser
     component [IaC\nBlueprint\nbuilder] as cIaCBlueprintBuilder
+    cIaCBlueprintBuilder -r-> cAbstractModelParser:use
     interface "Deployment\nPreparationAPI"  as iBluePrintGeneratorAPI
-    cAbstractModelParser -u- iBluePrintGeneratorAPI
     cIaCBlueprintBuilder -u- iBluePrintGeneratorAPI    
 }
 
 package "Image Builder" {
     component [Runtime\nImage\nBuilder] as cRuntimeImageBuilder
     component [Concrete\nImage\nBuilder] as cConcreteImageBuilder
-    interface "Runtime\nImageAPI"  as iRuntimeImageBuilder
-    database "Image\nregistry" as dIR
-    interface "   Image\ndata access" as iIRDataAccess
-    cRuntimeImageBuilder -l- iRuntimeImageBuilder
+    interface "Image\nBuilderAPI"  as iRuntimeImageBuilder
+    database "Image\nRegistry" as dIR
+    interface "Image\nRegistryAPI" as iIRDataAccess
+    cRuntimeImageBuilder -r- iRuntimeImageBuilder
     cRuntimeImageBuilder -u-> cConcreteImageBuilder:use
     dIR -- iIRDataAccess
-    cRuntimeImageBuilder -r-( iIRDataAccess
+    cRuntimeImageBuilder -l-( iIRDataAccess
 }
 
 package "IaC Verification" as pIV {
@@ -63,7 +63,7 @@ package "Defect Prediction\nand Correction" as pDPC {
 package "Performance\nOptimisation" as packagePO {
     component "Application\nOptimiser" as cApplicationOptimiser
     interface "Application\nOptimiserAPI"  as iApplicationOptimiser
-    cApplicationOptimiser -l- iApplicationOptimiser
+    cApplicationOptimiser -r- iApplicationOptimiser
 }
 
 
@@ -78,11 +78,11 @@ cSIDE -d-( iBluePrintGeneratorAPI
 cSIDE -d-( iIaCVerifier
 cSIDE -d-( iBugPredictorAndFixer
 cSIDE -d-( iPlatformDiscovery
-cSIDE -d-( iIAM:use
-'cSIDE -( VaultAPI:use
+cSIDE -d-( iIAM
+cSIDE -d-( VaultAPI
 
 cIaCBlueprintBuilder -d-( iApplicationOptimiser
-cSIDE -( iRuntimeImageBuilder
+cSIDE -u-( iRuntimeImageBuilder
 
 cPredictiveModelBuilder -d-( repoEndpoint
 cVerificationModelBuilder -d-( repoEndpoint
@@ -91,6 +91,6 @@ cPlatformDiscovery -d-( repoEndpoint
 
 cPlatformDiscovery -u-( iIAM
 cPlatformDiscovery -u-( VaultAPI
-cAbstractModelParser -u-( iIAM
-cAbstractModelParser -u-( VaultAPI
+cIaCBlueprintBuilder -u-( iIAM
+cIaCBlueprintBuilder -u-( VaultAPI
 @enduml

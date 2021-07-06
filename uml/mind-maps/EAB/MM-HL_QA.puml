@@ -23,8 +23,9 @@ mindmapDiagram {
 </style>
 
 * <b>QualityAssurance</b> \n <b>          Expert</b>
-** Define IaC\nBugs Taxonomy
-** Estimate Quality\nCharacteristics\nOf Applications\nAnd Workload
+** UC11 Define IaC Bugs\nTaxonomy
+** UC14 Estimate Quality\nCharacteristics Of\nApplications And\nWorkload
+** UC12 Map Resources\nAnd Optimisations
 
 
 @endmindmap

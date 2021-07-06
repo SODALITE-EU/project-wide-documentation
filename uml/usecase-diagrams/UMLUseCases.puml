@@ -38,6 +38,7 @@ rectangle SODALITE {
     (UC14 Estimate Quality Characteristics\n Of Applications And Workload - WP3) as (EstimateQualityCharacteristicsOfApplicationsAndWorkloadWP4)
     (UC15 Statically Optimize Application\nAnd Deployment - WP4) as (StaticallyOptimizeApplicationandDeploymentWP4)
     (UC16 Build Runtime Images - WP4) as (BuildRuntimeImagesWP4)
+    (UC17 Platform Discovery - WP4) as (PlatformDiscoveryWP4)
 }
 
 'Define user actors
@@ -80,14 +81,14 @@ AppOpsExp --> (MonitorRuntimeWP5)
 AppOpsExp --> (IdentifyRefactoringOptionsWP5)
 AppOpsExp --> (ExecutePartialRedeploymentWP5)
 AppOpsExp -- (StaticallyOptimizeApplicationandDeploymentWP4)
-AppOpsExp --> (MapResourcesAndOptimisationsWP3)
 (GenerateIaCcodeWP4) .> (BuildRuntimeImagesWP4): <<include>>
 
 QualityExp --> (DefineIaCBugsTaxonomyWP4)
 QualityExp --> (EstimateQualityCharacteristicsOfApplicationsAndWorkloadWP4)
+QualityExp --> (MapResourcesAndOptimisationsWP3)
 
-ResourceExp    --> (MapResourcesAndOptimisationsWP3)
 ResourceExp --> (ModelResourcesWP3)
+ResourceExp --> (PlatformDiscoveryWP4)
 
 (MapResourcesAndOptimisationsWP3) .> (StaticallyOptimizeApplicationandDeploymentWP4): <<include>>
 
@@ -97,5 +98,6 @@ ResourceExp --> (ModelResourcesWP3)
 (ExecutePartialRedeploymentWP5) -- Resource
 (EstimateQualityCharacteristicsOfApplicationsAndWorkloadWP4) -- Resource
 (StartApplicationWP5) -- Resource
+(PlatformDiscoveryWP4) -- Resource
 
 @enduml

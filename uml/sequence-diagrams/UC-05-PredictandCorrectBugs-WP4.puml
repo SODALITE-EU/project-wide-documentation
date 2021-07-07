@@ -10,9 +10,9 @@ participant "IaC Quality Assessor" as iqa
 
 == Anti Patterns and Smells Based Bug Prediction ==
 
-ops-> sic: Predict Bugs (abstract IaC models)
+ops-> sic: Predict Bugs (IaC models)
 activate sic
-sic-> bp: Predict Bugs (abstract IaC models)
+sic-> bp: Predict Bugs (IaC models)
 activate bp
 bp -> pmb: Build Ontological Predictive Models
 activate pmb

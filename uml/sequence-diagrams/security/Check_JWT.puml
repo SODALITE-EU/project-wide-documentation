@@ -1,0 +1,22 @@
+@startuml
+hide unlinked
+title Check JWT access token
+participant "SODALITE Endpoint\nClient" as client
+participant "Secrets\nVault" as secretstore
+participant "IAM" as IAM
+
+activate client
+client->IAM: Check JWT access token
+activate IAM
+IAM->IAM: Check JWT access token
+alt #LightBlue Successful validation
+    IAM-->client: JWT access token is valid
+    client->client: Check JWT\naccess privilege\nto project domain
+else #Pink Failure
+    IAM-->client: JWT access token is invalid
+end
+deactivate IAM
+deactivate client
+
+@enduml
+

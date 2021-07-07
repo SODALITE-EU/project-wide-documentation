@@ -1,0 +1,28 @@
+@startuml
+hide unlinked
+title Login
+participant "SODALITE IDE" as editor
+participant "Semantic\nReasoner" as reasoner
+participant "Semantic\nKnowledge Base\n(ontology in GraphDB)" as ontology
+participant "Secrets\nVault" as secretstore
+participant "IAM" as IAM
+participant "Platform Discovery\nService" as PDS
+participant "Infrastructure\nresource" as resource
+
+
+activate editor
+editor->IAM: Send username/password
+activate IAM
+IAM->IAM: Check credentials
+alt #LightBlue Successful login
+    IAM-->editor: JWT access token
+    editor->editor: Save JWT\naccess token
+else #Pink Failure
+    IAM-->editor: Invalid credentials
+end
+deactivate IAM
+
+
+
+
+@enduml

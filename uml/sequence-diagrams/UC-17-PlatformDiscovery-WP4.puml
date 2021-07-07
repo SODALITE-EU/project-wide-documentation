@@ -6,25 +6,17 @@ actor "Resource Expert" as re
 participant "SODALITE IDE" as editor
 participant "Semantic\nReasoner" as reasoner
 participant "Semantic\nKnowledge Base\n(ontology in GraphDB)" as ontology
-participant "Secrets\nVault" as secretstore
-participant "IAM" as IAM
 participant "Platform Discovery\nService" as PDS
 participant "Infrastructure\nresource" as resource
 
-re->editor: Enter\nusername/password 
+re->editor: Enter\nusername/password
 
 activate editor
-editor->IAM:  send username/password
-activate IAM
-IAM-->editor: Return JWT access token
-deactivate IAM
+ref over editor: Login
 
 editor->reasoner:  select\nApplication Deployment\nProject Domain\n(ADPD) defined
 activate reasoner
-reasoner->IAM: Check JWT access token
-activate IAM
-IAM-->reasoner: valid access token
-deactivate IAM
+ref over reasoner: Check JWT access token
 
 reasoner->ontology: Query compatible\nADPD data (SPARQL)
 activate ontology
@@ -33,7 +25,7 @@ deactivate ontology
 reasoner-->editor: Return ADPD (JSON)
 deactivate reasoner
 editor-->re: Present ADPD data
-re->editor: Enter/Select\nApplication Deployment\nProject Domain 
+re->editor: Enter/Select\nApplication Deployment\nProject Domain
 
 loop Select platform
     re->editor: Enter platform acceess details\n(secrets, IPs, keys etc) in\nJSON key-value format
@@ -41,31 +33,14 @@ loop Select platform
     'Save the data to secret store as a set of key-value entries (on a uniquiely defined namespace project/platform)
     re->editor: Save\nPlatform Discovery Access Definition\n<b>PDAD
 
-    editor->secretstore: Save PDAD key-values + JWT token (API call)
-    activate secretstore
-    secretstore->IAM: check JWT\naccess token 
-    activate IAM
-    IAM-->secretstore: valid access token
-    deactivate IAM
-    secretstore->secretstore: check JWT\nwrite privilege\nto project domain
-    secretstore-->editor: Return saving response (JSON)
-    deactivate secretstore
+    ref over editor: Save secret (PDAD) in the Vault
     editor->re: Present PDAD save result\nwith PATH (Vault)\nto retrieve saved data\nfrom Secret Store
 
     re->editor: Start discovery process\ntriggers per platform\n(manual,time scheduled,by webhook)
-    
+
     editor->PDS: Get initial Resource Model\nfor the selected platform\nusing (PATH,JWT)
     activate PDS
-    PDS->secretstore: Read PDAD key-values\n + JWT token (API call)
-    activate secretstore
-    secretstore->IAM: check JWT\naccess token 
-    activate IAM
-    IAM-->secretstore: valid access token
-    deactivate IAM
-    secretstore->secretstore: check JWT\nread privilege\nto project domain
-    secretstore-->PDS: Return Secrets (JSON)
-    deactivate secretstore
-
+    ref over PDS: Read secret (PDAD) from the Vault
     PDS->resource: Get description\nof the infrastructure\n(using access secrets)
     activate resource
     resource-->PDS: Description\nof the infrastructure\n(JSON)
@@ -73,14 +48,11 @@ loop Select platform
 
     PDS->PDS: Generate TOSCA model\n from JSON
     PDS->PDS: Generate TTL model\nfor Knowledge Base
-    
+
     PDS->reasoner: Save Resource Model\nfor the selected\n(project domain, TTL)
 
     activate reasoner
-    reasoner->IAM: Check JWT\naccess token
-    activate IAM
-    IAM-->reasoner: valid access token
-    deactivate IAM
+    ref over reasoner: Check JWT access token
     reasoner->ontology: Save Resource model\n(SPARQL)
     activate ontology
     ontology-->reasoner: Return save results\nResource model ID\n(JSON)
@@ -88,7 +60,7 @@ loop Select platform
     reasoner-->PDS: Resource model ID for the saved resource
     deactivate reasoner
 
-    PDS-->editor: Resource model ID 
+    PDS-->editor: Resource model ID
     deactivate PDS
 
     editor->reasoner: Get Resource model(RM_ID)

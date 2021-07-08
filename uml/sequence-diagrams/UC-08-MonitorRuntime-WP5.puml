@@ -3,6 +3,8 @@
 title Monitor Runtime (WP5)
 
 actor "Application\nOps Expert" as ops
+
+participant "Web Browser" as browser
 participant "SOLIDATE IDE" as ide
 participant "Monitoring Dashboard" as dash
 participant "Dashboard Registry" as registry
@@ -12,37 +14,41 @@ participant "Monitoring" as monitoring
 participant "Exporter" as software
 participant "Target Components" as hardware
 
-
 activate monitoring
 
 loop physical and virtual components
-  monitoring->software: collect statistics
+  monitoring -> software: collect statistics
   activate software
-  software->hardware: probe target
-  software->monitoring: provide statistics
+  software -> hardware: probe target
+  software -> monitoring: provide statistics
   deactivate software
   activate alert_mngr
-  monitoring<-alert_mngr: check alert rules
-  alert_mngr->dr: trigger monitoring alert
+  monitoring <- alert_mngr: check alert rules
+  alert_mngr -> dr: trigger monitoring alert
   deactivate alert_mngr
 end
 
-
-ops->ide: consult metrics
+ops -> ide: consult metrics
 activate ide
-ide->registry: request dashboards
+ide -> registry: request dashboards
 activate registry
 registry -> ide: return dashboard URLs
 deactivate registry
 ide -> ops: present dashboard URLs
 deactivate ide
-ops ->dash: access dashboard URL
+
+ops -> browser: access dashboard URL
+activate browser
+browser -> dash: request dashboard
 activate dash
+dash -> browser: redirect to Keycloak login
+ref over browser: Web Login
+browser -> ops: Present dashboard
 
 loop 
-  dash->monitoring: query deployment metrics
-  monitoring-->dash: deployment metrics
-  dash->ops: aggregated/filtered metrics
+  dash -> monitoring: query deployment metrics
+  monitoring --> dash: deployment metrics
+  dash -> ops: aggregated/filtered metrics
 end
 
 deactivate dash

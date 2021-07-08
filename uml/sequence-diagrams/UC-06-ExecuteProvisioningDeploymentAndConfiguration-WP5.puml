@@ -28,6 +28,8 @@ deactivate orch
 builder-->ide: Blueprint created (Blueprint ID)
 deactivate builder
 
+ide -> ide: Generate Monitoring ID
+
 ide->orch: Deploy blueprint (Blueprint ID + inputs)
 activate orch
 ref over orch: Check JWT access token
@@ -81,7 +83,6 @@ loop Execution Platform (EP) in Execution Platforms
   end
 end
 
-ide -> ide: Generate Monitoring ID
 ide -> registry: Create dashboards (Monitoring ID)
 activate registry
 ref over registry: Check JWT access token

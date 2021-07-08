@@ -16,7 +16,7 @@ package "Orchestrator" as orch {
     component [PBS/Slurm\nDriver] as torque_driver
     component [OpenFaaS\nDriver] as faas_driver
     component [AWS\nDriver] as aws_driver
-    orch_impl - orch_if
+    orch_impl -u- orch_if
 }
 
 package "Monitoring" as mon {
@@ -28,13 +28,13 @@ package "Monitoring" as mon {
     () "ExporterAPI" as exp_if
     [Alert Manager] as alert_mngr
     () "AlertingAPI"  as alert_if
+    alert_mngr -u- alert_if
     [RuleFileServer] as rule_server
     () "AlertingRuleAPI" as alert_rule_if
     mon_impl -u- mon_if
     exp -u- exp_if
-    alert_mngr -d- alert_if
     rule_server -u- alert_rule_if
-    rule_server --( alert_if
+    rule_server --( mon_if
     dash -u- grafana_if
 }
 
@@ -71,7 +71,10 @@ interface "SecretVaultAPI" as VaultAPI #LightSlateGrey
 'Monitoring
 mon_impl -u-( exp_if
 dash --( mon_if
-alert_mngr --( mon_if
+mon_impl --( alert_if
+
+exp --( VaultAPI
+exp --( IAMApi
 
 
 'Refactoring
@@ -87,6 +90,7 @@ ref_node --( alert_if
 ref_depl --( alert_if
 ref_depl --( mon_if
 orch_impl --( alert_if
+orch_impl --( exp_if
 
 
 orch_impl --> os_driver : use
@@ -96,9 +100,9 @@ orch_impl --> aws_driver : use
 orch_impl --> faas_driver : use
 
 orch_impl -u-( depl_prep
-orch_impl -u-( image_reg
-orch_impl -u-( IAMApi
-orch_impl -u-( VaultAPI
+orch_impl --( image_reg
+orch_impl --( IAMApi
+orch_impl --( VaultAPI
 
 os_driver ..> OpenStack : use
 k8s_driver ..> K8S : use

@@ -5,13 +5,15 @@ title Execute Provisioning, Deployment and Configuration (WP5)
 actor "Application\nOps Expert" as ops
 participant "SOLIDATE\nIDE" as ide
 participant "IaC Blueprint Builder" as builder
-participant "Image Registry" as imagereg
 participant "Dashboard registry" as registry
 participant  Orchestrator as orch
 participant "Dashboard agent" as dash
 participant "Execution Platform\nManager" as res
 participant "VM" as VM
 participant "Monitoring" as mon
+participant "ImageRegistry" as imagereg
+participant "Refactoring" as refact
+participant "Monitoring Dashboard" as mon_dash
 
 
 ops->ide: Deploy
@@ -90,6 +92,14 @@ loop Execution Platform (EP) in Execution Platforms
 
   end
 end
+
+ide->refact: register deployment
+activate refact
+deactivate refact
+
+ide->mon_dash: register dashboards for deployment
+activate mon_dash
+deactivate mon_dash
 
 orch-->ide: Deployment complete
 deactivate orch

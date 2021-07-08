@@ -13,8 +13,6 @@ participant "VM" as VM
 participant "Monitoring" as mon
 participant "ImageRegistry" as imagereg
 participant "Refactoring" as refact
-participant "Monitoring Dashboard" as mon_dash
-
 
 ops->ide: Deploy
 activate ide
@@ -28,34 +26,7 @@ orch-->builder: Blueprint created (Blueprint ID)
 deactivate orch
 builder-->ide: Blueprint created (Blueprint ID)
 deactivate builder
-ide -> ide: Generate Monitoring ID
-ide -> registry: Create dashboards (Monitoring ID)
-activate registry
-ref over registry: Check JWT access token
-registry -> registry: Save user email
 
-alt user is not registered in dashboard
-	    registry -> dash: Register user (email)
-	    activate dash
-	    dash --> registry: User registered
-	    deactivate dash
-end
-
-loop Dashboard in Dashboard types
-	registry -> registry: Generate dashboard (Monitoring ID)
-	registry -> dash: Create Dashboard
-	activate dash
-	dash --> registry: Dashboard URL
-	deactivate dash
-	registry -> dash: Set Dashboard user permissions (email)
-	activate dash
-	dash --> registry: User permissions set
-	deactivate dash
-	registry -> registry: Store Dashboard URL (email, Monitoring ID)
-	
-end
-registry --> ide: Dashboards created
-deactivate registry
 ide->orch: Deploy blueprint (Blueprint ID + inputs)
 activate orch
 orch-->ide: Deployment started (Session ID)
@@ -108,13 +79,38 @@ loop Execution Platform (EP) in Execution Platforms
   end
 end
 
+ide -> ide: Generate Monitoring ID
+ide -> registry: Create dashboards (Monitoring ID)
+activate registry
+ref over registry: Check JWT access token
+registry -> registry: Save user email
+
+alt user is not registered in dashboard
+	    registry -> dash: Register user (email)
+	    activate dash
+	    dash --> registry: User registered
+	    deactivate dash
+end
+
+loop Dashboard in Dashboard types
+	registry -> registry: Generate dashboard (Monitoring ID)
+	registry -> dash: Create Dashboard
+	activate dash
+	dash --> registry: Dashboard URL
+	deactivate dash
+	registry -> dash: Set Dashboard user permissions (email)
+	activate dash
+	dash --> registry: User permissions set
+	deactivate dash
+	registry -> registry: Store Dashboard URL (email, Monitoring ID)
+
+end
+registry --> ide: Dashboards created
+deactivate registry
+
 ide->refact: register deployment
 activate refact
 deactivate refact
-
-ide->mon_dash: register dashboards for deployment
-activate mon_dash
-deactivate mon_dash
 
 orch-->ide: Deployment complete
 deactivate orch

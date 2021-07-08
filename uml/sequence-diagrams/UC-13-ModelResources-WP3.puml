@@ -7,10 +7,12 @@ participant "SODALITE IDE" as ide
 participant "Semantic Reasoner" as reasoner
 participant "Semantic Knowledge Base\n(ontology in GraphDB)" as ontology
 
-re->ide: Initiate the IDE
+re->ide: Enter\nusername/password
 activate ide
+ref over ide: Login
 ide->reasoner: Retrieve known resource types, etc. (API call)
 activate reasoner
+ref over reasoner: Check JWT access token
 reasoner->ontology: Request resources (SPARQL)
 activate ontology
 ontology->reasoner: Return resources (JSON)
@@ -72,9 +74,23 @@ loop Design time
         ide-->re: Present validation results
     end
 
+    opt Ansible artifacts
+        re->ide: Define the scripts that will be executed\nduring the lifetime of the application \n (e.g. create, stop, start)
+        ide->reasoner: Save the scripts (API call)
+        activate reasoner
+        reasoner->ontology: Save the scripts in KB
+        activate ontology
+        ontology-->reasoner: Return success/failure
+        deactivate ontology
+        reasoner-->ide: Return success/failure
+        deactivate reasoner
+        ide-->re: Return success/failure
+    end
+
+
 end
 
-re->ide: Submit new resources, relationships, etc.
+re->ide: Submit new resources, relationships, ansible scripts etc.
 ide->reasoner: Request to store new pattern (API call)
 activate reasoner
 reasoner->ontology: Store new pattern (SPARQL)

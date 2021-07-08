@@ -16,7 +16,7 @@ par Startable components
     lre->lre: Component started
   else EP is Kubernetes
     lre->lre: Component started
-  else  EP is Resource management system (PBS Toque, Slurm)
+  else  EP is Resource management system (PBS, Slurm)
     orch->res: Submit job (component)
     res->res: Enqueue job
     orch<--res: job id

@@ -28,11 +28,13 @@ package "Monitoring" as mon {
     () "ExporterAPI" as exp_if
     [Alert Manager] as alert_mngr
     () "AlertingAPI"  as alert_if
+    [RuleFileServer] as rule_server
     () "AlertingRuleAPI" as alert_rule_if
     mon_impl -u- mon_if
     exp -u- exp_if
     alert_mngr -d- alert_if
-    alert_mngr -u- alert_rule_if
+    rule_server -u- alert_rule_if
+    rule_server --( alert_if
     dash -u- grafana_if
 }
 

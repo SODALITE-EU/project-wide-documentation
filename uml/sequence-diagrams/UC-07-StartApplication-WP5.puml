@@ -1,17 +1,14 @@
 @startuml
 
-title Start application (WP5)
+title Start batch application (WP5)
 
 actor "Application\nOps Expert" as ops
-participant "SODALITE\nIDE" as ide
 participant  Orchestrator as orch
 participant "Execution Platform \n (EP)" as res
 participant "Component" as lre
 participant "Monitoring Platform" as mon
 
-ops->ide: Deploy
-activate ide
-ide->orch: Deploy
+ops->orch: Deploy
 activate orch
 
 par Startable components
@@ -37,11 +34,7 @@ par Startable components
 
 end
 
-
-
-orch-->ide: Deployment complete
 deactivate orch
-ide-->ops: Deployment complete
-deactivate ide
+orch-->ops: Deployment complete
 
 @enduml

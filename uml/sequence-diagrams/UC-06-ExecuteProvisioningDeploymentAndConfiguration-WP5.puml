@@ -29,13 +29,28 @@ deactivate builder
 ide -> ide: Generate Monitoring ID
 ide -> registry: Create dashboards (Monitoring ID)
 activate registry
+ref over registry: Check JWT access token
+registry -> registry: Save user email
+
+alt user is not registered in dashboard
+	    registry -> dash: Register user (email)
+	    activate dash
+	    dash --> registry: User registered
+	    deactivate dash
+end
+
 loop Dashboard in Dashboard types
-registry -> dash: Create Dashboard
-activate dash
-dash --> registry: Dashboard URL
-registry -> dash: Set Dashboard user permissions
-deactivate dash
-registry -> registry: Store Dashboard URL
+	registry -> registry: Generate dashboard (Monitoring ID)
+	registry -> dash: Create Dashboard
+	activate dash
+	dash --> registry: Dashboard URL
+	deactivate dash
+	registry -> dash: Set Dashboard user permissions (email)
+	activate dash
+	dash --> registry: User permissions set
+	deactivate dash
+	registry -> registry: Store Dashboard URL (email, Monitoring ID)
+	
 end
 registry --> ide: Dashboards created
 deactivate registry

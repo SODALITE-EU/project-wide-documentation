@@ -14,6 +14,8 @@ participant "Monitoring" as mon
 participant "ImageRegistry" as imagereg
 participant "Refactoring" as refact
 
+ref over ide: Login
+
 ops->ide: Deploy
 activate ide
 ide->builder: Save AADM (AADM JSON)

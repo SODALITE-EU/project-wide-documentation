@@ -66,7 +66,11 @@ interface "Image\nRegistryAPI" as image_reg #LightSalmon
 interface "IAM\nIntrospectionAPI" as IAMApi #LightSlateGrey
 interface "SecretVaultAPI" as VaultAPI #LightSlateGrey
 
-
+'PDS APIs
+[Platform Discovery\nService] as pds #LightSalmon
+interface "Platform\nDiscoveryAPI" as PDSApi #LightSalmon
+pds -d- PDSApi
+pds --( alert_if
 
 'Monitoring
 mon_impl -u-( exp_if
@@ -91,6 +95,7 @@ ref_depl --( alert_if
 ref_depl --( mon_if
 orch_impl --( alert_if
 orch_impl --( exp_if
+ref_depl -u-( PDSApi
 
 
 orch_impl --> os_driver : use
@@ -100,7 +105,7 @@ orch_impl --> aws_driver : use
 orch_impl --> faas_driver : use
 
 orch_impl -u-( depl_prep
-orch_impl --( image_reg
+orch_impl -u-( image_reg
 orch_impl --( IAMApi
 orch_impl --( VaultAPI
 

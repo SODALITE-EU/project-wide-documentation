@@ -13,7 +13,7 @@ ops->ide: Deploy
 activate ide
 ide->orch: Deploy
 activate orch
-
+ref over orch: Check JWT access token
 par Startable components
   alt EP is IaaS Clouds (OpenStack, AWS)
     lre->lre: Component started

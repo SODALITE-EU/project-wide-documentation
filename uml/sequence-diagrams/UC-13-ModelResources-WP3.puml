@@ -26,6 +26,7 @@ loop Design time
         re->ide: Define new abstract resource type
         ide->reasoner: Request validation (API call)
         activate reasoner
+        ref over reasoner: Check JWT access token
         reasoner->ontology: Query for known inconsistencies (SPARQL)
         activate ontology
         ontology-->reasoner: Return results (JSON)
@@ -39,6 +40,7 @@ loop Design time
         re->ide: Define new target resource
         ide->reasoner: Request validation (API call)
         activate reasoner
+        ref over reasoner: Check JWT access token
         reasoner->ontology: Query for known inconsistencies (SPARQL)
         activate ontology
         ontology-->reasoner: Return results (JSON)
@@ -52,6 +54,7 @@ loop Design time
         re->ide: Define new dependency/relationship\nbetween (target/abstract) resources
         ide->reasoner: Request validation (API call)
         activate reasoner
+        ref over reasoner: Check JWT access token
         reasoner->ontology: Query for known inconsistencies (SPARQL)
         activate ontology
         ontology-->reasoner: Return results (JSON)
@@ -65,6 +68,7 @@ loop Design time
         re->ide: Define new optimization approaches/patterns\nfor specific resources
         ide->reasoner: Request validation (API call)
         activate reasoner
+        ref over reasoner: Check JWT access token
         reasoner->ontology: Query for known inconsistencies (SPARQL)
         activate ontology
         ontology-->reasoner: Return results (JSON)
@@ -78,6 +82,7 @@ loop Design time
         re->ide: Define the scripts that will be executed\nduring the lifetime of the application \n (e.g. create, stop, start)
         ide->reasoner: Save the scripts (API call)
         activate reasoner
+        ref over reasoner: Check JWT access token
         reasoner->ontology: Save the scripts in KB
         activate ontology
         ontology-->reasoner: Return success/failure
@@ -93,6 +98,7 @@ end
 re->ide: Submit new resources, relationships, ansible scripts etc.
 ide->reasoner: Request to store new pattern (API call)
 activate reasoner
+ref over reasoner: Check JWT access token
 reasoner->ontology: Store new pattern (SPARQL)
 deactivate reasoner
 deactivate ide

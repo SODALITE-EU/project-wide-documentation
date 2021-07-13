@@ -2,7 +2,7 @@
 
 title WP4 - Infrastructure As Code Layer \n Architecture Overview
 
-skinparam fixCircleLabelOverlapping true 
+skinparam fixCircleLabelOverlapping true
 skinparam defaultFontSize 20
 
 'reference to WP3
@@ -13,9 +13,10 @@ cSIDE*-r-cAnsible
 
 'security APIs
 interface "SemanticReasonerAPI"  as repoEndpoint #PaleGreen
+interface "OrchestratorAPI"  as orchEndpoint #PaleGreen
 
-interface "Secret\nVaultAPI" as VaultAPI #LightSlateGrey
-interface "IAM\nIntrospectionAPI" as iIAM #LightSlateGrey
+interface "Secrets\nVaultAPI" as VaultAPI #LightSlateGrey
+interface "IAM\nServiceAPI" as iIAM #LightSlateGrey
 
 'WP4 components and packages
 package "Deployment\nPreparation" as pDP {
@@ -23,7 +24,7 @@ package "Deployment\nPreparation" as pDP {
     component [IaC\nBlueprint\nbuilder] as cIaCBlueprintBuilder
     cIaCBlueprintBuilder -r-> cAbstractModelParser:use
     interface "Deployment\nPreparationAPI"  as iBluePrintGeneratorAPI
-    cIaCBlueprintBuilder -u- iBluePrintGeneratorAPI    
+    cIaCBlueprintBuilder -u- iBluePrintGeneratorAPI
 }
 
 package "Image Builder" {
@@ -75,17 +76,18 @@ package "Platform\nDiscovery" as packagePD {
 
 cAbstractModelParser -d-( repoEndpoint
 cSIDE -d-( iBluePrintGeneratorAPI
-cSIDE -d-( iIaCVerifier
 cSIDE -d-( iBugPredictorAndFixer
 cSIDE -d-( iPlatformDiscovery
 cSIDE -d-( iIAM
 cSIDE -d-( VaultAPI
 
+cIaCBlueprintBuilder -d-( orchEndpoint
+cIaCBlueprintBuilder -d-( iIaCVerifier
+
 cIaCBlueprintBuilder -d-( iApplicationOptimiser
 cSIDE -u-( iRuntimeImageBuilder
 
 cPredictiveModelBuilder -d-( repoEndpoint
-cVerificationModelBuilder -d-( repoEndpoint
 cApplicationOptimiser -d-( repoEndpoint
 cPlatformDiscovery -d-( repoEndpoint
 

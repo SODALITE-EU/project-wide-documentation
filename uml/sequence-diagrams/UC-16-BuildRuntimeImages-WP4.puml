@@ -10,25 +10,25 @@ participant "Runtime Image\nBuilder " as SRIBC
 participant "Concrete Image\nBuilder " as SCIBC
 database "Image Registry " as SIIR
 
-ops->editor: provide image-builder build JSON definition \n (source, build-context, access tokens)
+ops->editor: provide image-builder\nbuild JSON definition \n(source, build-context,\n access tokens)
 activate editor
 editor->SRIBC: BuildImages(json)
 
-note over editor, SRIBC: this is activated when the user triggers the build of images in the IDE
+note over editor, SRIBC: this is activated when the user triggers\nthe build of images in the IDE
 
 activate SRIBC
 
 
 loop ArtefactDefinition in ArtefactList
-    SRIBC->SCIBC: CreateConcreteImageBuilder(TargetArchitecture)
+    SRIBC->SCIBC: CreateConcreteImageBuilder\n(TargetArchitecture)
     activate SCIBC
-    SRIBC->SCIBC: ConfigureBuildArtefactImage(ArtefactDefinition)
-    SCIBC->SCIBC: PreinstallMonitoring(BuildInfo)
-    SCIBC->SCIBC: BuildArtefactImage(BuildInfo)
+    SRIBC->SCIBC: ConfigureBuildArtefactImage\n(ArtefactDefinition)
+    SCIBC->SCIBC: PreinstallMonitoring\n(BuildInfo)
+    SCIBC->SCIBC: BuildArtefactImage\n(BuildInfo)
     SCIBC-->SRIBC: ArtefactImage(BuildInfo)
     deactivate SCIBC
     'Save the resulting IaC and recipes together with build time information (errors, warnings, information, improvement suggestions - all addressing the abstract model)
-    SRIBC->SIIR: SaveArtefactImage(ArtefactImage, ModelRef, NodeRef, BuildInfo)
+    SRIBC->SIIR: SaveArtefactImage\n(ArtefactImage, ModelRef, NodeRef, BuildInfo)
     activate SIIR
     note over SCIBC, SIIR: Image is registered and retrievable\n through labels written on save\n(eg. ModelRef, NodeRef, version, etc.)
     SIIR-->SRIBC: Image saved
@@ -42,10 +42,10 @@ end
 SRIBC-->editor: BuildImagesInfoList(humanReadableForm)
 deactivate SRIBC
 opt
-    editor->editor: extract target images references
-    editor->reasoner: store the target images references (project/image-name)
+    editor->editor: extract target\nimages references
+    editor->reasoner: store the target\nimages references\n(project/image-name)
 end
-editor-->ops: BuildImagesInfoList(humanReadableForm)
+editor-->ops: BuildImagesInfoList\n(humanReadableForm)
 deactivate SRIBC
 deactivate editor
 

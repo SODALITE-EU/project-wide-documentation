@@ -10,20 +10,20 @@ participant "Topology\nVerifier" as tv
 participant "Provisioning\nWorkflow\nVerifier" as pwv
 participant "Semantic\nKnowledge Base" as kb
 
-ops->sic: verify (IaC, Correctness Criteria)
+ops->sic: verify\n(IaC, Correctness Criteria)
 activate sic
-sic->soda: verify (IaC, Correctness Criteria)
+sic->soda: verify\n(IaC, Correctness Criteria)
 activate soda
-soda -> vmb: build Verification Models (IaC)
+soda -> vmb: build Verification\nModels (IaC)
 activate vmb
 vmb -> kb: retrieve Verification Knowledge
 activate kb
 kb --> vmb: verification knowledge
 deactivate kb
 alt Parse and Model Building Errors
-    vmb --> soda: Parse and Model Building Errors
-    soda --> sic: Parse and Model Building Errors
-    sic --> ops: Parse and Model Building Errors
+    vmb --> soda: Parse and Model\nBuilding Errors
+    soda --> sic: Parse and Model\nBuilding Errors
+    sic --> ops: Parse and Model\nBuilding Errors
 else  Parse and Model Building Success
     vmb --> soda: Verification Models
     deactivate vmb
@@ -32,19 +32,19 @@ else  Parse and Model Building Success
     tv --> soda: Verification Results
     deactivate tv
     alt Invalid Topology
-        soda --> sic: Topology Verification Errors
-        sic --> ops: Topology Verification Errors
+        soda --> sic: Topology Verification\nErrors
+        sic --> ops: Topology Verification\nErrors
     else Valid Topology
         soda -> pwv: Verify Provisioning Workflow (model, criteria)
         activate pwv
         pwv --> soda: Verification Results
         deactivate pwv
         alt Invalid Provisioning Workflow
-            soda --> sic: Provisioning Workflow Verification Errors
-            sic --> ops: Provisioning Workflow Verification Errors
+            soda --> sic: Provisioning Workflow\nVerification Errors
+            sic --> ops: Provisioning Workflow\nVerification Errors
         else  Valid Provisioning Workflow
-            soda --> sic: Verification Summary\nfor Provisioning Workflow and Topology
-            sic --> ops: Verification Summary\nfor Provisioning Workflow and Topology
+            soda --> sic: Verification Summary\nfor Provisioning Workflow\nand Topology
+            sic --> ops: Verification Summary\nfor Provisioning Workflow\nand Topology
         end
     end
 end

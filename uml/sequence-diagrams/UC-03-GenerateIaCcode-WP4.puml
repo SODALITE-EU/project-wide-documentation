@@ -5,9 +5,10 @@ title Generate IaC (WP4)
 actor "Application Ops Expert"  as AppOpsExp
 participant "SODALITE\nIDE" as IDE
 participant "AbstractModel\nParser" as SAPC
-participant "IaC Blueprint\nbuilder" as SBBC
+participant "IaC Blueprint\nBuilder" as SBBC
 participant "Application\nOptimiser\nMODAK" as SPOC
-participant "Orchestrator\nxOpera" as orch
+participant "IaC Verifier" as iacv
+participant "Orchestrator\nAPI" as orch
 
 AppOpsExp->IDE: BuildIaCRequest(model)
 
@@ -28,25 +29,31 @@ loop Node in NodeList
         activate SPOC
         SPOC-->SAPC: ExecutionContainer, ExecutionScript
         deactivate SPOC
-        SAPC->SAPC: UpdateNodeWithOptimizationOutcome(Node, ExecutionContainer, ExecutionScript)
+        SAPC->SAPC: UpdateNodeWithOptimizationOutcome\n(Node, ExecutionContainer,\nExecutionScript)
     end
 
 end
-
 SAPC->SBBC: GenerateIaCCode(NodeList)
 activate SBBC
 SBBC->SBBC: CreateIaCCode()
-SBBC->orch: RegisterIaC(IaCCode)
-orch-->SBBC: IaCCodeReference
-SBBC-->SAPC: IaCCodeReference
+SBBC --> iacv: verify (IaC, Correctness Criteria)
+alt Parse and Model Building Errors
+    iacv --> SBBC: Parse and Model\nBuilding Errors
+    SBBC --> SAPC: Parse and Model\nBuilding Errors
+    SAPC --> IDE: Parse and Model\nBuilding Errors
+else  Parse and Model Building Success
+    SBBC->orch: RegisterIaC(IaCCode)
+    orch-->SBBC: IaCCodeReference
+    SBBC-->SAPC: IaCCodeReference
+
 deactivate SBBC
 
 'Return the reference to compile time information - (eg errors, warnings, information, improvement suggestions - all adressing the abstract model
 SAPC-->IDE: IaCCodeReference
-
+end
 deactivate SAPC
 
-IDE-->AppOpsExp: IaCBuilderResponse(IaCCodeReference)
+IDE-->AppOpsExp: IaCBuilderResponse\n(IaCCodeReference)
 deactivate IDE
 
 @enduml

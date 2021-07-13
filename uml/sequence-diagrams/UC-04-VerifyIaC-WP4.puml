@@ -8,7 +8,7 @@ participant "IaC Verifier" as soda
 participant "Verification\nModel\nBuilder" as vmb
 participant "Topology\nVerifier" as tv
 participant "Provisioning\nWorkflow\nVerifier" as pwv
-participant "Semantic\nKnowledge Base" as kb
+
 
 ops->sic: verify\n(IaC, Correctness Criteria)
 activate sic
@@ -16,10 +16,6 @@ sic->soda: verify\n(IaC, Correctness Criteria)
 activate soda
 soda -> vmb: build Verification\nModels (IaC)
 activate vmb
-vmb -> kb: retrieve Verification Knowledge
-activate kb
-kb --> vmb: verification knowledge
-deactivate kb
 alt Parse and Model Building Errors
     vmb --> soda: Parse and Model\nBuilding Errors
     soda --> sic: Parse and Model\nBuilding Errors

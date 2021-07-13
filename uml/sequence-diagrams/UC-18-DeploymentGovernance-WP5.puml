@@ -1,0 +1,62 @@
+@startuml
+
+title Deployment Governance (WP5)
+
+actor "Application\nOps Expert" as ops
+participant "SOLIDATE\nIDE" as ide
+participant  Orchestrator as orch
+
+ref over ide: Login
+
+ops->ide: Browse Deployments((username)
+activate ide
+
+ide->orch: Get blueprints (username)
+activate orch
+loop blueprint in blueprints
+ide->orch: Get deployments (blueprint)
+orch-->ide: List<Deployment>
+end
+
+orch-->ide: List<Blueprint>
+deactivate orch
+ide->ide: Show Blueprints/Deployments
+ide-->ops: Browse Deployments complete
+deactivate ide
+
+ops->ide: browse selection
+
+activate ide
+ide->orch: getDetails(selection)
+alt selection is Deployment
+ref over ide: Monitor Runtime
+end
+orch-->ide: shows selection details
+
+deactivate ide
+
+ops->ide: request action on selection (action, selection)
+activate ide
+alt selection is Blueprint
+    opt action is delete
+        ide->orch: delete(blueprint)
+        activate orch
+        deactivate orch
+    end
+else selection is Deployment
+    opt action is resume
+        ide->orch: resume(deployment, clean_state)
+        activate orch
+        deactivate orch
+    end
+    opt action is delete
+        ide->orch: delete(deployment)
+        activate orch
+        deactivate orch
+    end
+end
+
+deactivate ide
+
+
+@enduml

@@ -1,0 +1,31 @@
+@startuml
+hide unlinked
+title Login
+actor "User" as user
+participant "Browser" as browser
+participant "Semantic\nReasoner" as reasoner
+participant "Semantic\nKnowledge Base\n(ontology in GraphDB)" as ontology
+participant "Secrets\nVault" as secretstore
+participant "IAM" as IAM
+participant "Platform Discovery\nService" as PDS
+participant "Infrastructure\nresource" as resource
+
+
+activate browser
+browser -> user: Present login screen
+user -> browser: Username/password
+browser -> IAM: Send username/password
+activate IAM
+IAM->IAM: Check credentials
+alt #LightBlue Successful login
+    IAM--> browser: Cookie
+    browser -> browser: Save Cookie
+else #Pink Failure
+    IAM-->editor: Invalid credentials
+end
+deactivate IAM
+
+
+
+
+@enduml

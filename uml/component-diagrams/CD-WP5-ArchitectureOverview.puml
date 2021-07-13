@@ -13,23 +13,29 @@ package "Orchestrator" as orch {
     interface "OrchestratorAPI" as orch_if
     component [Openstack\nDriver] as os_driver
     component [K8S\nDriver] as k8s_driver
-    component [Torque\nDriver] as torque_driver
+    component [PBS/Slurm\nDriver] as torque_driver
     component [OpenFaaS\nDriver] as faas_driver
     component [AWS\nDriver] as aws_driver
-    orch_impl - orch_if
+    orch_impl -u- orch_if
 }
 
 package "Monitoring" as mon {
     [Monitoring] as mon_impl
     () "MonitoringAPI" as mon_if
     [Dashboard] as dash
+    () "GrafanaRegistryAPI" as grafana_if
     [Exporter] as exp
     () "ExporterAPI" as exp_if
     [Alert Manager] as alert_mngr
     () "AlertingAPI"  as alert_if
+    alert_mngr -u- alert_if
+    [RuleFileServer] as rule_server
+    () "AlertingRuleAPI" as alert_rule_if
     mon_impl -u- mon_if
     exp -u- exp_if
-    alert_mngr -d- alert_if
+    rule_server -u- alert_rule_if
+    rule_server --( mon_if
+    dash -u- grafana_if
 }
 
 package "Refactoring" as refactor {
@@ -47,7 +53,7 @@ package "Refactoring" as refactor {
 cloud {
     node OpenStack
     node Kubernetes as K8S
-    node Torque
+    node "PBS/Slurm" as PBS
     node OpenFaaS
     node AWS
 }
@@ -60,12 +66,19 @@ interface "Image\nRegistryAPI" as image_reg #LightSalmon
 interface "IAM\nIntrospectionAPI" as IAMApi #LightSlateGrey
 interface "SecretVaultAPI" as VaultAPI #LightSlateGrey
 
-
+'PDS APIs
+[Platform Discovery\nService] as pds #LightSalmon
+interface "Platform\nDiscoveryAPI" as PDSApi #LightSalmon
+pds -d- PDSApi
+pds --( alert_if
 
 'Monitoring
 mon_impl -u-( exp_if
 dash --( mon_if
-alert_mngr --( mon_if
+mon_impl --( alert_if
+
+exp --( VaultAPI
+exp --( IAMApi
 
 
 'Refactoring
@@ -79,7 +92,10 @@ ref_depl --( depl_prep
 
 ref_node --( alert_if
 ref_depl --( alert_if
+ref_depl --( mon_if
 orch_impl --( alert_if
+orch_impl --( exp_if
+ref_depl -u-( PDSApi
 
 
 orch_impl --> os_driver : use
@@ -90,21 +106,23 @@ orch_impl --> faas_driver : use
 
 orch_impl -u-( depl_prep
 orch_impl -u-( image_reg
-orch_impl -u-( IAMApi
-orch_impl -u-( VaultAPI
+orch_impl --( IAMApi
+orch_impl --( VaultAPI
 
 os_driver ..> OpenStack : use
 k8s_driver ..> K8S : use
 faas_driver ..> OpenFaaS : use
 aws_driver ..> AWS : use
-torque_driver ..> Torque : use
+torque_driver ..> PBS : use
 
 exp .d.> OpenStack : use
 exp .d.> K8S : use
-exp .d.> Torque : use
+exp .d.> PBS : use
 exp .d.> OpenFaaS : use
 exp .d.> AWS : use
 
 ide --( orch_if : use
-ide ..> dash : use
+ide --( grafana_if : use
+ide --( alert_rule_if : use
+ide --( ref_if : use
 @enduml

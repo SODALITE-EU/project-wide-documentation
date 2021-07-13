@@ -2,7 +2,7 @@
 
 title SODALITE General Architecture
 
-skinparam fixCircleLabelOverlapping true 
+skinparam fixCircleLabelOverlapping true
 skinparam defaultFontSize 20
 
 'WP3 modelling layer
@@ -14,7 +14,7 @@ WP3 -d- sem
 [SODALITE\nInfrastructure as Code Layer] as WP4 #LightSalmon
 interface "Deployment\nPreparationAPI" as dep #LightSalmon
 interface "DefectPrediction\nCorrectionAPI" as defect #LightSalmon
-interface "IaCVerifactionAPI" as verif #LightSalmon
+interface "RefactoringAPI" as verif #LightSalmon
 interface "ImageRegistryAPI" as imagereg  #LightSalmon
 interface "ImageBuilderAPI" as imagebuilder  #LightSalmon
 interface "PlatformDiscoveryAPI" as pds #LightSalmon
@@ -30,12 +30,12 @@ WP4 -u- imagebuilder
 [SODALITE\nRuntime Layer] as WP5 #LightSkyBlue
 interface "MonitoringAPI" as mon #LightSkyBlue
 interface "OrchestratorAPI" as orch #LightSkyBlue
-WP5 -u- mon 
+WP5 -u- mon
 WP5 -u- orch
 
 'security APIs
-interface "IAMIntrospectionAPI" as IAMApi #LightSlateGrey
-interface "SecretVaultAPI" as VaultAPI #LightSlateGrey
+interface "IAMServiceAPI" as IAMApi #LightSlateGrey
+interface "SecretsVaultAPI" as VaultAPI #LightSlateGrey
 
 cloud {
     node OpenStack

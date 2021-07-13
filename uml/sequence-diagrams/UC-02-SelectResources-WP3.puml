@@ -13,6 +13,7 @@ loop Mapping to target resources
     activate editor
     editor->reasoner: Request compatible target resources (API call)
     activate reasoner
+    ref over reasoner: Check JWT access token
     reasoner->ontology: Query compatible target resources (SPARQL)
     activate ontology
     ontology-->reasoner: Return results (JSON)
@@ -29,6 +30,7 @@ loop Mapping to target resources
     ops->editor: Request suggestions
     editor->reasoner: Request suggestions (API call)
     activate reasoner
+    ref over reasoner: Check JWT access token
     reasoner->ontology: Query for known patterns (SPARQL)
     activate ontology
     ontology-->reasoner: Return patterns (JSON)
@@ -46,6 +48,7 @@ loop Mapping to target resources
     ops->editor: Select target resources and\n map them to the application\n deployment model
     editor->reasoner: Request validation
     activate reasoner
+    ref over reasoner: Check JWT access token
     reasoner->ontology: Query for inconsistencies between\nselected target resources (SPARQL)
     activate ontology
     ontology-->reasoner: Return inconsistencies, if any (JSON)
@@ -63,6 +66,7 @@ end
 ops->editor: Submit application deployment model\n with mapped target resources
 editor->reasoner: Store submitted model (API call)
 activate reasoner
+ref over reasoner: Check JWT access token
 reasoner->ontology: Store submitted model (SPARQL)
 deactivate reasoner
 

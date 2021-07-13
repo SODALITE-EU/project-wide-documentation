@@ -9,7 +9,7 @@ participant "Refactorer" as refactorer
 participant Orchestrator as orch
 participant "Execution Platform" as res
 
-alt AOE manually updates AADM or Refactoring Options were confirmed (UC9) 
+alt AOE manually updates AADM or Refactoring Options were confirmed (UC9)
   ops->ide: Execute Redeployment
   activate ide
   ide->builder: Register updated AADM (Blueprint ID + AADM JSON)
@@ -17,6 +17,7 @@ alt AOE manually updates AADM or Refactoring Options were confirmed (UC9)
   builder->builder: Create CSAR
   builder->orch: Update blueprint (Blueprint ID + CSAR)
   activate orch
+  ref over orch: Check JWT access token
   orch->orch: Update blueprint
   orch-->builder: Blueprint updated (Blueprint ID)
   deactivate orch
@@ -27,11 +28,12 @@ alt AOE manually updates AADM or Refactoring Options were confirmed (UC9)
   orch-->ide: Deployment updates started (Session ID)
   deactivate orch
   deactivate ide
-else Deployment updated automatically by Refactorer 
+else Deployment updated automatically by Refactorer
   activate refactorer
   refactorer->refactorer: Create CSAR
   refactorer->orch: Update blueprint (Blueprint ID + CSAR, inputs)
   activate orch
+  ref over orch: Check JWT access token
   orch->orch: Update blueprint
   orch-->refactorer: Blueprint updated (Blueprint ID)
   deactivate orch
@@ -85,11 +87,11 @@ loop Execution Platform (EP) in Execution Platforms
   end
 end
 
-alt AADM updated by AOE 
+alt AADM updated by AOE
   orch-->ide: Redeployment complete
   deactivate ide
   ide-->ops: Redeployment complete
-else Deployment updated by Refactorer 
+else Deployment updated by Refactorer
   orch-->refactorer: Redeployment complete
   deactivate refactorer
 end

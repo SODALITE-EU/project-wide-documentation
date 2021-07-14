@@ -70,7 +70,7 @@ dr -> rof: search Refactoring Options (criteria)
 activate dr
 activate rof
 rof -> reasoner: search Resources
-activate reasonerar
+activate reasoner
 reasoner --> rof: resources
 deactivate reasoner
 rof --> dr:  refactoring options

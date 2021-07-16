@@ -357,7 +357,7 @@ Table 2. Components of the Infrastructure as a Code Layer and corresponding repo
 <p>
 <strong>UI/UX technology: </strong>N/A
    </td>
-   <td><a href="https://github.com/SODALITE-EU/platform-discovery-service">https://github.com/SODALITE-EU/platform-discovery-service</a>
+   <td><a href="https://github.com/SODALITE-EU/iac-management">https://github.com/SODALITE-EU/iac-management</a>
    </td>
   </tr>
   <tr>

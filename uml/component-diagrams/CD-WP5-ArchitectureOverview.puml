@@ -57,7 +57,7 @@ interface "Deployment\nPreparationAPI" as depl_prep #LightSalmon
 interface "Image\nRegistryAPI" as image_reg #LightSalmon
 
 'Security APIs
-interface "IAM\nIntrospectionAPI" as IAMApi #LightSlateGrey
+interface "IAM\nServiceAPI" as IAMApi #LightSlateGrey
 interface "SecretVaultAPI" as VaultAPI #LightSlateGrey
 
 

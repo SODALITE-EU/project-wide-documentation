@@ -2,46 +2,74 @@
 
 title SODALITE General Architecture
 
-interface "Deployment\nPreparationAPI" as dep
-interface "DefectPrediction\nCorrectionAPI" as defect
-interface "IaCVerifactionAPI" as verif
-interface "ImageRegistryAPI" as imagereg
-interface "MonitoringAPI" as mon
-interface "OrchestratorAPI" as orch
+skinparam fixCircleLabelOverlapping true 
+skinparam defaultFontSize 20
 
-[SODALITE Modeling Layer] as WP3
-interface "Semantic\nReasonerAPI" as sem
-WP3 -l- sem
+'WP3 modelling layer
+[SODALITE\nModeling Layer] as WP3 #PaleGreen
+interface "Semantic\nReasonerAPI" as sem #PaleGreen
+WP3 -d- sem
 
-[SODALITE Infrastructure as Code Layer] as WP4
-WP4 -d- dep
+'WP4 infrastructure as Code layer
+[SODALITE\nInfrastructure as Code Layer] as WP4 #LightSalmon
+interface "Deployment\nPreparationAPI" as dep #LightSalmon
+interface "DefectPrediction\nCorrectionAPI" as defect #LightSalmon
+interface "IaCVerifactionAPI" as verif #LightSalmon
+interface "ImageRegistryAPI" as imagereg  #LightSalmon
+interface "ImageBuilderAPI" as imagebuilder  #LightSalmon
+interface "PlatformDiscoveryAPI" as pds #LightSalmon
+WP4 -u- dep
 WP4 -u- defect
 WP4 -u- verif
-WP4 -- imagereg
+WP4 -u- pds
+WP4 -d- imagereg
+WP4 -u- imagebuilder
 
-[SODALITE Runtime Layer] as WP5
-WP5 -u- mon
+
+'WP4 infrastructure as Code layer
+[SODALITE\nRuntime Layer] as WP5 #LightSkyBlue
+interface "MonitoringAPI" as mon #LightSkyBlue
+interface "OrchestratorAPI" as orch #LightSkyBlue
+WP5 -u- mon 
 WP5 -u- orch
+
+'security APIs
+interface "IAMIntrospectionAPI" as IAMApi #LightSlateGrey
+interface "SecretVaultAPI" as VaultAPI #LightSlateGrey
 
 cloud {
     node OpenStack
-    node Kubernetes as K8S
-    node Torque
+    node k8s as K8S
+    node "PBS/Slurm" as wlm
+    node AWS
+    node OpenFaaS
 }
 
-WP3 ..> dep : use
-WP3 ..> defect : use
-WP3 ..> verif : use
-WP3 ..> mon : use
-WP3 ..> orch : use
+WP3 -d-( IAMApi
+WP3 -d-( VaultAPI
+WP3 -d-( dep
+WP3 -d-( defect
+WP3 -d-( verif
+WP3 -d-( mon
+WP3 -d-( orch
+WP3 -d-( imagebuilder
+WP3 -d-( pds
 
-WP4 ..> sem : use
+WP4 -u-( IAMApi
+WP4 -u-( VaultAPI
+WP4 -u-( sem
+WP4 -u-( orch
 
-WP5 ..> OpenStack : use
-WP5 ..> K8S : use
-WP5 ..> Torque : use
-WP5 ..> dep : use
-WP5 .l.> sem : use
-WP5 ..> imagereg: use
+WP5 -u-( IAMApi
+WP5 -u-( VaultAPI
+WP5 -u-( imagereg
+WP5 -r-( dep
+WP5 -r-( sem
+
+WP5 .d.> OpenStack
+WP5 .d.> K8S
+WP5 .d.> wlm
+WP5 .d.> AWS
+WP5 .d.> OpenFaaS
 
 @enduml

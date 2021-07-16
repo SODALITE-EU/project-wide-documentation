@@ -8,7 +8,7 @@ skinparam titleFontSize 40
 skinparam NoteFontSize 36
 
 interface "IAMServiceAPI" as AAUAPI #808080
-interface "SecretsAPI" as SecretsAPI #808080
+interface "SecretVaultAPI" as SecretsAPI #808080
 interface "DeploymentPreparationAPI" as deploymentPreparationAPI #FF6347
 interface "DefectPredictionCorrectionAPI" as correctionAPI #4169E1
 interface "GrafanaRegistryAPI" as GrafanaRegistryAPI #4169E1

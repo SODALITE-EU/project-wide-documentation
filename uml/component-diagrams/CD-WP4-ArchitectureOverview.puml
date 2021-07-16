@@ -76,7 +76,6 @@ package "Platform\nDiscovery" as packagePD {
     cPlatformDiscovery -u- iPlatformDiscovery
 }
 
-cAbstractModelParser -d-( repoEndpoint
 cSIDE -d-( iBluePrintGeneratorAPI
 cSIDE -d-( iIaCVerifier
 cSIDE -d-( iBugPredictorAndFixer

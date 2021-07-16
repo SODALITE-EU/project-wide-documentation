@@ -4,6 +4,7 @@ title SODALITE General Architecture
 
 skinparam fixCircleLabelOverlapping true 
 skinparam defaultFontSize 20
+skinparam dpi 90
 
 'WP3 modelling layer
 [SODALITE\nModeling Layer] as WP3 #PaleGreen

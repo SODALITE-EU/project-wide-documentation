@@ -15,7 +15,7 @@ interface "SemanticReasonerAPI"  as repoEndpoint #PaleGreen
 
 'security APIs
 interface "Secret\nVaultAPI" as VaultAPI #LightSlateGrey
-interface "IAM\nIntrospectionAPI" as iIAM #LightSlateGrey
+interface "IAM\nServiceAPI" as iIAM #LightSlateGrey
 
 'Runtime Layer APIs
 interface "OrchestratorAPI"  as orchEndpoint #LightBlue

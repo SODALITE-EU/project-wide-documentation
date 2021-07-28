@@ -1,7 +1,7 @@
 @startuml
 
 title Define IaC Bugs Taxonomy (WP4)
-actor "Researcher" as ops
+actor "Quality Expert" as ops
 participant "Bug Predictor and Fixer" as skb
 
 activate ops

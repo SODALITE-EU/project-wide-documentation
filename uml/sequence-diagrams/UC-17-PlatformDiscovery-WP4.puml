@@ -1,6 +1,6 @@
 @startuml
 
-title Platform Discovery Plugin (WP4)\n Resource Expert
+title Platform Discovery Service (WP4)
 
 actor "Resource Expert" as re
 participant "SODALITE IDE" as editor

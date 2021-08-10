@@ -4,17 +4,17 @@ title Platform Discovery Service (WP4)
 
 actor "Resource Expert" as re
 participant "SODALITE IDE" as editor
-participant "Semantic\nReasoner" as reasoner
-participant "Semantic\nKnowledge Base\n(ontology in GraphDB)" as ontology
 participant "Platform Discovery\nService" as PDS
+participant "Semantic\nReasoner" as reasoner
 participant "Infrastructure\nresource" as resource
+participant "Semantic\nKnowledge Base" as ontology
 
 re->editor: Enter\nusername/password
 
 activate editor
 ref over editor: Login
 
-editor->reasoner:  select\nApplication Deployment\nProject Domain\n(ADPD) defined
+editor->reasoner:  select Application Deployment Project Domain (ADPD) defined
 activate reasoner
 ref over reasoner: Check JWT access token
 
@@ -25,39 +25,38 @@ deactivate ontology
 reasoner-->editor: Return ADPD (JSON)
 deactivate reasoner
 editor-->re: Present ADPD data
-re->editor: Enter/Select\nApplication Deployment\nProject Domain
+re->editor: Enter/Select Application Deployment\nProject Domain
 
 loop Select platform
-    re->editor: Enter platform acceess details\n(secrets, IPs, keys etc) in\nJSON key-value format
-    editor->editor: Enter platform acceess details\n (secrets, IPs, keys etc) in\nJSON key-value format
+    re->editor: Enter platform acceess details\n(secrets, IPs, keys etc) in JSON key-value format
     'Save the data to secret store as a set of key-value entries (on a uniquiely defined namespace project/platform)
-    re->editor: Save\nPlatform Discovery Access Definition\n<b>PDAD
+    re->editor: Save\nPlatform Discovery Access Definition <b>(PDAD)
 
     ref over editor: Save secret (PDAD) in the Vault
-    editor->re: Present PDAD save result\nwith PATH (Vault)\nto retrieve saved data\nfrom Secret Store
+    editor->re: Present PDAD save result with PATH (Vault)\nto retrieve saved data from Secret Store
 
-    re->editor: Start discovery process\ntriggers per platform\n(manual,time scheduled,by webhook)
+    re->editor: Start discovery process triggers per platform\n(manual,time scheduled,by webhook)
 
     editor->PDS: Get initial Resource Model\nfor the selected platform\nusing (PATH,JWT)
     activate PDS
     ref over PDS: Read secret (PDAD) from the Vault
-    PDS->resource: Get description\nof the infrastructure\n(using access secrets)
+    PDS->resource: Get description of the infrastructure\n(using access secrets)
     activate resource
-    resource-->PDS: Description\nof the infrastructure\n(JSON)
+    resource-->PDS: Description of the infrastructure (JSON)
     deactivate resource
 
-    PDS->PDS: Generate TOSCA model\n from JSON
-    PDS->PDS: Generate TTL model\nfor Knowledge Base
+    PDS->PDS: Generate TOSCA model from JSON
+    PDS->PDS: Generate TTL model for Knowledge Base
 
-    PDS->reasoner: Save Resource Model\nfor the selected\n(project domain, TTL)
+    PDS->reasoner: Save Resource Model for the selected\n(project domain, TTL)
 
     activate reasoner
     ref over reasoner: Check JWT access token
-    reasoner->ontology: Save Resource model\n(SPARQL)
+    reasoner->ontology: Save Resource model (SPARQL)
     activate ontology
-    ontology-->reasoner: Return save results\nResource model ID\n(JSON)
+    ontology-->reasoner: Return save results Resource\nmodel ID (JSON)
     deactivate ontology
-    reasoner-->PDS: Resource model ID for the saved resource
+    reasoner-->PDS: Resource model ID\nfor the saved resource
     deactivate reasoner
 
     PDS-->editor: Resource model ID
@@ -66,9 +65,9 @@ loop Select platform
     editor->reasoner: Get Resource model(RM_ID)
     activate reasoner
 
-    reasoner->ontology: Get Resource model\n(SPARQL)
+    reasoner->ontology: Get Resource model (SPARQL)
     activate ontology
-    ontology-->reasoner: Return Resource model\n(TTL)
+    ontology-->reasoner: Return Resource model (TTL)
     deactivate ontology
 
     reasoner-->editor: Resource model from (TTL)

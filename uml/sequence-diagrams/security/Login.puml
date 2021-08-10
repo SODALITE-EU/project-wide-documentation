@@ -5,7 +5,7 @@ participant "SODALITE IDE" as editor
 participant "Semantic\nReasoner" as reasoner
 participant "Semantic\nKnowledge Base\n(ontology in GraphDB)" as ontology
 participant "Secrets\nVault" as secretstore
-participant "IAM" as IAM
+participant "IAM Service API" as IAM
 participant "Platform Discovery\nService" as PDS
 participant "Infrastructure\nresource" as resource
 

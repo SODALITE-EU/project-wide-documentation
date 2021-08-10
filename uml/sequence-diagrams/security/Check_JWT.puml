@@ -3,7 +3,7 @@ hide unlinked
 title Check JWT access token
 participant "SODALITE Endpoint\nClient" as client
 participant "Secrets\nVault" as secretstore
-participant "IAM" as IAM
+participant "IAM Service API" as IAM
 
 activate client
 client->IAM: Check JWT access token

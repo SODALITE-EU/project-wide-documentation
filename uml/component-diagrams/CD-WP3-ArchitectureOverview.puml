@@ -79,6 +79,7 @@ resPopulationEngine ..> AAUAPI: use
 ideGUI .up.> deploymentPreparationAPI : use
 ideGUI ..> GrafanaRegistryAPI : use
 ideGUI ..> monitoringRulesAPI : use
+ideGUI ..> RefactorerAPI : use
 ideGUI ..> SecretsAPI : use
 ideGUI .up.> orchestratorAPI : use
 ideGUI ..> AAUAPI: use

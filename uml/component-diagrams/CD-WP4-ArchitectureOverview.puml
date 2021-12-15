@@ -10,12 +10,15 @@ component "SODALITE IDE" as cSIDE #PaleGreen
 component "Ansible Support" as cAnsible
 cSIDE*-r-cAnsible
 
-
-'security APIs
+'Modelling Layer APIs
 interface "SemanticReasonerAPI"  as repoEndpoint #PaleGreen
 
+'security APIs
 interface "Secret\nVaultAPI" as VaultAPI #LightSlateGrey
-interface "IAM\nIntrospectionAPI" as iIAM #LightSlateGrey
+interface "IAM\nServiceAPI" as iIAM #LightSlateGrey
+
+'Runtime Layer APIs
+interface "OrchestratorAPI"  as orchEndpoint #LightBlue
 
 'WP4 components and packages
 package "Deployment\nPreparation" as pDP {
@@ -73,7 +76,6 @@ package "Platform\nDiscovery" as packagePD {
     cPlatformDiscovery -u- iPlatformDiscovery
 }
 
-cAbstractModelParser -d-( repoEndpoint
 cSIDE -d-( iBluePrintGeneratorAPI
 cSIDE -d-( iIaCVerifier
 cSIDE -d-( iBugPredictorAndFixer
@@ -93,4 +95,5 @@ cPlatformDiscovery -u-( iIAM
 cPlatformDiscovery -u-( VaultAPI
 cIaCBlueprintBuilder -u-( iIAM
 cIaCBlueprintBuilder -u-( VaultAPI
+cIaCBlueprintBuilder -d-( orchEndpoint
 @enduml

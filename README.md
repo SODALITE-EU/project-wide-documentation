@@ -39,10 +39,7 @@ The SODALITE platform is roughly organized in three layers (see Figure 1): Model
 The SODALITE software and team is organized around these three layers and is made available to external contributors through GitHub (github.com). In particular, we have created the SODALITE-EU organization ([https://github.com/SODALITE-EU](https://github.com/SODALITE-EU)) which, at the time of writing, features three teams of committers, one for each layer of the architecture, and various repositories, one for each subcomponent or group of strictly interrelated subcomponents. The organization also maintains this repository as an additional repository which includes the overall documentation of the project. In the following subsections we provide a short overview of the various layers of the SODALITE architecture, we identify the components that are part of each layer and the corresponding repositories.  
 
 
-<!--![alt_text](images/D2-4-Guidelines-for-Contributors-to-the-SODALITE-Framework1.png "")-->
-
-<img src="images/D2-4-Guidelines-for-Contributors-to-the-SODALITE-Framework1.png" alt="SODALITE high level architecture"
-	title="SODALITE high level architecture" width="800"  />	
+![General overview](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/SODALITE-EU/project-wide-documentation/master/uml/component-diagrams/CD-SODALITEGeneralArchitecture.puml)
 
 Figure 1. SODALITE high level architecture (from D2.1)
 
@@ -51,8 +48,11 @@ Figure 1. SODALITE high level architecture (from D2.1)
 
 The Modeling Layer offers the tools to support all modeling activities by the SODALITE users. Its elements are the IDE offering smart editing features enhanced with suggestions that are generated, in a context-based fashion,  by the Semantic Reasoner. This last component is reasoning on an extensible ontology, the Semantic Knowledge Base, that includes the main concepts needed to model a deployment configuration for a complex application. The following table lists these three components together with the main technologies they are based on and the GitHub repositories that include their code.
 
-Table 1. Components of the Modeling Layer and corresponding repositories
+![Modelling Layer overview](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/SODALITE-EU/project-wide-documentation/master/uml/component-diagrams/CD-WP3-ArchitectureOverview.puml)
 
+Figure 2. SODALITE Modelling Layer architecture
+
+Table 1. Components of the Modeling Layer and corresponding repositories
 
 <table>
   <tr>
@@ -118,6 +118,11 @@ Table 1. Components of the Modeling Layer and corresponding repositories
 ## 2.2. The SODALITE Infrastructure as a Code Layer
 
 The Infrastructure as a Code Layer is in charge of transforming an Abstract Deployment Model built using the modeling layer into an executable blueprint and a set of related artifacts (configuration scripts and execution container images). It also includes tools that identify and detect anti-patterns to be avoided as well as mechanisms to optimize the deployment of an application based on its characteristics. Additionally it provides automated platform discovery for the creation of platform resource models thus enabling the user to easily reuse these models when modelling application deployments. More specifically, this layer includes the subcomponents described in the following table. 
+
+![IaC Layer overview](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/SODALITE-EU/project-wide-documentation/master/uml/component-diagrams/CD-WP4-ArchitectureOverview.puml)
+
+Figure 3. SODALITE IaC Layer architecture
+
 
 Table 2. Components of the Infrastructure as a Code Layer and corresponding repositories
 
@@ -352,7 +357,7 @@ Table 2. Components of the Infrastructure as a Code Layer and corresponding repo
 <p>
 <strong>UI/UX technology: </strong>N/A
    </td>
-   <td><a href="https://github.com/SODALITE-EU/platform-discovery-service">https://github.com/SODALITE-EU/platform-discovery-service</a>
+   <td><a href="https://github.com/SODALITE-EU/iac-management">https://github.com/SODALITE-EU/iac-management</a>
    </td>
   </tr>
   <tr>
@@ -379,6 +384,11 @@ Table 2. Components of the Infrastructure as a Code Layer and corresponding repo
 ## 2.3. The SODALITE Runtime Layer
 
 The Runtime Layer is in charge of orchestrating, monitoring and reconfiguring the execution of a complex application even when it exploits multiple execution environments (Cloud, HPC, GPUs). The following table describes each sub-component of this layer and links to the corresponding GitHub repository. Most of the sub-components highlighted here extend and/or integrate pre-existing open source components. These are included as submodules in the corresponding repositories.  
+
+![Runtime Layer overview](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/SODALITE-EU/project-wide-documentation/master/uml/component-diagrams/CD-WP5-ArchitectureOverview.puml)
+
+Figure 4. SODALITE Runtime Layer architecture
+
 
 Table 3. Components of the Runtime Layer and corresponding repositories
 
@@ -636,7 +646,7 @@ A strong, vibrant, and diverse community is important to the success of open sou
 <!--![alt_text](images/D2-4-Guidelines-for-Contributors-to-the-SODALITE-Framework2.png "Guidelines-for-Contributors")-->
 
 
-Figure 2. The development flow
+Figure 5. The development flow
 
 SODALITE follows the CI/CD (Continuous Integration/Continuous Delivery) approach and its development flow is depicted in Figure 2. Firstly, a SODALITE developer, either a committer or a contributor (see the Roles section), submits a pull request after locally changing the source code of one of the SODALITE repositories. Upon this, a respective technical project leader reviews the changes and either approves or rejects the pull request, preliminarily discussing with the developer about the decision the leader made or in case something is unclear.
 
@@ -666,7 +676,7 @@ There could be multiple ways of contributing to SODALITE, as summarized in Figur
 <!--![alt_text](images/D2-4-Guidelines-for-Contributors-to-the-SODALITE-Framework3.png "image_tooltip")-->
 
 
-Figure 3. Possible types of contributions to the SODALITE project
+Figure 6. Possible types of contributions to the SODALITE project
 
 The contributor must follow a simple process to submit a pull request. The contributor must fork the repository and clone it locally. The local and original “upstream” repositories must be connected by adding the latter as remote to the former. The contributor must then pull changes from the remote repository to keep the local version aligned and avoid conflicts. A dedicated branch must then be created for carrying out any relevant change, modification, or addition. Every possible contribution must always respect the styles, rules, and conventions adopted by the project. The contributor must consider what the project, and the community, is used to, and not his/her common habits. The goal is to ease any possible merge, and help the others understand. The contributor must also add references to any appropriate issue, document, or artefact in the pull request to help the others scope it properly. Screenshots of the before and after, if appropriate, could also be added to further clarify the scope of the change. 
 
@@ -679,7 +689,7 @@ Finally, every change must always be tested properly: regression testing should 
 <!--![alt_text](images/D2-4-Guidelines-for-Contributors-to-the-SODALITE-Framework4.png "image_tooltip")-->
 
 
-Figure 4. Pull request workflow
+Figure 7. Pull request workflow
 
 In general, the SODALITE team would like to enter in touch informally with potential contributors as soon as possible and discuss with them any problem or new idea. To this purpose, the team will open a slack channel and will provide on GitHub instructions to join it.
 

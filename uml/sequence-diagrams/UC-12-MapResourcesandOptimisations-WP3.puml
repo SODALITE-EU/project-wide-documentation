@@ -13,6 +13,7 @@ qe->ide: Initiate the IDE
 activate ide
 ide->reasoner: Retrieve known resource types, etc. (API call)
 activate reasoner
+ref over reasoner: Check JWT access token
 reasoner->ontology: Request resources (SPARQL)
 activate ontology
 ontology->reasoner: Return resources (JSON)
@@ -25,6 +26,7 @@ loop Design time
     qe->ide: Define a pattern selecting known resource\n types, relationships, etc.
     ide->reasoner: Request validation (API call)
     activate reasoner
+    ref over reasoner: Check JWT access token
     reasoner->ontology: Query for known inconsistencies (SPARQL)
     activate ontology
     ontology-->reasoner: Return results (JSON)
@@ -54,6 +56,7 @@ loop Design time
         qe->ide: Ask to map target resources to abstract pattern
         ide->reasoner: Request known target resources (API call)
         activate reasoner
+        ref over reasoner: Check JWT access token
         reasoner->ontology: Query compatible target resources (SPARQL)
         activate ontology
         ontology-->reasoner: Return results (JSON)
@@ -69,6 +72,7 @@ end
 qe->ide: Submit new resource pattern,\n optimization parameters,\n target resources and\n performance metrics
 ide->reasoner: Request to store new pattern (API call)
 activate reasoner
+ref over reasoner: Check JWT access token
 reasoner->ontology: Store new pattern (SPARQL)
 deactivate reasoner
 

@@ -66,11 +66,11 @@ deactivate nm
 
 == Update Deployment Model Refactoring Options ==
 
-dr -> rof: search Refactoring Options (patterns,\n anti-patterns)
+dr -> rof: search Refactoring Options (criteria)
 activate dr
 activate rof
 rof -> reasoner: search Resources
-activate reasoner
+activate reasonerar
 reasoner --> rof: resources
 deactivate reasoner
 rof --> dr:  refactoring options

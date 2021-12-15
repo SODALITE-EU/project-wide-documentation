@@ -12,6 +12,7 @@ ops->editor: Initiate the IDE
 activate editor
 editor->reasoner: Retrieve known resource types, etc. (API call)
 activate reasoner
+ref over reasoner: Check JWT access token
 reasoner->ontology: Request resources (SPARQL)
 activate ontology
 ontology->reasoner: Return resources (JSON)
@@ -42,6 +43,7 @@ loop Design time
         editor->reasoner: Request qualitative validation (API call)
 
         activate reasoner
+        ref over reasoner: Check JWT access token
         reasoner->ontology: Query (SPARQL) for \nknown inconsistencies\n(incompatibilities, anti-patterns, etc.)
         activate ontology
         ontology-->reasoner: Query results (JSON)
@@ -53,13 +55,14 @@ loop Design time
             editor-->ops: Present inconsistencies
             ops->editor: Submit correct design
         end
-        
-       
+
+
 
         opt Recommendations
             ops->editor: Request recommendations
             editor->reasoner: Request recommendation generation (API call)
             activate reasoner
+            ref over reasoner: Check JWT access token
             reasoner->ontology: Query (SPARQL) for \nknown patterns, requirements, etc
             activate ontology
             ontology-->reasoner: Query results (JSON)
@@ -80,7 +83,7 @@ loop Design time
                 ops->editor: Reject presented recommendations
             end
         end
-        
+
          alt Bugs detection
                 reasoner->editor: Reject presented recommendations
          end
@@ -91,7 +94,7 @@ loop Design time
             reasoner->BugPredictor: Detecting bugs
             BugPredictor->reasoner: Return no bugs
        end
-       
+
        alt Bugs found
             reasoner->BugPredictor: Detecting bugs
             BugPredictor->reasoner: Return bugs

@@ -23,6 +23,7 @@ activate builder
 builder->builder: Create CSAR
 builder->orch: Create blueprint (CSAR)
 activate orch
+ref over orch: Check JWT access token
 orch->orch: Save blueprint
 orch-->builder: Blueprint created (Blueprint ID)
 deactivate orch
@@ -33,6 +34,7 @@ ide -> ide: Generate Monitoring ID
 
 ide->orch: Deploy blueprint (Blueprint ID + inputs)
 activate orch
+ref over orch: Check JWT access token
 orch-->ide: Deployment started (Session ID)
 orch->orch: Deploy
 

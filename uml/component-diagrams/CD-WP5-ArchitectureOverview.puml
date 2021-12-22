@@ -125,4 +125,28 @@ ide --( orch_if : use
 ide --( grafana_if : use
 ide --( alert_rule_if : use
 ide --( ref_if : use
+
+'Data Management
+package "Data Management" as dm {
+    component [Data Management\nCluster] as dm_cluster
+    interface "DataManagementAPI" as dm_if
+    dm_cluster - dm_if
+}
+
+dm_cluster -u-( IAMApi : use
+ide --( dm_if : use
+orch_impl --( dm_if : use
+
+cloud {
+    node GridFTP
+    node MQTT
+    node HTTP
+    node S3
+}
+
+dm_cluster .d.> GridFTP : use
+dm_cluster .d.> MQTT : use
+dm_cluster .d.> HTTP : use
+dm_cluster .d.> S3 : use
+
 @enduml
